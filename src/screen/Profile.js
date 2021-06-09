@@ -585,7 +585,6 @@ function Profile() {
                 {
                     e.stopPropagation()
                     pushel(data)
-                    console.log(paymentMethods)
                     setCheckbox(!checkbox)
                 }}
             > 
@@ -650,7 +649,7 @@ function Profile() {
                                                     type="number" 
                                                     className="_walletAmount input font s15 c000"
                                                     value={walletAmount}
-                                                    onChange={e => setWalletAmount(e.target.value.replace(/\D/g, ''))}
+                                                    onChange={e => setWalletAmount(e.target.value.replace(/[^0-9\.]/g, ''))}
                                                 />
                                             </div>
                                             <div className="item flex flex-col">
@@ -659,7 +658,7 @@ function Profile() {
                                                     type="number" 
                                                     className="_pin input font s15 c000"
                                                     value={pin}
-                                                    onChange={e => setPin(e.target.value.replace(/\D/g, ''))}
+                                                    onChange={e => setPin(e.target.value.replace(/[^0-9\.]/g, ''))}
                                                 />
                                             </div>
                                         </div> 
@@ -767,21 +766,21 @@ function Profile() {
                             <div className="lef flex flex-col">
                                 <div className="blk flex aic">
                                     <div className="item flex flex-col">
-                                        <div className="lbl font s14 cfff">Price</div>
+                                        <div className="lbl font s14 cfff">Price per coin</div>
                                         <input 
                                             type="text" 
                                             className="input _price font s15 c000"
                                             value={price}
-                                            onChange={e => setPrice(e.target.value.replace(/\D/g, ''))}
+                                            onChange={e => setPrice(e.target.value.replace(/[^0-9\.]/g, ''))}
                                         />
                                     </div>
                                     <div className="item flex flex-col">
-                                        <div className="lbl font s14 cfff">Coins</div>
+                                        <div className="lbl font s14 cfff">{`Total coins to ${tradeMode == 'buy' ? 'buy' : 'sell'}`}</div>
                                         <input 
                                             type="text" 
                                             className="input _amount font s15 c000"
                                             value={amount}
-                                            onChange={e => setAmount(e.target.value.replace(/\D/g, ''))}
+                                            onChange={e => setAmount(e.target.value.replace(/[^0-9\.]/g, ''))}
                                         />
                                     </div>
                                     {/* Select Currency */}
@@ -890,7 +889,7 @@ function Profile() {
                                             type="text" 
                                             className="_minLimit input font s15 c000"
                                             value={minAmount}
-                                            onChange={e => setMinAmount(e.target.value.replace(/\D/g, ''))}
+                                            onChange={e => setMinAmount(e.target.value.replace(/[^0-9\.]/g, ''))}
                                         />
                                     </div>
                                     <div className="item flex flex-col">
@@ -899,7 +898,7 @@ function Profile() {
                                             type="text" 
                                             className="_maxLimit input font s15 c000"
                                             value={maxAmount}
-                                            onChange={e => setMaxAmount(e.target.value.replace(/\D/g, ''))}
+                                            onChange={e => setMaxAmount(e.target.value.replace(/[^0-9\.]/g, ''))}
                                         />
                                     </div> 
                                     {/* Select Time */}

@@ -8,11 +8,13 @@ import {Dialog, focus, formatTime, moment} from "../core";
 import {useDispatch, useSelector} from "react-redux"
 import Messenger from './Messenger'
 import StarRating from '../components/StarRating'
+import price from 'crypto-price'
 
-const  BuyerSideOrder = ({match}) => {
+const  BuyerSideOrder = ({match, history}) => {
   
-    const [amt, setAmt] = useState('')
+    const [amt, setAmt] = useState(null)
     const [prc, setPrc] = useState('')
+    const [exchangeMode, setExchangeMode] = useState('coin-to-price')
     const [orderDetails, setOrderDetails] = useState()
     const [loading, setLoading] = useState(false)
     const [status, setStatus] = useState(null)
@@ -34,16 +36,46 @@ const  BuyerSideOrder = ({match}) => {
         _getOrderDetails()
     },[]) 
 
+
     useEffect(()=>{
-        if(orderDetails){
-            orderDetails.status == 'complete' && setShowTradeComplete(true)
+        if(exchangeMode == 'price-to-coin'){
+            if(prc != '' || prc != null){
+                setAmt('')
+                _getPriceToCoin()
+            }
+            if(prc == '' || prc == null){setAmt(0)}
+        } 
+        else {
+            if(amt != '' || amt != null){
+                setPrc('')
+                _getCoinToPrice()
+            }
+            if(amt == '' || amt == null){setPrc('')}
         }
+    },[exchangeMode == 'price-to-coin' ? prc : amt])
+
+    useEffect(()=>{
+        if(orderDetails){orderDetails.status == 'complete' && setShowTradeComplete(true)}
        _getUserRating()
-       _getStatus()
+       if(isUser){
+        _getStatus()
+       }
     },[orderDetails]) 
 
     //console.log(user) 
-    console.log(orderDetails) 
+    //console.log(orderDetails) 
+
+    const _getCoinToPrice = () => {
+        if(orderDetails){
+            setPrc(amt * orderDetails.price.toFixed(2));
+        } 
+    }
+ 
+    const _getPriceToCoin = () => {
+        if(orderDetails){
+            setAmt((prc / orderDetails.price).toFixed(2))
+        }
+    }
 
     const _getOrderDetails = async () => {
         setLoading(true)
@@ -84,13 +116,13 @@ const  BuyerSideOrder = ({match}) => {
             console.log(error)
         }
     }
-  
+
     const _buy = () => {
         const {country, _id} = orderDetails
-        if(amt == ''){
+        if(amt == '' || amt == null){
             focus("._amt");
             Toast.show({ html: "Coin required greater than zero."}, 5);
-        } else if (prc == ''){
+        } else if (prc == '' || prc == null){
             focus("._prc");
             Toast.show({ html: "Price required greater than zero."}, 5);
         } else { 
@@ -319,41 +351,6 @@ const  BuyerSideOrder = ({match}) => {
                 setSubmitReviewLoading(false)
             }) 
         } 
-        /* else if (user.email == orderDetails.email) {
-            axios.post(`${global.baseurl}:3000/review`, 
-            {
-                communication : rateCommunication,
-                trust : rateTrust,
-                speed : rateSpeed,
-                amount: orderDetails.amount, 
-                reviewer : user.email,
-                user : orderDetails.buyerId,
-                orderId : orderDetails._id,
-                status : 'sell',
-                notes: reviewNote
-            }, 
-            {
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization":  token
-                }  
-            })
-            .then((response) =>{
-               //console.log(response) 
-                const {success, data} = response.data;
-                Toast.show({ html: data,  type: success ? 'ok' : 'error',  time: 5 });
-                _getUserRating()
-                setSubmitReviewLoading(false)
-                setShowTradeComplete(false)
-            }) 
-            .catch ((error) => { 
-                console.log(error)
-                _getUserRating()
-                setSubmitReviewLoading(false)
-            }) 
-        } else {
-            Toast.show({ html: "You are unable add review on this order.", time: 5})
-        }*/
     }  
 
     /* Get user Rating/Reviews */
@@ -370,7 +367,7 @@ const  BuyerSideOrder = ({match}) => {
                 }  
             });
             if(data.success){
-                console.log(data)
+                //console.log(data)
                 setReviews(data.data)
                 setReviewsLoading(false)
             }
@@ -379,7 +376,6 @@ const  BuyerSideOrder = ({match}) => {
             setReviewsLoading(false)
         } 
     }
-
 
     return ( 
         <React.Fragment> 
@@ -413,7 +409,7 @@ const  BuyerSideOrder = ({match}) => {
                             <div className="content flex flex-col">
                                 {/* Buy Form */}
                                 <div className="form flex">
-                                    <div className="lef flex flex-col">
+                                    <div className="form-lef flex flex-col">
                                         <div className="item">
                                             <div className="lbl font s15 cfff">Coin</div>
                                             <input 
@@ -421,7 +417,11 @@ const  BuyerSideOrder = ({match}) => {
                                                 className="input _amt font s15 c000"
                                                 disabled={orderDetails.status == 'escrow' || orderDetails.status == 'paid' || orderDetails.status == 'complete'}
                                                 value={orderDetails.status == 'new' ? amt : orderDetails.escrowAmount}
-                                                onChange={(e) => setAmt(e.target.value.replace(/\D/g, ''))}
+                                                onChange={(e) =>{
+                                                    setAmt(e.target.value.replace(/[^0-9\.]/g, ''))
+                                                    setExchangeMode('coin-to-price')
+                                                    _getCoinToPrice()
+                                                }} 
                                             />
                                         </div>
                                         <div className="item">
@@ -432,7 +432,11 @@ const  BuyerSideOrder = ({match}) => {
                                                     className="amt font s15 c000"
                                                     disabled={orderDetails.status == 'escrow' || orderDetails.status == 'paid' || orderDetails.status == 'complete'}
                                                     value={orderDetails.status == 'new' ? prc : orderDetails.price}
-                                                    onChange={(e) => setPrc(e.target.value.replace(/\D/g, ''))}
+                                                    onChange={(e) => {
+                                                        setPrc(e.target.value.replace(/[^0-9\.]/g, ''))
+                                                        setExchangeMode('price-to-coin')
+                                                        _getPriceToCoin()
+                                                    }}
                                                 />
                                                 <div className="unit font s15 c000">{orderDetails.currency}</div>
                                             </div>
@@ -447,13 +451,13 @@ const  BuyerSideOrder = ({match}) => {
                                             />
                                         </div>
                                         {
-                                            isUser ?
+                                            isUser && orderDetails ?
                                             <>
                                                 {
                                                     (orderDetails.status == 'new' || user.email != orderDetails.email) &&
                                                     <button 
-                                                        disabled={orderDetails.status == "escrow" || orderDetails.status == 'paid' || orderDetails.status == 'complete'} 
-                                                        className={`button font s15 cfff anim ${(orderDetails.status == "escrow") || (orderDetails.status == 'paid') || (orderDetails.status == 'complete') ? 'disabled' : ''}`} 
+                                                        disabled={orderDetails.status == "escrow" || orderDetails.status == 'paid' || orderDetails.status == 'complete' || status == 'pending'} 
+                                                        className={`button font s15 cfff anim ${(orderDetails.status == "escrow") || (orderDetails.status == 'paid') || (orderDetails.status == 'complete') || (status == 'pending') ? 'disabled' : ''}`} 
                                                         onClick={() => {_buy()}}
                                                     >Buy</button>
                                                 }
@@ -478,7 +482,7 @@ const  BuyerSideOrder = ({match}) => {
                                     </div>
                                 </div>
                                 {
-                                    isUser ?
+                                    isUser == true && orderDetails ?
                                     <>
                                         {user.email == orderDetails.buyerId && (orderDetails.status == 'escrow' || orderDetails.status == 'paid') &&
                                             <div className="terms"> 
@@ -524,7 +528,8 @@ const  BuyerSideOrder = ({match}) => {
                                 }
                             </div>                         
                         </div>
-                        {(user.email == orderDetails.buyerId) && showTradeComplete &&
+                        {isUser &&
+                            (user.email == orderDetails.buyerId) && showTradeComplete &&
                             <div className="trd-cplt flex flex-col rel">
                                 {submitReviewLoading &&
                                     <div className="loading cover abs fill flex aic">

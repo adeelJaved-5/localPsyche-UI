@@ -4,8 +4,8 @@ import {keyupListener,keyCodes, focus} from "../core/index"
 import {useDispatch, useSelector} from "react-redux"
 
 import firebase from 'firebase/app'
-import {db} from "../config" 
-
+import {db, storageRef, storage} from "../config" 
+ 
 function Messenger(props) {
 
     const {room, orderDetails} = props
@@ -13,6 +13,7 @@ function Messenger(props) {
     //console.log(orderDetails)
 
     const [input, setInput]  = useState('');
+    const [fileUrl, setFileUrl] = useState(null)
     const [messages, setMessages] = useState([]);
 
     const generalReducers = useSelector(state => state);
@@ -20,7 +21,6 @@ function Messenger(props) {
     const {user} = userInfo;
     const dummy = useRef()
  
-
     useEffect(()=>{
         _getMessages()
     },[])
@@ -41,7 +41,7 @@ function Messenger(props) {
 
     const sendMessages = () =>{
         if(buyStatus == 'escrow' || buyStatus == 'paid'){
-            if(input == ''){
+            if(input == '' && fileUrl == null){
                 focus("._input")
             } 
             else { 
@@ -53,8 +53,9 @@ function Messenger(props) {
                         sellerId: orderDetails.email,
                         buyerId: orderDetails.buyerId,
                         buyOrder: orderDetails.buyOrder,
+                        fileUrl: fileUrl,
                         currentTime: firebase.firestore.FieldValue.serverTimestamp(),
-                    })  
+                    }) 
                 }
                 if(room == 'buyToSell'){
                     db.collection(room).add({
@@ -78,29 +79,73 @@ function Messenger(props) {
                 );
             }
         } else {<></>}
-    } 
+    }  
   
-    //console.log(messages)
+   //console.log(messages)
 
     /* Messages */
     const  Messages = forwardRef(({message}, ref) => {
  
         const isUser = user.email === message.user; 
 
-        return (  
+        const downloadFile = async () => {
+            const file = await fetch(message.fileUrl)
+            const blob = file.blob();
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', 'file.jpg'); //or any other extension
+            document.body.appendChild(link);
+            link.click();
+
+            // Clean up and remove the link 
+            link.parentNode.removeChild(link);
+        }
+
+        return (    
             <div className={`message-blk flex aic amim ${isUser ? "user" : "frd"}`}>
-                <div ref={ref} className="item">
-                    {isUser === false &&  
-                        <div className="dp">
-                            <div className="img" style={{backgroundImage: "url(https://placeimg.com/350/350/people?5)"}}/>
-                        </div>   
-                    }
-                    <div className={`txt font s14 c333 ${isUser && "user-txt"}`}>{message.msg}</div> 
-                </div>
+                {
+                    (message.fileUrl == null || message.fileUrl == '') ?
+                    <div ref={ref} className="item">
+                        <div className={`txt font s14 c333 ${isUser && "user-txt"}`}>{message.msg}</div> 
+                    </div>
+                    :
+                    (message.msg == '' || message.msg == null) ?
+                    <div ref={ref} className="item">
+                        <button className="cleanbtn" type='submit' onClick={() => downloadFile()}>
+                            {/*<img src={message.fileUrl} className="file" />*/}
+                            <div className="file" style={{backgroundImage: `url(${message.fileUrl})`}}/>
+                        </button> 
+                    </div>
+                    :
+                    <></>
+                }
             </div>
         ); 
     
     }) 
+
+    /*Generate Random ID*/
+    const generateID = () =>{
+        var min = 1000;
+        var max = 999999999999;
+        var rand = Math.floor( Math.random() * (max - min) ) + min;
+        return rand;
+    }
+
+    /* Upload Files */
+    const _uploadFile = async (e) => {
+        let file = e.target.files[0];
+        var ext = file.name.substr(file.name.lastIndexOf('.') + 1).toLowerCase();
+        const fileNname = generateID() + "." + ext;
+
+        const storageRef = storage.ref()
+        const fileRef = storageRef.child(fileNname)
+        await fileRef.put(file).then(() => {
+            console.log("Uploaded File", fileNname) 
+        })
+        setFileUrl(await fileRef.getDownloadURL())
+    }
 
     return (
         <div className="messenger flex flex-col rel">
@@ -123,16 +168,20 @@ function Messenger(props) {
                         <div className='wrap flex flex-col'></div>
                     }  
                     <div className="msf-ftr flex aic fixed">
-                    <input 
-                        type="text" 
-                        className={`cleanbtn iput _input font s15 c000 anim ${(buyStatus != 'escrow' && buyStatus != 'paid') && 'disble'}`} 
-                        placeholder="Type a message"
-                        value={input} 
-                        disabled={(buyStatus != 'escrow' && buyStatus != 'paid')}
-                        onKeyUp={(e)=>{keyupListener(e, keyCodes.ENTER, ()=>{sendMessages()})}} 
-                        onChange={(e)=>setInput(e.target.value)} 
-                    />
-                    <button 
+                        <div className="feild flex aic">
+                            <input 
+                                type="text" 
+                                className={`cleanbtn iput _input font s15 c000 anim ${(buyStatus != 'escrow' && buyStatus != 'paid') && 'disble'}`} 
+                                placeholder="Type a message"
+                                value={input} 
+                                disabled={(buyStatus != 'escrow' && buyStatus != 'paid')}
+                                onKeyUp={(e)=>{keyupListener(e, keyCodes.ENTER, ()=>{sendMessages()})}} 
+                                onChange={(e)=>setInput(e.target.value)} 
+                            />
+                            {/*<input id="file_upload" multiple = {true} className='iputhidden fixed reset' type="file"  onChange={e => {_uploadFile(e)} } />
+                            <button onClick={e => {document.getElementById("file_upload").click()}} className='cleanbtn file-btn s20 c777 icon-paperclip' />*/}
+                        </div>
+                    <button   
                         onClick={sendMessages} 
                         className={`cleanbtn btn icon-send s22 cfff flex aic ${(buyStatus != 'escrow' && buyStatus != 'paid') && 'disble'}`} 
                         disabled={(buyStatus != 'escrow' && buyStatus != 'paid')}

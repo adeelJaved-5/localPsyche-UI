@@ -77,7 +77,7 @@ function Signup(props) {
             Toast.show({ html: "PIN and confirm PIN code not matching.", time: 5 });
         } else { 
             setLoading(true)
-            axios.post(
+            axios.post( 
             `${global.baseurl}:8000/api/auth/confirm-email`, 
             {   
                 username: username,
@@ -198,7 +198,7 @@ function Signup(props) {
                     <div className="ftr flex aic">
                         <button className="button font s15 cfff anim" onClick={_register}>Register</button>
                     </div>
-                </div>
+                </div> 
             </div>
         </div> 
     );

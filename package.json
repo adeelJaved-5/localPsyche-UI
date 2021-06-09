@@ -2,6 +2,9 @@
   "name": "localpsyche",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": "14.x"
+  },
   "dependencies": {
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
@@ -12,6 +15,7 @@
     "firebase": "^8.4.3",
     "node-sass": "^5.0.0",
     "react": "^17.0.2",
+    "react-copy-to-clipboard": "^5.0.3",
     "react-dom": "^17.0.2",
     "react-flip-move": "^3.0.4",
     "react-lottie": "^1.2.3",
@@ -21,6 +25,7 @@
     "redux": "^4.0.5",
     "redux-devtools-extension": "^2.13.9",
     "redux-thunk": "^2.3.0",
+    "socket.io-client": "^4.1.2",
     "web-vitals": "^1.0.1"
   },
   "scripts": {

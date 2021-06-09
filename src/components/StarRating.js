@@ -27,7 +27,7 @@ const StarRating = ({state}) => {
                                 onClick={() => setRating(ratingValue)}
                             />
                             <button 
-                                className={`cleanbtn ico icon-star anim ${ratingValue <= (hover || rating) ? "fl" : ''}`} 
+                                className={`cleanbtn ico icon-star1 anim ${ratingValue <= (hover || rating) ? "fl" : ''}`} 
                                 onMouseEnter={() => setHover(ratingValue)}
                                 oncMouseLeave={() => setHover(null)}
                             />

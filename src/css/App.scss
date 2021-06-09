@@ -1,7 +1,7 @@
 @import "./Colors.scss";
 @import "./Props.scss";
 @import "./media.scss";
-@import "./uifonts.scss";
+//@import "./uifonts.scss";
 
 .fontr{font-family: 'Varela Round', sans-serif;}
 .font{font-family: "Open Sans", Arial;}
@@ -9,7 +9,13 @@
 .black{color: #08254A;}
 .cfff{color: #EFEFEF;}
 .button{border-radius: 3px;}
- 
+.hide-element{
+    opacity: 0;
+    visibility: hidden;
+    top: 0;
+    left: -100000px;
+}
+
 .input{
     border: none;
     outline: none;
@@ -49,6 +55,17 @@
     transform-origin: top;
 } 
 
+@mixin bgImage($radius: 50%) {
+    height: 100%;
+    width: 100%;
+    border-radius: $radius;
+    background-color: #e2e2e2;
+    background-repeat: no-repeat !important;
+    background-size: cover !important;
+    background-position: center !important;
+  }
+  
+
 @keyframes drop{
     0% {
        transform: scaleY(.5);
@@ -87,6 +104,7 @@
         max-height: 400px;
         overflow: auto;
         z-index: 5;
+        overflow-x: hidden;
         @include dropDownAnim;
         /* box-shadow: 0 10px 40px 0 rgb(51 73 94 / 15%);*/
         .item{
@@ -112,6 +130,7 @@
     &:hover{
         background: #898989;
         border-color: #898989;
+        opacity: 1;
     }
 }
 
@@ -620,14 +639,19 @@ $wrapWidth: 1100px;
                         }
                     }
                     &:nth-child(1){
-                        min-width: 280px;
-                        max-width: 280px;
+                        min-width: 270px;
+                        max-width: 270px;
                     }
                     &:nth-child(2){
-                        padding-right: 20px;
-                        min-width: 230px;
-                        max-width: 230px;
+                        padding-right: 15px;
+                        overflow-wrap: break-word;
+                        min-width: 240px;
+                        max-width: 240px;
                         .lbl{line-height: 1.5};
+                    }
+                    &:nth-child(3){
+                        min-width:160px;
+                        max-width: 160px;
                     }
                     &:nth-child(3){
                         min-width: 200px;
@@ -678,7 +702,7 @@ $wrapWidth: 1100px;
             }
             .content{
                 .form{width: 100%;}
-                .lef{
+                .form-lef{
                     flex: 1;
                     margin-right: 80px;
                     .item{ 
@@ -933,7 +957,7 @@ $wrapWidth: 1100px;
                 }
             }
             .blk{
-                margin-top: 55px;
+                margin-top: 50px;
                 .lbl{
                     color: #8B8E9C;
                     flex: 1;
@@ -1295,6 +1319,11 @@ $wrapWidth: 1100px;
         }
         .message-blk{ 
             margin-bottom: 5px;
+            .file{
+                @include bgImage(4px);
+                height: 120px;
+                width: 120px;
+            }
             &.frd{
                 justify-content: flex-start;
                 margin-right: 20%; 
@@ -1331,13 +1360,21 @@ $wrapWidth: 1100px;
             background: #fff;
             padding: 10px;
             border-radius: 0px 0px 5px 5px;
-            .iput{
+            .feild{
                 border: 1px solid #989898;
                 width: 100%;
-                padding: 8px 12px;
+                padding: 8px 8px;
                 border-radius: 3px;
-                &:focus{border-color: $themeColor;}
+                &:focus-within{border-color: $themeColor;}
+                .iput{
+                    width: 100%;
+                    padding: 0 5px;
+                    margin-right: 2px;
+                }
                 &.disble{opacity: 0.5;}
+                .file-btn{
+                    &:hover{color: #000000;}
+                }
             } 
             .btn{
                 height: 40px;

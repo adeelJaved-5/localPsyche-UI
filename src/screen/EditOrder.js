@@ -184,7 +184,7 @@ function EditOrder(props)  {
                             type="number" 
                             className="input _price font s15 c000"
                             defaultValue={price}
-                            onChange={e => setPrice(e.target.value)}
+                            onChange={e => setPrice(e.target.value.replace(/[^0-9\.]/g, ''))}
                         />
                     </div> 
                     <div className="item flex flex-col">
@@ -193,7 +193,7 @@ function EditOrder(props)  {
                             type="number" 
                             className="input _amount font s15 c000"
                             defaultValue={amount}
-                            onChange={e => setAmount(e.target.value)}
+                            onChange={e => setAmount(e.target.value.replace(/[^0-9\.]/g, ''))}
                         />
                     </div>
                     
@@ -302,7 +302,7 @@ function EditOrder(props)  {
                             type="number" 
                             className="_minLimit input font s15 c000"
                             defaultValue={minAmount}
-                            onChange={e => setMinAmount(e.target.value)}
+                            onChange={e => setMinAmount(e.target.value.replace(/[^0-9\.]/g, ''))}
                         />
                     </div>
                     <div className="item flex flex-col">
@@ -311,7 +311,7 @@ function EditOrder(props)  {
                             type="number" 
                             className="_maxLimit input font s15 c000"
                             defaultValue={maxAmount}
-                            onChange={e => setMaxAmount(e.target.value)}
+                            onChange={e => setMaxAmount(e.target.value.replace(/[^0-9\.]/g, ''))}
                         />
                     </div> 
                     {/* Select Time */}

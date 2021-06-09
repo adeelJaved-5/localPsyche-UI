@@ -107,7 +107,7 @@ function Sell() {
                                 <input 
                                     type="text" 
                                     className="input font s16 c000"
-                                    onChange={(e)=>setAmount(e.target.value.replace(/\D/g, ''))}
+                                    onChange={(e)=>setAmount(e.target.value.replace(/[^0-9\.]/g, ''))}
                                 />
                             </div>
 
@@ -212,10 +212,10 @@ function Sell() {
                                         <div className="lbl font s15 cfff">{item.payment}</div>
                                     </div>
                                     <div className="col flex flex-col">
-                                        <div className="lbl font s15 cfff">{item.price}</div>
+                                        <div className="lbl font s15 cfff">{item.amount}</div>
                                     </div>
                                     <div className="col flex flex-col">
-                                        <div className="lbl font s15 cfff">{item.amount}&nbsp;<span className="s11">{item.currency}</span>
+                                        <div className="lbl font s15 cfff">{item.price}&nbsp;<span className="s11">{item.currency}</span>
                                         </div> 
                                         <div className="txt font s13 b3 cfff">{`Limit: ${item.minAmount} to ${item.maxAmount}`}</div>
                                     </div>

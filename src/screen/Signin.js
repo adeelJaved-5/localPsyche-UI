@@ -127,6 +127,7 @@ function Signin(props) {
                             className="cleanbtn _email iput font s15 cfff anim"
                             value={email}
                             onChange={e => setEmail(e.target.value)}
+                            onKeyUp={(e)=>{keyupListener(e, keyCodes.ENTER, ()=>{_login()})}} 
                         /> 
                     </div>
                     <div className="item rel">
@@ -136,6 +137,7 @@ function Signin(props) {
                             className="cleanbtn _password iput font s15 cfff anim"
                             value={password}
                             onChange={e => setPassword(e.target.value)}
+                            onKeyUp={(e)=>{keyupListener(e, keyCodes.ENTER, ()=>{_login()})}} 
                         /> 
                     </div>
                     <div className="item flex aic">
@@ -158,11 +160,11 @@ function Signin(props) {
                     <div className='blk flex aic'>
                         <div className="lbl font s15 anim">Already have a account?&nbsp;<Link to="/register" className='cfff'>Signup</Link></div>
                     </div>
-                    {/*<div className="blk flex aic">
+                    <div className="blk flex aic">
                         <div className="lbl font s15 anim">Or login with</div>
-                        <button className="cleanbtn link flex aic"><img src="/images/google-logo.svg"  className="img"/></button>
-                        <button className="cleanbtn link flex aic"><img src="/images/apple-logo.svg"  className="img"/></button>
-                    </div>*/}
+                        <a href="https://localpsyche.com:3000/auth/google" className="cleanbtn link flex aic"><img src="/images/google-logo.svg"  className="img"/></a>
+                        {/*<button className="cleanbtn link flex aic"><img src="/images/apple-logo.svg"  className="img"/></button>*/}
+                    </div>
                 </div>
             </div>
         </div> 

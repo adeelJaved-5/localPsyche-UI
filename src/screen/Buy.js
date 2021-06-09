@@ -5,6 +5,10 @@ import Header from "../components/Header"
 import Footer from "./Footer"
 import countries from "../countries.json" 
 
+import socketIOClient from "socket.io-client";
+import io from 'socket.io-client';
+const socket_io = io('ws://localpsyche.com:4001', {transports: ['websocket']})
+
 function Buy() { 
  
     const [dropCur, setDropCur] = useState(false);
@@ -49,7 +53,21 @@ function Buy() {
             limit: {from: "50,000", to: "988,000"},
         },
     ])
- 
+    
+
+    useEffect(() => {
+        //console.log(socket_io)
+        const socket = socketIOClient('ws://localpsyche.com:4001');
+        socket.emit("buyerData");
+        socket.on("topBuyers", (data) => {
+          console.log('socket:', data)  
+        });  
+        /*socket.emit("sellerData");
+        socket.on("topSellers", (data) => {
+            console.log(data)
+        });*/
+    })
+
     useEffect(()=>{
         _getAllOrder()
     },[country])
@@ -62,7 +80,7 @@ function Buy() {
             setDropCun(false);
         })  
     },[]);    
- 
+
     const _getAllOrder = () => {
         setLoading(true)
         axios.post(`${global.baseurl}:3000/allOrders`, {country: country.toString()})
@@ -93,7 +111,21 @@ function Buy() {
         })
     } 
 
-    console.log(allOrders)
+    //console.log(allOrders)
+
+    // Create WebSocket connection.
+    //const socket = new WebSocket('ws://exporterbd.com/');
+
+    // Connection opened
+    /*socket.addEventListener('buyerData', function (event) {
+        console.log(event)
+    });*/
+
+    /*const socket = io("ws://localpsyche.com:4001");
+        socket.on("connect", () => {
+        console.log(socket.connected); // true
+    });*/  
+
 
     return (
         <React.Fragment> 
@@ -109,7 +141,7 @@ function Buy() {
                                 <input 
                                     type="text" 
                                     className="input font s16 c000"
-                                    onChange={(e)=>setAmount(e.target.value.replace(/\D/g, ''))}
+                                    onChange={(e)=>setAmount(e.target.value.replace(/[^0-9\.]/g, ''))}
                                 />
                             </div>
 
@@ -214,10 +246,10 @@ function Buy() {
                                         <div className="lbl font s14 cfff">{item.payment}</div>
                                     </div>
                                     <div className="col flex flex-col">
-                                        <div className="lbl font s15 cfff">{item.price}</div>
+                                        <div className="lbl font s15 cfff">{item.amount}</div>
                                     </div>
                                     <div className="col flex flex-col">
-                                        <div className="lbl font s15 cfff">{item.amount}&nbsp;<span className="s11">{item.currency}</span>
+                                        <div className="lbl font s15 cfff">{item.price}&nbsp;<span className="s11">{item.currency}</span>
                                         </div> 
                                         <div className="txt font s13 b3 cfff">{`Limit: ${item.minAmount} to ${item.maxAmount}`}</div>
                                     </div>

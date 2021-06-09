@@ -4,15 +4,17 @@ import {Link} from 'react-router-dom'
 import Footer from "./Footer"
 import axios from "axios"
 import {Toast, LineLoader} from "../ui"
-import {Dialog, moment} from "../core";
+import {Dialog, focus, moment} from "../core";
 import {useDispatch, useSelector} from "react-redux"
 import Messenger from './Messenger'
 import StarRating from '../components/StarRating'
+import price from 'crypto-price'
 
 function BuyerSideOrder({match}) {
 
-    const [amt, setAmt] = useState('')
+    const [amt, setAmt] = useState(null)
     const [prc, setPrc] = useState('')
+    const [exchangeMode, setExchangeMode] = useState('coin-to-price')
     const [loading, setLoading] = useState(true)
     const [orderDetails, setOrderDetails] = useState()
     const [status, setStatus] = useState(null)
@@ -34,6 +36,35 @@ function BuyerSideOrder({match}) {
         _getBuyOrderDetails()
     },[])
 
+    useEffect(()=>{
+        if(exchangeMode == 'price-to-coin'){
+            if(prc != '' || prc != null){
+                setAmt('')
+                _getPriceToCoin()
+            }
+            if(prc == '' || prc == null){setAmt(0)}
+        } 
+        else {
+            if(amt != '' || amt != null){
+                setPrc('')
+                _getCoinToPrice()
+            }
+            if(amt == '' || amt == null){setPrc('')}
+        }
+    },[exchangeMode == 'price-to-coin' ? prc : amt])
+    
+    const _getCoinToPrice = () => {
+        if(orderDetails && amt){
+            setPrc(amt * orderDetails.price); 
+        }
+    }
+ 
+    const _getPriceToCoin = () => {
+        if(orderDetails){
+            setAmt((prc / orderDetails.price).toFixed(2))
+        }
+    }
+ 
     useEffect(()=>{
         if(orderDetails){
             orderDetails.status == 'complete' && setShowTradeComplete(true)
@@ -86,35 +117,43 @@ function BuyerSideOrder({match}) {
     }
 
     const _postSellOffer = () => {
-        setLoading(true)
-        const {price, country, amount, _id} = orderDetails
-        let _data = {
-            price: price,
-            country: country,
-            currency: orderDetails.currency,
-            amount: amount,  
-            email: user.email,
-            orderId: _id  
+        if(amt == '' || amt == null){
+            focus("._amt");
+            Toast.show({ html: "Coin required greater than zero."}, 5);
+        } else if (prc == '' || prc == null){
+            focus("._prc");
+            Toast.show({ html: "Price required greater than zero."}, 5);
+        } else { 
+            setLoading(true)
+            const {price, country, amount, _id} = orderDetails
+            let _data = {
+                price: price,
+                country: country,
+                currency: orderDetails.currency,
+                amount: amount,  
+                email: user.email,
+                orderId: _id  
+            }
+            axios.post(`${global.baseurl}:3000/postSellOffer`, _data, {
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization":  token
+                } 
+            })
+            .then((response) =>{
+                //console.log(response)
+                const {success, data} = response.data;
+                Toast.show({ html: data,  type: success ? 'ok' : 'error',  time: 5 });
+                _getStatus()
+                _getBuyOrderDetails()
+                setLoading(false) 
+            }) 
+            .catch ((error) => { 
+                console.log(error)
+                setLoading(false)
+                _getBuyOrderDetails()
+            }) 
         }
-        axios.post(`${global.baseurl}:3000/postSellOffer`, _data, {
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization":  token
-            } 
-        })
-        .then((response) =>{
-            //console.log(response)
-            const {success, data} = response.data;
-            Toast.show({ html: data,  type: success ? 'ok' : 'error',  time: 5 });
-            _getStatus()
-            _getBuyOrderDetails()
-            setLoading(false) 
-        }) 
-        .catch ((error) => { 
-            console.log(error)
-            setLoading(false)
-            _getBuyOrderDetails()
-        }) 
     }
      
     const _paid = () => {
@@ -277,13 +316,14 @@ function BuyerSideOrder({match}) {
     /* Rating Order */
     const _review = () => {
         setSubmitReviewLoading(true)
-        if(user.email == orderDetails.buyerId){
+        if(user.email == orderDetails.email){
             axios.post(`${global.baseurl}:3000/review`, 
             {
                 communication : rateCommunication,
-                trust : rateTrust,
+                trust : rateTrust, 
                 speed : rateSpeed,
                 amount: orderDetails.amount, 
+                currency: orderDetails.currency,
                 reviewer : user.email,
                 userId : orderDetails.user_name,
                 orderId : orderDetails._id,
@@ -309,37 +349,6 @@ function BuyerSideOrder({match}) {
                 _getBuyOrderDetails()
             }) 
         } 
-        /*&else if (user.email == orderDetails.email) {
-            axios.post(`${global.baseurl}:3000/review`, 
-            {
-                communication : rateCommunication,
-                trust : rateTrust,
-                speed : rateSpeed,
-                reviewer : user.email,
-                user : orderDetails.buyerId,
-                orderId : orderDetails._id,
-                status : 'sell',
-                notes: reviewNote
-            }, 
-            {
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization":  token
-                }  
-            })
-            .then((response) =>{
-                //console.log(response) 
-                const {success, data} = response.data;
-                Toast.show({ html: data,  type: success ? 'ok' : 'error',  time: 5 });
-                setSubmitReviewLoading(false)
-            }) 
-            .catch ((error) => { 
-                console.log(error)
-                setSubmitReviewLoading(false)
-            }) 
-        } else {
-            Toast.show({ html: "You are unable add review on this order.", time: 5})
-        }*/
     }  
 
     /* Get user Rating/Reviews */
@@ -361,13 +370,15 @@ function BuyerSideOrder({match}) {
                 setReviewsLoading(false)
             }
         } catch (error) {
-            //console.log(error);
+            console.log(error);
             setReviewsLoading(false)
         } 
     }
     
     console.log(orderDetails)
-console.log(status)
+    //console.log(status)
+    //console.log(reviews)
+
     return (
         <React.Fragment>
             <Header/>
@@ -399,15 +410,20 @@ console.log(status)
                                 </div>
                                 <div className="content flex flex-col">
                                     <div className="form flex">
-                                        <div className="lef flex flex-col">
+                                        <div className="form-lef flex flex-col">
                                             <div className="item">
                                                 <div className="lbl font s15 cfff">Coins</div>
                                                 <input 
                                                     type="text" 
-                                                    className="input font s15 c000"
+                                                    className="_amt input font s15 c000"
                                                     disabled={orderDetails.status == 'escrow' || orderDetails.status == 'paid' || orderDetails.status == 'complete'}
                                                     value={orderDetails.status == 'new' ? amt : orderDetails.escrowAmount}
-                                                    onChange={(e) => setAmt(e.target.value.replace(/\D/g, ''))}
+                                                    onChange={(e) => 
+                                                        {
+                                                            setAmt(e.target.value.replace(/[^0-9\.]/g, ''))
+                                                            setExchangeMode('coin-to-price')
+                                                            _getCoinToPrice()
+                                                        }}
                                                 /> 
                                             </div>
                                             <div className="item">
@@ -415,10 +431,14 @@ console.log(status)
                                                 <div className="input flex aic">
                                                     <input 
                                                         type="text" 
-                                                        className="amt font s15 c000"
+                                                        className="amt _prc font s15 c000"
                                                         disabled={orderDetails.status == 'escrow' || orderDetails.status == 'paid' || orderDetails.status == 'complete'}
                                                         value={orderDetails.status == 'new' ? prc : orderDetails.price}
-                                                        onChange={(e) => setPrc(e.target.value.replace(/\D/g, ''))}
+                                                        onChange={(e) => {
+                                                            setPrc(e.target.value.replace(/[^0-9\.]/g, ''))
+                                                            setExchangeMode('price-to-coin')
+                                                            _getPriceToCoin()
+                                                        }} 
                                                     /> 
                                                     <div className="unit font s15 c000">{orderDetails.currency}</div>  
                                                 </div>
@@ -433,27 +453,17 @@ console.log(status)
                                                 />
                                             </div>
                                             {
-                                                isUser ? 
+                                                isUser && orderDetails ? 
                                                 <>
                                                     {
-                                                        (orderDetails.email == user.email) ?
-                                                        <React.Fragment>
-                                                            {orderDetails.status == "escrow" && <div className="tt font s15 cfff">{`You have ${orderDetails.time_limit} mints to pay.`}</div>}
-                                                            <button 
-                                                                disabled={orderDetails.status != 'escrow'}
-                                                                button className={`button pay font s15 cfff anim ${orderDetails.status != 'escrow' && 'disabled'}`}
-                                                                onClick={() =>_paid()} 
-                                                            >Paid</button>
-                                                            {orderDetails.status == 'paid' && <div className='font s15 cfff'>Just waiting for Sell to Release the Payment.</div>}
-                                                        </React.Fragment> 
-                                                        :
+                                                        (orderDetails.status == 'new' || user.email != orderDetails.email) &&
                                                         <React.Fragment>
                                                             <button 
-                                                                disabled={orderDetails.status != 'new'} 
-                                                                className={`button font s15 cfff anim ${orderDetails.status != 'new' && 'disabled'}`} 
+                                                                disabled={(orderDetails.status != 'new') || (status == 'pending')} 
+                                                                className={`button font s15 cfff anim ${((orderDetails.status != 'new') || (status == 'pending')) && 'disabled'}`} 
                                                                 onClick={()=> _postSellOffer()}
                                                             >Sell</button>
-                                                            {(status == 'pending' && orderDetails.status == 'new') && <div className="font s15 cfff">Please wait unit seller have not accept your offer.</div>}
+                                                            {(status == 'pending' && orderDetails.status == 'new') && <div className="font s15 cfff">Please wait unit buyer have not accept your offer.</div>}
                                                         </React.Fragment>
                                                     }
                                                 </>
@@ -463,20 +473,10 @@ console.log(status)
                                                     <div className="font s15 cfff">Sign up first and continue the trade.</div>
                                                 </>
                                             }
-                                            {   (orderDetails.sellerId == user.email && orderDetails.status == 'paid') &&
-                                                <React.Fragment>
-                                                    {orderDetails.status == 'paid' && <div className="msg font s15 cfff">The payment has been made.</div>}
-                                                    <button  
-                                                        disabled={orderDetails.status != 'paid'}
-                                                        className={`button rels font s15 cfff anim ${orderDetails.status != 'paid' && 'disabled'}`}
-                                                        onClick={() => _release()}
-                                                    >Release</button>
-                                                </React.Fragment>
-                                            }
                                             <div className={`er font s15 cfff anim ${(amt < orderDetails.minAmount && amt > 0) ? 'show' : 'hide'}`}>{`The minimum coin you can sell from this ad is ${orderDetails.minAmount} ${orderDetails.currency}.`}</div>
                                             <div className={`er font s15 cfff anim ${(amt > orderDetails.maxAmount && amt > 0) ? 'show' : 'hide'}`}>{`The biggest coin you can sell from this ad is ${orderDetails.maxAmount} ${orderDetails.currency}.`}</div>
-                                        </div> 
-                                        <div className="rig flex flex-col">
+                                        </div>  
+                                        <div className="rig flex flex-col"> 
                                             <div className="item textarea flex flex-col">
                                                 <div className="lbl font s15 cfff">Message</div>
                                                 <div className='msg-container'>
@@ -485,25 +485,55 @@ console.log(status)
                                             </div>  
                                         </div>
                                     </div>
-                                    {  (orderDetails.status == 'escrow' || orderDetails.status == 'paid') &&
-                                        <div className="ftr flex aic">
-                                            <button 
-                                                disabled={orderDetails.status == 'paid'}
-                                                className={`button font s15 cfff anim ${orderDetails.status == 'paid' && 'disabled'}`} 
-                                                onClick={() => _cancelTrade()}
-                                            >Cancel trade</button>
-                                            <button  
-                                                disabled={orderDetails.status == 'complete'}
-                                                className={`button font s15 cfff anim ${orderDetails.status == 'complete' && 'disabled'}`}
-                                                onClick={_report}
-                                            >Report/Appeal</button>
-                                        </div>
-                                    }
+                                    <div className="form-lef">
+                                        { isUser == true && orderDetails ? 
+                                            <>
+                                                {user.email == orderDetails.email && (orderDetails.status == 'escrow' || orderDetails.status == 'paid') &&
+                                                    <React.Fragment>
+                                                        {orderDetails.status == "escrow" && <div className="tt font s15 cfff">{`You have ${orderDetails.time_limit} mints to pay.`}</div>}
+                                                        <button 
+                                                            disabled={orderDetails.status != 'escrow'}
+                                                            button className={`button pay font s15 cfff anim ${orderDetails.status != 'escrow' && 'disabled'}`}
+                                                            onClick={() =>_paid()} 
+                                                        >Paid</button>
+                                                    </React.Fragment>
+                                                }
+                                                {orderDetails.status == 'paid' && user.email == orderDetails.email &&  <div className='font s15 cfff'>Just waiting for Sell to Release the Payment.</div>}
+                                                {
+                                                    (orderDetails.sellerId == user.email && orderDetails.status == 'paid') &&
+                                                    <React.Fragment>
+                                                        {orderDetails.status == 'paid' && <div className="msg font s15 cfff">The payment has been made.</div>}
+                                                        <button  
+                                                            disabled={orderDetails.status != 'paid'}
+                                                            className={`button rels font s15 cfff anim ${orderDetails.status != 'paid' && 'disabled'}`}
+                                                            onClick={() => _release()}
+                                                        >Release</button>
+                                                    </React.Fragment>
+                                                }
+                                                {  (orderDetails.status == 'escrow' || orderDetails.status == 'paid') &&
+                                                    <div className="ftr flex aic">
+                                                        <button 
+                                                            disabled={orderDetails.status == 'paid'}
+                                                            className={`button font s15 cfff anim ${orderDetails.status == 'paid' && 'disabled'}`} 
+                                                            onClick={() => _cancelTrade()}
+                                                        >Cancel trade</button>
+                                                        <button  
+                                                            disabled={orderDetails.status == 'complete'}
+                                                            className={`button font s15 cfff anim ${orderDetails.status == 'complete' && 'disabled'}`}
+                                                            onClick={_report}
+                                                        >Report/Appeal</button>
+                                                    </div>
+                                                }
+                                            </> 
+                                            :
+                                            <div className="null"></div>
+                                        }
+                                    </div>
                                 </div>
                             </div>
         
                             {/* Trade Completed Block */}
-                            {(user.email == orderDetails.buyerId) && showTradeComplete &&
+                            {(user.email == orderDetails.email) && showTradeComplete &&
                                 <div className="trd-cplt flex flex-col rel">
                                     {submitReviewLoading &&
                                         <div className="loading cover abs fill flex aic">
@@ -539,8 +569,8 @@ console.log(status)
                                 </div>
                             }
                         
-                        {/* Reviews Block */}
-                        <div className="reviews-bl flex flex-col">
+                            {/* Reviews Block */}
+                            <div className="reviews-bl flex flex-col">
                             <div className="hdr flex aic">
                                 <div className="tit font s24 cfff">Reviews</div>
                             </div>
