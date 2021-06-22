@@ -4,6 +4,7 @@ import axios from "axios"
 import Header from "../components/Header"
 import Footer from "./Footer"
 import countries from "../countries.json" 
+import { Helmet } from "react-helmet";
 
 function Sell() { 
  
@@ -95,6 +96,10 @@ function Sell() {
 
     return (
         <React.Fragment> 
+            <Helmet>
+                <title>Buy and sell digital currency, Psyche coins and best stablecoin</title>
+                <meta name="description" content="Sell Psyche, USDT, stablecoins and other digital currencies globally. Zero Transaction Fee. Start trading now!" />
+            </Helmet>
             <Header/>
             <div className="buy-p">
                 <div className="wrapper flex flex-col">
@@ -103,7 +108,7 @@ function Sell() {
                         <div className="label font s40 b3 cfff">Sell Psyche</div>
                         <div className="form flex aic">
                             <div className="item flex flex-col">
-                                <div className="lbl font s16 cfff">Coin</div>
+                                <div className="lbl font s16 cfff">Amount</div>
                                 <input 
                                     type="text" 
                                     className="input font s16 c000"

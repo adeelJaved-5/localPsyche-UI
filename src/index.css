@@ -11,3 +11,44 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+.reset_jds{
+  display: flex ;
+  padding-left: 20px;
+  padding-right: 20px;
+  align-items: center;
+  text-align: center;
+  font-size: 20px;
+}
+.btn_drop{
+  background-color: transparent;
+  border-color: transparent;
+  color: #fff;
+}
+.dropdown-menu{
+  background-color: rgb(8, 37, 74) !important;
+}
+.dropdown-item{
+  color: #fff!important;
+}
+.dropdown-item:hover{
+  color: #000!important;
+}
+.marque{
+  color: #fff;
+  background-color: #08254a96;
+}
+
+.coming_card{
+  height: 400px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #08254A;;
+  margin-top: 30px;
+  margin-bottom: 30px;
+  border-radius: 12px;
+}
+.coming_card h1{
+  color: #fff;
+  font-size: 30px;
+}

@@ -1,6 +1,8 @@
 import React,{useState,useEffect} from 'react';
 import {Link} from 'react-router-dom';
 import axios from "axios";
+import QRCode from 'qrcode'
+import SpeakEasy from 'speakeasy'
 import {Toast, LineLoader} from "../ui";
 import {
     focus,
@@ -15,12 +17,28 @@ function Signin(props) {
 
     const [check, setCheckbox] = useState(false)
     const [email, setEmail] = useState('')
+    const [verification, setverification] = useState('')
     const [password, setPassword] = useState('')
     const [loading, setLoading] = useState(false)
+    const [fa, setfa] = useState(true)
+    const [apitoken, setapitoken] = useState('')
+
+    
 
     const dispatch = useDispatch()
+    
 
     useEffect(() => {
+        const secret = SpeakEasy.generateSecret({
+            name: email
+        });
+
+        localStorage.setItem("secret", JSON.stringify(secret));
+
+        QRCode.toDataURL(secret.otpauth_url, function(err,data){
+            localStorage.setItem("imgURL", data.toString());
+        })
+
         if(localStorage.getItem('loginInfo'))
         {
             const logininfo = (localStorage.getItem('loginInfo'))
@@ -78,20 +96,19 @@ function Signin(props) {
             focus("._password");
             Toast.show({ html: "Please enter password email", time: 5 });
         } else {
-            setLoading(true)  
+            setLoading(true) 
             axios.post(
                 `${global.baseurl}:8000/api/auth/sign-in`, {email: email, key: password})
                 .then((response) =>{ 
                     //console.log(response) 
                     setLoading(false)
                     const {success, message, token} = response.data;
-                    Toast.show({ html: "User Login Successfully", type: success ? "ok" : 'error', time: 5 }); 
+                    setapitoken(token)
                     if(success){
-                        _getUserInfo(token)
-                        localStorage.setItem("key", token);
-                        dispatch({type: 'IS_USER', payload: true})
-                        props.history.push("/")
-                        if(check){localStorage.setItem('loginInfo', JSON.stringify({email, password}))}
+                        setTimeout(() => {
+                            setLoading(false)
+                            setfa(false)
+                        }, 1000);
                     }    
                 })  
                 .catch ((error) => {  
@@ -100,8 +117,30 @@ function Signin(props) {
                     const {success, message} = error.response.data;
                     Toast.show({ html: message, type: success ? "warn" : 'error', time: 6 });
                 })
+            
         } 
     } 
+
+    const _after2fa = () => {
+        const secretobj = localStorage.getItem('secret')
+        const secret = JSON.parse(secretobj)
+        var verified = SpeakEasy.totp.verify({
+            secret: secret.ascii,
+            encoding: 'ascii',
+            token: verification,
+        })
+        if(verified){
+            _getUserInfo(apitoken)
+            localStorage.setItem("key", apitoken);
+            dispatch({type: 'IS_USER', payload: true})
+            props.history.push("/")
+            if(check){localStorage.setItem('loginInfo', JSON.stringify({email, password}))}
+            Toast.show({ html: "Login Successfully", type:'success', time: 6 });
+        }  
+        else{
+            Toast.show({ html: "Verification Code is invalid !!", type:'error', time: 6 });
+        }  
+    }
   
     return (
         <div className="sign-p login rel flex aic">
@@ -119,55 +158,80 @@ function Signin(props) {
                         <img src="/images/logo.svg" className="logo" />
                     </div>
                 </div> 
-                <div className="form">
-                    <div className="item rel">
-                        <input 
-                            type="text" 
-                            placeholder="Email"
-                            className="cleanbtn _email iput font s15 cfff anim"
-                            value={email}
-                            onChange={e => setEmail(e.target.value)}
-                            onKeyUp={(e)=>{keyupListener(e, keyCodes.ENTER, ()=>{_login()})}} 
-                        /> 
-                    </div>
-                    <div className="item rel">
-                        <input 
-                            type="password" 
-                            placeholder="Password"
-                            className="cleanbtn _password iput font s15 cfff anim"
-                            value={password}
-                            onChange={e => setPassword(e.target.value)}
-                            onKeyUp={(e)=>{keyupListener(e, keyCodes.ENTER, ()=>{_login()})}} 
-                        /> 
-                    </div>
-                    <div className="item flex aic">
-                        <div className="box flex aic">
-                            <button 
-                                className={`checkbox cleanbtn ${check === true ? "on icon-check" : ""}`} 
-                                onClick = {()=>{_check()}}
-                            />
-                            <div className="lbl font s14 c333">Remember Me</div>
+                {fa
+                    ?<div className="form">
+                        <div className="item rel">
+                            <input 
+                                type="text" 
+                                placeholder="Email"
+                                className="cleanbtn _email iput font s15 cfff anim"
+                                value={email}
+                                onChange={e => setEmail(e.target.value)}
+                                onKeyUp={(e)=>{keyupListener(e, keyCodes.ENTER, ()=>{_login()})}} 
+                            /> 
                         </div>
-                        <Link to="/" className="lin font s14">Forgot Password or Email</Link>
+                        <div className="item rel">
+                            <input 
+                                type="password" 
+                                placeholder="Password"
+                                className="cleanbtn _password iput font s15 cfff anim"
+                                value={password}
+                                onChange={e => setPassword(e.target.value)}
+                                onKeyUp={(e)=>{keyupListener(e, keyCodes.ENTER, ()=>{_login()})}} 
+                            /> 
+                        </div>
+                        <div className="item flex aic">
+                            <div className="box flex aic">
+                                <button 
+                                    className={`checkbox cleanbtn ${check === true ? "on icon-check" : ""}`} 
+                                    onClick = {()=>{_check()}}
+                                />
+                                <div className="lbl font s14 c333">Remember Me</div>
+                            </div>
+                            <Link to="/forgot-password" className="lin font s14">Forgot Password</Link>
+                        </div>
+                        <div className="ftr flex aic">
+                            <button 
+                                className="button font s15 cfff anim" 
+                                onClick={()=>_login()}
+                                onKeyUp={(e)=>{keyupListener(e, keyCodes.ENTER, ()=>{_login()})}} 
+                            >Sign In</button>  
+                        </div>
+                        <div className='blk flex aic'>
+                            <div className="lbl font s15 anim">Already have a account?&nbsp;<Link to="/register" className='cfff'>Signup</Link></div>
+                        </div>
+                        <div className="blk flex aic">
+                            <div className="lbl font s15 anim">Or login with</div>
+                            <a href="https://localpsyche.com:3000/auth/google" className="cleanbtn link flex aic"><img src="/images/google-logo.svg"  className="img"/></a>
+                            {/*<button className="cleanbtn link flex aic"><img src="/images/apple-logo.svg"  className="img"/></button>*/}
+                        </div>
                     </div>
-                    <div className="ftr flex aic">
-                        <button 
-                            className="button font s15 cfff anim" 
-                            onClick={()=>_login()}
-                            onKeyUp={(e)=>{keyupListener(e, keyCodes.ENTER, ()=>{_login()})}} 
-                        >Sign In</button>  
+                    :<div className="text-center pt-5">
+                        <img className="w-75" src={localStorage.getItem('imgURL')} />
+                        <div className="form">
+                            <div className="item rel">
+                                <input 
+                                    type="text" 
+                                    placeholder="Enter 6 digit Verification code"
+                                    className="cleanbtn _email iput font s15 cfff anim"
+                                    value={verification}
+                                    onChange={e => setverification(e.target.value)}
+                                    onKeyUp={(e)=>{keyupListener(e, keyCodes.ENTER, ()=>{_after2fa()})}} 
+                                /> 
+                            </div>
+                            <div className="ftr flex aic">
+                                <button 
+                                    className="button font s15 cfff anim" 
+                                    onClick={()=>_after2fa()}
+                                >Verify</button>  
+                            </div>
+                        </div>
                     </div>
-                    <div className='blk flex aic'>
-                        <div className="lbl font s15 anim">Already have a account?&nbsp;<Link to="/register" className='cfff'>Signup</Link></div>
-                    </div>
-                    <div className="blk flex aic">
-                        <div className="lbl font s15 anim">Or login with</div>
-                        <a href="https://localpsyche.com:3000/auth/google" className="cleanbtn link flex aic"><img src="/images/google-logo.svg"  className="img"/></a>
-                        {/*<button className="cleanbtn link flex aic"><img src="/images/apple-logo.svg"  className="img"/></button>*/}
-                    </div>
-                </div>
+                }
+                
             </div>
-        </div> 
+        </div>
+        
     );
 }
 

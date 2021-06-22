@@ -11,15 +11,16 @@ import {
 
 function Signup(props) {
 
-    const [userId, setUserId] = useState(null)
-    const [username, setUsername] = useState(null)
-    const [email, setEmail] = useState(null)
-    const [code, setCode] = useState(null)
-    const [password, setPassword] = useState(null)
-    const [confirmPass, setConfirmPass] = useState(null)
-    const [pin, setPin] = useState(null)
-    const [confirmPin, setConfirmPin] = useState(null)
+    const [userId, setUserId] = useState('')
+    const [username, setUsername] = useState('')
+    const [email, setEmail] = useState('')
+    const [code, setCode] = useState('')
+    const [password, setPassword] = useState('')
+    const [confirmPass, setConfirmPass] = useState('')
+    const [pin, setPin] = useState('')
+    const [confirmPin, setConfirmPin] = useState('')
     const [loading, setLoading] = useState(false)
+    const [cond, setcond] = useState(false)
 
     /* Send Code */
     const _sendCode = () => {
@@ -55,13 +56,7 @@ function Signup(props) {
          else if(email == null){
             focus("._email");
             Toast.show({ html: "Please enter your email.", time: 5 });
-        } else if (!isValidEmail(email)){
-            focus("._email"); 
-            Toast.show({ html: "Please enter valid email.", time: 5 }); 
-        } else if (code == null){ 
-            focus("._code");  
-            Toast.show({ html: "Please enter you confirmation code.", time: 5 }); 
-        } else if (password == null){
+        }else if (password == null){
             focus("._password");
             Toast.show({ html: "Please enter password.", time: 5 });
         } else if (confirmPass == null){
@@ -100,6 +95,35 @@ function Signup(props) {
             })
         }
     } 
+
+    const _verify = () => {
+        if (!isValidEmail(email)){
+            focus("._email"); 
+            Toast.show({ html: "Please enter valid email.", time: 5 }); 
+        } else if (code == null){ 
+            focus("._code");  
+            Toast.show({ html: "Please enter you confirmation code.", time: 5 }); 
+        } else {
+            
+            axios.post( 
+                `${global.baseurl}:8000/api/auth/confirmCode`, 
+                {   
+                    email: email, 
+                    email_confirm_code: code
+                })
+                .then((response) =>{
+                    console.log(response)
+                    setcond(true)
+                    setLoading(false)
+                    Toast.show({ html: response.data.message, type: "ok", time: 5 }); 
+                }) 
+                .catch ((error) => {  
+                    setLoading(false)
+                    console.log(error.response)  
+                    Toast.show({ html: error.response.data.message, time: 6 });
+                })
+        }
+    }
  
     return (
         <div className="sign-p rel flex aic">
@@ -118,87 +142,96 @@ function Signup(props) {
                     </div>
                     <Link to="/login" className="lin font s15 cfff anim">Login</Link>
                 </div>
-                <div className="form">
-                    <div className="item rel">
-                        <input 
-                            type="text" 
-                            placeholder="Email"
-                            className="cleanbtn _email iput font s15 cfff anim"
-                            value={email}
-                            onChange={e => setEmail(e.target.value)}
-                        /> 
-                        <button className="btn font s14 cfff anim" onClick={()=> _sendCode()}>Send code</button>
+                {cond
+                    ?<div className="form">
+                        
+                        <div className="item rel">
+                            <input  
+                                type="text" 
+                                placeholder="User ID"
+                                className="cleanbtn _username iput font s15 cfff anim"
+                                value={userId}
+                                onChange={e => setUserId(e.target.value)}
+                            />
+                        </div>
+                        <div className="item rel">
+                            <input  
+                                type="text" 
+                                placeholder="Full name ( As per government ID )"
+                                className="cleanbtn _username iput font s15 cfff anim"
+                                value={username}
+                                onChange={e => setUsername(e.target.value)}
+                            />
+                        </div>
+                        
+                        <div className="item rel">
+                            <input 
+                                type="password" 
+                                placeholder="Password"
+                                className="cleanbtn _password iput font s15 cfff anim"
+                                value={password}
+                                onChange={e => setPassword(e.target.value)}
+                            />
+                        </div>
+                        <div className="item rel">
+                            <input 
+                                type="password" 
+                                placeholder="Confim Password"
+                                className="cleanbtn _confirmPass iput font s15 cfff anim"
+                                value={confirmPass}
+                                onChange={e => setConfirmPass(e.target.value)}
+                            />
+                        </div>
+                        
+                        <div className="item rel">
+                            <input 
+                                type="password" 
+                                placeholder="PIN"
+                                className="cleanbtn _pin iput font s15 cfff anim"
+                                value={pin}
+                                onChange={e => setPin(e.target.value)}
+                            />
+                        </div>
+                        <div className="item rel">
+                            <input 
+                                type="password" 
+                                placeholder="Confirm PIN"
+                                className="cleanbtn _confirmPin iput font s15 cfff anim"
+                                value={confirmPin}
+                                onChange={e => setConfirmPin(e.target.value)}
+                            />
+                        </div>
+                        
+                        <div className="ftr flex aic">
+                            <button className="button font s15 cfff anim" onClick={_register}>Register</button>
+                        </div>
+                    </div> 
+                    :<div className="form">
+                        <div className="item rel">
+                            <input 
+                                type="text" 
+                                placeholder="Email"
+                                className="cleanbtn _email iput font s15 cfff anim"
+                                value={email}
+                                onChange={e => setEmail(e.target.value)}
+                            /> 
+                            <button className="btn font s14 cfff anim" onClick={()=> _sendCode()}>Send code</button>
+                        </div>
+                        <div className="item rel">
+                            <input  
+                                type="text" 
+                                placeholder="Code"
+                                className="cleanbtn _code iput font s15 cfff anim"
+                                value={code}
+                                onChange={e => setCode(e.target.value)}
+                            />
+                        </div>
+
+                        <div className="ftr flex aic">
+                            <button className="button font s15 cfff anim" onClick={_verify}>Verify</button>
+                        </div>
                     </div>
-                    <div className="item rel">
-                        <input  
-                            type="text" 
-                            placeholder="User ID"
-                            className="cleanbtn _username iput font s15 cfff anim"
-                            value={userId}
-                            onChange={e => setUserId(e.target.value)}
-                        />
-                    </div>
-                    <div className="item rel">
-                        <input  
-                            type="text" 
-                            placeholder="Full name (visible to everyone)"
-                            className="cleanbtn _username iput font s15 cfff anim"
-                            value={username}
-                            onChange={e => setUsername(e.target.value)}
-                        />
-                    </div>
-                    <div className="item rel">
-                        <input  
-                            type="text" 
-                            placeholder="Code"
-                            className="cleanbtn _code iput font s15 cfff anim"
-                            value={code}
-                            onChange={e => setCode(e.target.value)}
-                        />
-                    </div>
-                    
-                    <div className="item rel">
-                        <input 
-                            type="password" 
-                            placeholder="Password"
-                            className="cleanbtn _password iput font s15 cfff anim"
-                            value={password}
-                            onChange={e => setPassword(e.target.value)}
-                        />
-                    </div>
-                    <div className="item rel">
-                        <input 
-                            type="password" 
-                            placeholder="Confim Password"
-                            className="cleanbtn _confirmPass iput font s15 cfff anim"
-                            value={confirmPass}
-                            onChange={e => setConfirmPass(e.target.value)}
-                        />
-                    </div>
-                    
-                    <div className="item rel">
-                        <input 
-                            type="password" 
-                            placeholder="PIN"
-                            className="cleanbtn _pin iput font s15 cfff anim"
-                            value={pin}
-                            onChange={e => setPin(e.target.value)}
-                        />
-                    </div>
-                    <div className="item rel">
-                        <input 
-                            type="password" 
-                            placeholder="Confirm PIN"
-                            className="cleanbtn _confirmPin iput font s15 cfff anim"
-                            value={confirmPin}
-                            onChange={e => setConfirmPin(e.target.value)}
-                        />
-                    </div>
-                    
-                    <div className="ftr flex aic">
-                        <button className="button font s15 cfff anim" onClick={_register}>Register</button>
-                    </div>
-                </div> 
+                }
             </div>
         </div> 
     );

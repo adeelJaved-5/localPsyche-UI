@@ -4,6 +4,7 @@ import axios from "axios"
 import Header from "../components/Header"
 import Footer from "./Footer"
 import countries from "../countries.json" 
+import { Helmet } from "react-helmet";
 
 import socketIOClient from "socket.io-client";
 import io from 'socket.io-client';
@@ -56,17 +57,19 @@ function Buy() {
     
 
     useEffect(() => {
-        //console.log(socket_io)
+        // console.log(socket_io)
         const socket = socketIOClient('ws://localpsyche.com:4001');
+        // console.log(socket)
         socket.emit("buyerData");
         socket.on("topBuyers", (data) => {
-          console.log('socket:', data)  
-        });  
+        //   console.log('socket:', data)  
+        }); 
         /*socket.emit("sellerData");
         socket.on("topSellers", (data) => {
             console.log(data)
         });*/
     })
+     
 
     useEffect(()=>{
         _getAllOrder()
@@ -129,6 +132,10 @@ function Buy() {
 
     return (
         <React.Fragment> 
+            <Helmet>
+                <title>Buy and sell digital currency, Psyche coins and best stablecoin</title>
+                <meta name="description" content="Buy and sell digital currency Psyche, USDT and other currencies in any currency globally, Psyche coins and best stablecoin. Start trading now!" />
+            </Helmet>
             <Header/>
             <div className="buy-p">
                 <div className="wrapper flex flex-col">
@@ -137,7 +144,7 @@ function Buy() {
                         <div className="label font s40 b3 cfff">Buy Psyche</div>
                         <div className="form flex aic">
                             <div className="item flex flex-col">
-                                <div className="lbl font s16 cfff">Coin</div>
+                                <div className="lbl font s16 cfff">Amount</div>
                                 <input 
                                     type="text" 
                                     className="input font s16 c000"
@@ -214,81 +221,105 @@ function Buy() {
                                     
                     {/* Trader List Block */}
                     <div className="trds-bl flex flex-col">
-                    <div className="table">
-                        <div className="hdr flex aic">
-                            <div className="col flex aic">
-                                <div className="circle hid" />
-                                <div className="font s16 cfff">Trader</div>
-                            </div>
-                            <div className="col flex aic"><div className="font s16 cfff">Payment</div></div>
-                            <div className="col flex aic"><div className="font s16 cfff">Available</div></div>
-                            <div className="col flex aic"><div className="font s16 cfff">Price</div></div>
+                        <div class="table-responsive">
+                            <table class="table text-white">
+                                <thead>
+                                    <tr>
+                                        <th scope="col" className="text-left pl-5">Trader</th>
+                                        <th scope="col">Payment</th>
+                                        <th scope="col">Available</th>
+                                        <th scope="col">Price</th>
+                                        <th scope="col"></th>
+                                    </tr>
+                                </thead>
+                                    { 
+                                        loading == false ? (allOrders && allOrders.length > 0) ?
+                                        allOrders.map( (item,index) => (  
+                                        <tbody key={index}>
+                                            <tr>
+                                                <td className="profile_td">
+                                                    <div className="col flex aic">
+                                                        <div className={`circle Top trader`} />
+                                                        <div className="flex flex-col">
+                                                            <div className="lbl font s15 cfff flex aic">
+                                                                <span>Top trader</span>&nbsp;&nbsp;
+                                                                <div className="online" />
+                                                            </div>
+                                                            <div className="flex aic">
+                                                                <div className="font s12 cfff">{`125 orders`}</div>&nbsp;&nbsp;
+                                                                <div className="font s12 cfff">{`100%`}</div>&nbsp;&nbsp;
+                                                                <div className="font s12 cfff">{`4.9 Trust`}</div>
+                                                            </div>
+                                                        </div>
+                                                    </div> 
+                                                </td>
+                                                <td className="w-25">{item.payment}</td>
+                                                <td>{item.amount}</td>
+                                                <td>{item.price}&nbsp;<span className="s11">{item.currency}</span></td>
+                                                <td><Link to={`/buyer-order/${item._id}`} className="btn btn-primary px-4">Buy</Link></td>
+                                            </tr>
+                                        </tbody>
+                                    ))
+                                    :   
+                                    <div className="d-block text-center">
+                                        <div className="font s16 cfff">Opps! Result not Found.</div>
+                                    </div>
+                                    :
+                                    <React.Fragment>
+                                        <tbody>
+                                            <tr>
+                                                <td className="my-3">
+                                                    <div className="row flex">
+                                                        <div className="col holder" />
+                                                        <div className="col holder" />
+                                                        <div className="col holder" />
+                                                        <div className="col holder" />
+                                                        <div className="col holder" />
+                                                    </div> 
+                                                </td>
+                                                <td className="my-3">
+                                                    <div className="row flex">
+                                                        <div className="col holder" />
+                                                        <div className="col holder" />
+                                                        <div className="col holder" />
+                                                        <div className="col holder" />
+                                                        <div className="col holder" />
+                                                    </div> 
+                                                </td>
+                                                <td className="my-3">
+                                                    <div className="row flex">
+                                                        <div className="col holder" />
+                                                        <div className="col holder" />
+                                                        <div className="col holder" />
+                                                        <div className="col holder" />
+                                                        <div className="col holder" />
+                                                    </div> 
+                                                </td>
+                                                <td className="my-3">
+                                                    <div className="row flex">
+                                                        <div className="col holder" />
+                                                        <div className="col holder" />
+                                                        <div className="col holder" />
+                                                        <div className="col holder" />
+                                                        <div className="col holder" />
+                                                    </div> 
+                                                </td>
+                                                <td className="my-3">
+                                                    <div className="row flex">
+                                                        <div className="col holder" />
+                                                        <div className="col holder" />
+                                                        <div className="col holder" />
+                                                        <div className="col holder" />
+                                                        <div className="col holder" />
+                                                    </div> 
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </React.Fragment>
+                                }
+                            </table>
                         </div>
-                        { 
-                            loading == false ? (allOrders && allOrders.length > 0) ?
-                            allOrders.map( (item,index) => (  
-                                <div key={index} className="row flex">
-                                    <div className="col flex aic">
-                                        <div className={`circle Top trader`} />
-                                        <div className="flex flex-col">
-                                            <div className="lbl font s15 cfff flex aic">
-                                                <span>Top trader</span>&nbsp;&nbsp;
-                                                <div className="online" />
-                                            </div>
-                                            <div className="flex aic">
-                                                <div className="font s12 cfff">{`125 orders`}</div>&nbsp;&nbsp;
-                                                <div className="font s12 cfff">{`100%`}</div>&nbsp;&nbsp;
-                                                <div className="font s12 cfff">{`4.9 Trust`}</div>
-                                            </div>
-                                        </div>
-                                    </div>  
-                                    <div className="col flex flex-col">
-                                        <div className="lbl font s14 cfff">{item.payment}</div>
-                                    </div>
-                                    <div className="col flex flex-col">
-                                        <div className="lbl font s15 cfff">{item.amount}</div>
-                                    </div>
-                                    <div className="col flex flex-col">
-                                        <div className="lbl font s15 cfff">{item.price}&nbsp;<span className="s11">{item.currency}</span>
-                                        </div> 
-                                        <div className="txt font s13 b3 cfff">{`Limit: ${item.minAmount} to ${item.maxAmount}`}</div>
-                                    </div>
-                                    <div className="actions flex aic">
-                                        <Link to={`/buyer-order/${item._id}`} className="button font s15 cfff anim">Buy</Link>
-                                    </div>
-                                </div>
-                            ))
-                            :
-                            <div className="empty-sec flex flex-col aic">
-                                <div className="font s16 cfff">Opps! Result not Found.</div>
-                            </div>
-                            :
-                            <React.Fragment>
-                                <div className="row flex">
-                                    <div className="col holder" />
-                                    <div className="col holder" />
-                                    <div className="col holder" />
-                                    <div className="col holder" />
-                                    <div className="col holder" />
-                                </div> 
-                                <div className="row flex">
-                                    <div className="col holder" />
-                                    <div className="col holder" />
-                                    <div className="col holder" />
-                                    <div className="col holder" />
-                                    <div className="col holder" />
-                                </div>
-                                <div className="row flex">
-                                    <div className="col holder" />
-                                    <div className="col holder" />
-                                    <div className="col holder" />
-                                    <div className="col holder" />
-                                    <div className="col holder" />
-                                </div>
-                            </React.Fragment>
-                        }
                     </div>
-                </div>
                 </div>  
             </div>
             <Footer/>

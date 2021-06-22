@@ -384,14 +384,14 @@ function BuyerSideOrder({match}) {
             <Header/>
             <div className="order-p sell-sid">
                 <div className="wrapper flex flex-col">
-                    <div className="title flex aic"> <div className="font s32 black">Order: 250</div></div>
+                    <div className="title flex aic"> <div className="font s32 black">Order: {orderDetails._id}</div></div>
                     {loading == false ? orderDetails &&
                         <React.Fragment>
                             <div className="section rel">
                                 <div className="hdr flex aic">
                                     <div className="lef flex flex-col">
-                                        <div className="lbl font s32 cfff">Buyer</div>
-                                        <div className="nam font s32 cfff">William</div>
+                                        <div className="lbl font s32 cfff">{orderDetails.user_name}</div>
+                                        {/* <div className="nam font s32 cfff">William</div> */}
                                         <div className="flex aic">
                                             <div className="font s12 cfff">{`125 orders`}</div>&nbsp;&nbsp;
                                             <div className="font s12 cfff">{`100%`}</div>&nbsp;&nbsp;
@@ -399,8 +399,8 @@ function BuyerSideOrder({match}) {
                                         </div>
                                     </div>
                                     <div className="rig flex flex-col">
-                                        <div className="lbl font s32 cfff">Seller</div>
-                                        <div className="nam font s32 cfff">X trader</div>
+                                        <div className="lbl font s32 cfff">{user.userID}</div>
+                                        {/* <div className="nam font s32 cfff">X trader</div> */}
                                         <div className="flex aic">
                                             <div className="font s12 cfff">{`125 orders`}</div>&nbsp;&nbsp;
                                             <div className="font s12 cfff">{`100%`}</div>&nbsp;&nbsp;

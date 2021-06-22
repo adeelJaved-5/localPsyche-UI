@@ -1,6 +1,10 @@
 import React,{useState, useEffect} from 'react'
 import {BrowserRouter, Switch, Route} from "react-router-dom"
 import axios from "axios"
+import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
+import 'jquery';
+import 'popper.js';
+import '../node_modules/bootstrap/dist/js/bootstrap.js';
 
 // css
 import "./css/App.scss"
@@ -14,17 +18,25 @@ import BuyerSideOrder from "./screen/BuyerSideOrder"
 import SellerSideOrder from "./screen/SellerSideOrder"
 import Signup from "./screen/Signup"
 import Signin from "./screen/Signin"
+import Forgot from "./screen/Forgot"
+import Reset from "./screen/Reset"
 import PageNotFound from "./screen/PageNotFound"
 import PrivacyPolicy from "./screen/PrivacyPolicy"
 import TermsConditions from "./screen/TermsConditions"
 import Setting from "./screen/Setting"
 import Kyc from "./screen/Kyc"
+import ComingSoon from "./screen/ComingSoon"
+import ReactGA from 'react-ga';
+
 
 import {useDispatch, useSelector} from 'react-redux'
 
 global.baseurl = "https://localpsyche.com";
 
 function App(){
+
+  const TRACKING_ID = "UA-184573742-1"; 
+  ReactGA.initialize(TRACKING_ID);
 
   const [loading, setLoading] = useState(true)
   var token = localStorage.getItem("key");
@@ -79,6 +91,7 @@ function App(){
               <Route exact path="/seller-order/:id" component={SellerSideOrder} /> 
               <Route exact path="/privacy-policy" component={PrivacyPolicy} /> 
               <Route exact path="/terms-conditions" component={TermsConditions} /> 
+              <Route exact path="/coming-soon" component={ComingSoon} /> 
               <Route component={PageNotFound} />
             </Switch>
             :  
@@ -87,6 +100,8 @@ function App(){
               <Route exact path="/buyer-order/:id" component={BuyerSideOrder} /> 
               <Route exact path="/login" component={Signin} />  
               <Route exact path="/register" component={Signup} />
+              <Route exact path="/forgot-password" component={Forgot} />
+              <Route exact path="/reset-password/:id" component={Reset} />
               <Route exact path="/privacy-policy" component={PrivacyPolicy} />
               <Route exact path="/terms-conditions" component={TermsConditions} />
               <Route component={PageNotFound} />

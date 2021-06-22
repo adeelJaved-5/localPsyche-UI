@@ -269,7 +269,7 @@ function Setting() {
                     </div>
  
                     {/* 2FA Info */}
-                    <div className="fa-blk flex flex-col">
+                    <div className="fa-blk flex flex-col d-none">
                         <div className="flex aic"> 
                             <div className="lit flex flex-col">
                                 <div className="label font s22 cfff">2FA</div>

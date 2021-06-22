@@ -113,7 +113,7 @@ function Messenger(props) {
                     (message.msg == '' || message.msg == null) ?
                     <div ref={ref} className="item">
                         <button className="cleanbtn" type='submit' onClick={() => downloadFile()}>
-                            {/*<img src={message.fileUrl} className="file" />*/}
+                            <img src={message.fileUrl} className="file" />
                             <div className="file" style={{backgroundImage: `url(${message.fileUrl})`}}/>
                         </button> 
                     </div>
@@ -178,8 +178,8 @@ function Messenger(props) {
                                 onKeyUp={(e)=>{keyupListener(e, keyCodes.ENTER, ()=>{sendMessages()})}} 
                                 onChange={(e)=>setInput(e.target.value)} 
                             />
-                            {/*<input id="file_upload" multiple = {true} className='iputhidden fixed reset' type="file"  onChange={e => {_uploadFile(e)} } />
-                            <button onClick={e => {document.getElementById("file_upload").click()}} className='cleanbtn file-btn s20 c777 icon-paperclip' />*/}
+                            <input id="file_upload" multiple = {true} className='iputhidden  reset' type="file"  onChange={e => {_uploadFile(e)} } />
+                            <button onClick={e => {document.getElementById("file_upload").click()}} className='cleanbtn file-btn s20 c777 icon-paperclip' />
                         </div>
                     <button   
                         onClick={sendMessages} 
