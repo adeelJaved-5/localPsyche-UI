@@ -10,12 +10,14 @@ import {
 } from "../core"
 import axios from "axios"
 import {useDispatch, useSelector} from "react-redux"
+import QRCode from "react-qr-code";
 
 function Setting() {
 
+    const [isCopied, setisCopied] = useState(false)
     const {user} = useSelector(state => state.userInfo);
-    var token = localStorage.getItem("key");
-    //console.log(user._id)
+    var token = sessionStorage.getItem("key");
+    console.log(user)
 
     const dispatch = useDispatch() 
 
@@ -24,12 +26,14 @@ function Setting() {
         const generalReducers = useSelector(state => state);
         const {dialogID} =  generalReducers
 
+        
         const [fullName, setFullName] = useState(null)
         const [email, setEmail] = useState(null)
         const [password, setPassword] = useState(null)
         const [confirmPass, setConfirmPass] = useState(null)
         const [pin, setPin] = useState(null) 
         const [confirmPin, setConfirmPin] = useState(null)
+        
 
         useEffect(()=>{
             setFullName(user.user_name);
@@ -193,6 +197,19 @@ function Setting() {
         )  
         dispatch({type: 'DIALOG_ID', payload: ID})
     } 
+    const copyToClipboard = (text) => {
+        console.log('text', text)
+        let textField = document.createElement('textarea')
+        textField.innerText = text
+        document.body.appendChild(textField)
+        textField.select()
+        document.execCommand('copy')
+        textField.remove()
+        setisCopied(true);
+        setTimeout(() => {
+            setisCopied(false);
+        }, 1000);
+    }
 
     return (
         <React.Fragment>
@@ -269,17 +286,18 @@ function Setting() {
                     </div>
  
                     {/* 2FA Info */}
-                    <div className="fa-blk flex flex-col d-none">
+                    <div className="fa-blk flex flex-col">
                         <div className="flex aic"> 
                             <div className="lit flex flex-col">
-                                <div className="label font s22 cfff">2FA</div>
-                                <div className="sub font s15 cfff">Download Google Authenticator and scan the QR code.</div>
+                                <div className="label font s22 cfff">2FA</div><br />
+                                <div className="sub font s15 cfff d-none">Download Google Authenticator and scan the QR code.</div>
                                 <div className="backup font s22 cfff">Backup Code</div>
-                                <div className="num font s18 cfff">985685 985685</div>
-                                <div className="num font s18 cfff">985685 985685</div>
-                                <div className="num font s18 cfff">985685 985685</div>
-                                <div className="msg font s15 cfff">Don't lose the code, it will be required if you<br/> lose the phone or the App. In case of you lose authenticator,<br/> we may not be able to help you</div>
-                                <div className="item flex aic"> 
+                                <div className="num font s18 cfff">{user.twoFA}
+                                    <i class="ml-4 fa fa-copy" onClick = {() => copyToClipboard(user.twoFA)}></i>
+                                    <div className={`copied font s14 cfff anim ${isCopied ? 'show' : 'hide'}`}>Copied!</div>
+                                </div>
+                                <div className="msg font s15 cfff">It is your 2FA code. If you lose it, we might not be able to help you</div>
+                                <div className="item flex aic d-none"> 
                                     <div className="lbl font s16 cfff">Confirm:</div>
                                     <div className="flex flex-col aic">
                                         <div className="s13 font cfff">Add 6 digit code from the App.</div>
@@ -288,10 +306,12 @@ function Setting() {
                                 </div>
                             </div>
                             <div className="rit flex aic">
-                                <img src="/images/qr.svg" className="qr" />
+                                <div className="bg-white p-3 rounded">
+                                    <QRCode value={user.twoFA} />
+                                </div>
                             </div>
                         </div>
-                        <div className="ftr flex aic">  
+                        <div className="ftr flex aic d-none">  
                             <button className="button font s15 cfff anim">Save</button>
                         </div>
                     </div>

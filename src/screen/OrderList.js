@@ -80,7 +80,7 @@ function OrderList(props) {
     const generalReducers = useSelector(state => state);
     const {userInfo} = generalReducers;
     const {user} = userInfo; 
-    var token = localStorage.getItem("key");
+    var token = sessionStorage.getItem("key");
 
     useEffect(()=>{
         document.documentElement.scrollTop = 0;
@@ -236,6 +236,49 @@ function OrderList(props) {
         else {<></>}
 
     }
+    const _rejectOrder = (item) => {
+        if(type == 'sell'){
+            axios.post(`${global.baseurl}:3000/rejectOrder`, {sellId: props.match.params.id, buyId: item._id}, {
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization":  token
+                } 
+            })
+            .then((response) => {
+                //console.log(response) 
+                const {success, data} = response.data;
+                Toast.show({ html: data, type: success ? 'ok' : 'error', time: 5 });
+                // if(success){props.history.push(`/buyer-order/${props.match.params.id}`)}
+                if(success){window.location.reload();}
+            })  
+            .catch((error) =>  {   
+                console.log(error);
+            });
+        }  
+        else if(type == 'buy'){ 
+            // props.history.push(`/seller-order/${props.match.params.id}`)
+            window.location.reload();
+            axios.post(`${global.baseurl}:3000/rejectBuyOrder`, {sellId: item._id, buyId: item.orderId}, 
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization":  token
+                } 
+            }
+            )
+            .then((response) => {
+                console.log(response) 
+                const {success, data} = response.data;
+                Toast.show({ html: data, type: success ? 'ok' : 'error', time: 5 });
+                // if(success){props.history.push(`/seller-order/${props.match.params.id}`)}
+                if(success){window.location.reload()}
+            })  
+            .catch((error) =>  {    
+                console.log(error);
+            }); 
+        } 
+        else {<></>}
+    }
 
     //console.log(orderDetails)
     //console.log(offers) 
@@ -253,7 +296,7 @@ function OrderList(props) {
                         <div className="content">
                             {loading == false ? offers && offers.length > 0 ?
                                 offers.map( (item,index) => ( 
-                                    <div className="blk flex aic">
+                                    <div className="blk flex aic" key={index}>
                                         <div className="item flex flex-col">
                                             <div className="nam font s28 cfff wordwrap">{item.email}</div>
                                             <div className="flex aic">
@@ -297,13 +340,18 @@ function OrderList(props) {
                                                     }}>View Order</button>
                                             </div>
                                             :
-                                            <div className="item">
-                                                <div className="lbl font s15 cfff"></div>
+                                            <div className="item flex-row">
+                                                {/* <div className="lbl font s15 cfff"></div> */}
                                                 <button 
                                                     className={`button font cfff s15 anim ${(orderDetails.status =='escrow' || orderDetails.status == 'paid') && 'disabled' }`} 
                                                     onClick={()=> {_acceptOrder(item)}}
                                                     disabled={orderDetails.status =='escrow' || orderDetails.status == 'paid'}
                                                 >Accept</button>
+                                                <button 
+                                                    className={`ml-2 button font cfff s15 anim ${(orderDetails.status =='escrow' || orderDetails.status == 'paid') && 'disabled' }`} 
+                                                    onClick={()=> {_rejectOrder(item)}}
+                                                    disabled={orderDetails.status =='escrow' || orderDetails.status == 'paid'}
+                                                >Reject</button>
                                             </div>
                                         }
                                     </div>

@@ -129,7 +129,7 @@ function Profile() {
     const dispatch = useDispatch() 
 
     //console.log(user)
-    var token = localStorage.getItem("key");
+    var token = sessionStorage.getItem("key");
  
     useEffect(()=>{
         _getSellOrder()
@@ -415,7 +415,7 @@ function Profile() {
             {
                 data.map( (item, index) => (
                     <div key={index} className="row flex">
-                        <div className="item flex flex-col">
+                        <div className="item flex flex-col ml-4">
                             <div className="lbl font s15 cfff flex aic">
                                 {traderHistory && <span>{traderHistory.userId}</span>}&nbsp;&nbsp;
                                 <div className="online" />

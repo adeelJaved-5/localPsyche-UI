@@ -7,6 +7,7 @@ const initState = {
     rateCommunication: 0,
     rateTrust: 0,
     rateSpeed: 0,
+    notifi: true,
 } 
  
 const generalReducers = (state = initState, action) => {
@@ -22,6 +23,8 @@ const generalReducers = (state = initState, action) => {
             return {...state, isUser: payload}
         case 'BUY_ORDER':
             return {...state, buyStatus: action.payload}
+        case 'notifi':
+            return {...state, notifi: action.payload}
         case 'RATE_COM':
             return {...state, rateCommunication: action.payload}
         case 'RATE_TRUST':

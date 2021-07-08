@@ -68,7 +68,7 @@ function Sell() {
         setLoading(true)
         axios.post(`${global.baseurl}:3000/allBuyOrders`, {country: country.toString()}) 
         .then((response) =>{
-            //console.log(response)
+            
             setLoading(false)
             setAllOrders(response.data.data);
         })
@@ -97,8 +97,9 @@ function Sell() {
     return (
         <React.Fragment> 
             <Helmet>
-                <title>Buy and sell digital currency, Psyche coins and best stablecoin</title>
-                <meta name="description" content="Sell Psyche, USDT, stablecoins and other digital currencies globally. Zero Transaction Fee. Start trading now!" />
+                <title> Buy and sell digital currency, Psyche coins and best stablecoin </title>
+                <meta name="description" content=" SellPsyche, USDT, stablecoins and other digital currencies globally. Zero Transaction Fee. Start trading now!"/>
+                <meta name="keywords" content=" p2p marketplace for coin trade, buy and sell digital currency, best Stablecoin, coin exchange platform, digital us dollar "/>
             </Helmet>
             <Header/>
             <div className="buy-p">
@@ -185,81 +186,108 @@ function Sell() {
                                     
                     {/* Trader List Block */}
                     <div className="trds-bl flex flex-col">
-                    <div className="table">
-                        <div className="hdr flex aic">
-                            <div className="col flex aic">
-                                <div className="circle hid" />
-                                <div className="font s16 cfff">Trader</div>
-                            </div>
-                            <div className="col flex aic"><div className="font s16 cfff">Payment</div></div>
-                            <div className="col flex aic"><div className="font s16 cfff">Available</div></div>
-                            <div className="col flex aic"><div className="font s16 cfff">Price</div></div>
+                        
+                        <div class="table-responsive">
+                            <table class="table text-white">
+                                <thead>
+                                    <tr>
+                                        <th scope="col" className="text-left pl-5">Trader</th>
+                                        <th scope="col">Payment</th>
+                                        <th scope="col">Available</th>
+                                        <th scope="col">Price</th>
+                                        <th scope="col"></th>
+                                    </tr>
+                                </thead>
+                                    { 
+                                        loading == false ? (allOrders && allOrders.length > 0) ?
+                                        allOrders.map( (item,index) => (  
+                                        <tbody key={index}>
+                                            <tr>
+                                                <td className="profile_td">
+                                                    <div className="col flex aic">
+                                                        <div className={`circle Top trader`} />
+                                                        <div className="flex flex-col">
+                                                            <div className="lbl font s15 cfff flex aic">
+                                                                <span>{item.user_name}</span>&nbsp;&nbsp;
+                                                                <div className="online" />
+                                                            </div>
+                                                            <div className="flex aic">
+                                                                <div className="font s12 cfff">{`125 orders`}</div>&nbsp;&nbsp;
+                                                                <div className="font s12 cfff">{`100%`}</div>&nbsp;&nbsp;
+                                                                <div className="font s12 cfff">{`4.9 Trust`}</div>
+                                                            </div>
+                                                        </div>
+                                                    </div> 
+                                                </td>
+                                                <td className="w-25">{item.payment}</td>
+                                                <td>{item.amount}</td>
+                                                <td>{item.price}&nbsp;<span className="s11">{item.currency}</span></td>
+                                                <td><Link to={`/seller-order/${item._id}`} className="btn btn-primary px-4">Sell</Link></td>
+                                            </tr>
+                                        </tbody>
+                                    ))
+                                    : 
+                                    <tbody>
+                                        <tr>
+                                            <td colSpan="6" className="text-center">
+                                                <div className="font s16 cfff">Opps! Result not Found.</div>
+                                            </td>
+                                        </tr>
+                                    </tbody>  
+                                    :
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <div className="row flex">
+                                                    <div className="col holder my-2" />
+                                                    <div className="col holder my-2" />
+                                                    <div className="col holder my-2" />
+                                                    <div className="col holder my-2" />
+                                                    <div className="col holder my-2" />
+                                                </div> 
+                                            </td>
+                                            <td>
+                                                <div className="row flex">
+                                                    <div className="col holder my-2" />
+                                                    <div className="col holder my-2" />
+                                                    <div className="col holder my-2" />
+                                                    <div className="col holder my-2" />
+                                                    <div className="col holder my-2" />
+                                                </div> 
+                                            </td>
+                                            <td>
+                                                <div className="row flex">
+                                                    <div className="col holder my-2" />
+                                                    <div className="col holder my-2" />
+                                                    <div className="col holder my-2" />
+                                                    <div className="col holder my-2" />
+                                                    <div className="col holder my-2" />
+                                                </div> 
+                                            </td>
+                                            <td>
+                                                <div className="row flex">
+                                                    <div className="col holder my-2" />
+                                                    <div className="col holder my-2" />
+                                                    <div className="col holder my-2" />
+                                                    <div className="col holder my-2" />
+                                                    <div className="col holder my-2" />
+                                                </div> 
+                                            </td>
+                                            <td>
+                                                <div className="row flex">
+                                                    <div className="col holder my-2" />
+                                                    <div className="col holder my-2" />
+                                                    <div className="col holder my-2" />
+                                                    <div className="col holder my-2" />
+                                                    <div className="col holder my-2" />
+                                                </div> 
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                }
+                            </table>
                         </div>
-                        {  
-                            loading == false ? allOrders.length > 0 ?
-                            allOrders.map( (item,index) => (  
-                                <div key={index} className="row flex">
-                                    <div className="col flex aic">
-                                        <div className={`circle Top trader`} />
-                                        <div className="flex flex-col">
-                                            <div className="lbl font s15 cfff flex aic">
-                                                <span>Top trader</span>&nbsp;&nbsp;
-                                                <div className="online" />
-                                            </div>
-                                            <div className="flex aic">
-                                                <div className="font s12 cfff">{`125 orders`}</div>&nbsp;&nbsp;
-                                                <div className="font s12 cfff">{`100%`}</div>&nbsp;&nbsp;
-                                                <div className="font s12 cfff">{`4.9 Trust`}</div>
-                                            </div>
-                                        </div>
-                                    </div>  
-                                    <div className="col flex flex-col">
-                                        <div className="lbl font s15 cfff">{item.payment}</div>
-                                    </div>
-                                    <div className="col flex flex-col">
-                                        <div className="lbl font s15 cfff">{item.amount}</div>
-                                    </div>
-                                    <div className="col flex flex-col">
-                                        <div className="lbl font s15 cfff">{item.price}&nbsp;<span className="s11">{item.currency}</span>
-                                        </div> 
-                                        <div className="txt font s13 b3 cfff">{`Limit: ${item.minAmount} to ${item.maxAmount}`}</div>
-                                    </div>
-                                    <div className="actions flex aic">
-                                        <Link to={`/seller-order/${item._id}`} className="button font s15 cfff anim">Sell</Link>
-                                    </div>
-                                </div>
-                            ))
-                            :
-                            <div className="empty-sec flex flex-col aic">
-                                <div className="font s16 cfff">Opps! Result not Found.</div>
-                            </div>
-                            :
-                            <React.Fragment>
-                                <div className="row flex">
-                                    <div className="col holder" />
-                                    <div className="col holder" />
-                                    <div className="col holder" />
-                                    <div className="col holder" />
-                                    <div className="col holder" />
-                                </div> 
-                                <div className="row flex">
-                                    <div className="col holder" />
-                                    <div className="col holder" />
-                                    <div className="col holder" />
-                                    <div className="col holder" />
-                                    <div className="col holder" />
-                                </div>
-                                <div className="row flex">
-                                    <div className="col holder" />
-                                    <div className="col holder" />
-                                    <div className="col holder" />
-                                    <div className="col holder" />
-                                    <div className="col holder" />
-                                </div>
-                            </React.Fragment>
-                        }
                     </div>
-                </div>
                 </div>  
             </div>
             <Footer/>

@@ -1,23 +1,73 @@
-import React from 'react'
+import React , {useEffect,useState} from 'react'
 import {Link, withRouter} from "react-router-dom"
 import axios from "axios"
 import {useDispatch, useSelector} from 'react-redux'
+import socketIOClient from "socket.io-client";
+
 
 function Header(props) { 
  
     const generalReducers = useSelector(state => state);
-    const {isUser, userInfo} = generalReducers;
-
-    //console.log(isUser)
-
+    const {isUser, userInfo ,notifi} = generalReducers;
+    const [display, setdisplay] = useState('none')
+    var token = sessionStorage.getItem("key")
+    
     const dispatch = useDispatch()
 
+    useEffect(() => {
+        setTimeout(() => {
+            if(isUser){
+                if(notifi){
+                    dispatch({type: 'notifi', payload: false})
+                    my_order()
+                }
+        
+                const socket = socketIOClient('wss://localpsyche.com:4001');
+
+                socket.emit("orderDetails", userInfo.user.userID.toString() );
+                socket.on("userOrderDetails", (data) => {
+                    var notification = sessionStorage.getItem("notification")
+                    if(notification){
+                        console.log(userInfo.user.userID)
+                        if(data > notification){
+                            console.log('if: ',notification , data)
+                            setdisplay('block')
+                        } else{
+                            console.log('else: ',notification , data)
+                            setdisplay('none')
+                        }
+                    }
+                })
+            }    
+        }, 3000);
+        
+    });
+
+    const my_order = async () => {
+        try {
+            const { data } = await axios({
+                method: 'post', 
+                url: `${global.baseurl}:3000/myOrdersList`,
+                data: {email: userInfo.user.email},
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization":  token
+                } 
+            }); 
+            if(data.success){
+                sessionStorage.setItem("notification", data.data.length);
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
+    
     const _logout = () => {
         axios.get(`${global.baseurl}:8000/api/auth/sign-out/${userInfo.user._id}`)
         .then(() =>{dispatch({type: 'IS_USER', payload: false})
         }).then(() => {
             props.history.push("/");
-            localStorage.removeItem("key");
+            sessionStorage.removeItem("key");
         }) 
         .catch ((error) => { 
             console.log(error) 
@@ -34,6 +84,7 @@ function Header(props) {
                     <div className="rgt flex aic">
                         {   isUser ? 
                             <React.Fragment>
+                                <Link to="/exchange" className="d-flex text-white navbar_order px-2">Exchange</Link>
                                 <div className="dropdown px-3">
                                     <button type="button" className="btn_drop dropdown-toggle" data-toggle="dropdown">
                                         Tether
@@ -41,7 +92,7 @@ function Header(props) {
                                     <div className="dropdown-menu">
                                         <Link to="/coming-soon" className="dropdown-item">Coming soon</Link>
                                     </div>
-                                </div> 
+                                </div>
                                 <div className="dropdown px-3">
                                     <button type="button" className="btn_drop dropdown-toggle" data-toggle="dropdown">
                                         Psyche
@@ -59,21 +110,18 @@ function Header(props) {
                                         <Link to="/coming-soon" className="dropdown-item">Coming soon</Link>
                                     </div>
                                 </div> 
+                                <Link to="/my-trades" className="d-flex text-white navbar_order px-2">Orders <div className="notification" id="notification" style={{display: display}}></div></Link>
                                 <div className="dropdown px-3">
                                     <button type="button" className="btn_drop dropdown-toggle" data-toggle="dropdown">
                                         Profile
                                     </button>
                                     <div className="dropdown-menu">
                                         <Link to="/profile" className="dropdown-item">Profile</Link>
+                                        
                                         <Link to="/setting" className="dropdown-item">Setting</Link>
                                         <button onClick={_logout} className="dropdown-item cleanbtn link font s15 cfff">Logout</button>
                                     </div>
                                 </div> 
-                                {/* <Link to="/" className="link font s15 cfff">Buy</Link> */}
-                                {/* <Link to="/sell" className="link font s15 cfff">Sell</Link>
-                                <Link to="/profile" className="link font s15 cfff">Profile</Link>
-                                <Link to="/setting" className="link font s15 cfff">Setting</Link>
-                                <button onClick={_logout} className="cleanbtn link font s15 cfff">Logout</button> */}
                             </React.Fragment>
                             :
                             <React.Fragment>

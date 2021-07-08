@@ -26,6 +26,8 @@ import TermsConditions from "./screen/TermsConditions"
 import Setting from "./screen/Setting"
 import Kyc from "./screen/Kyc"
 import ComingSoon from "./screen/ComingSoon"
+import MyORDER from "./screen/MyOrder"
+import CEX from "./src/App"
 import ReactGA from 'react-ga';
 
 
@@ -35,11 +37,8 @@ global.baseurl = "https://localpsyche.com";
 
 function App(){
 
-  const TRACKING_ID = "UA-184573742-1"; 
-  ReactGA.initialize(TRACKING_ID);
-
   const [loading, setLoading] = useState(true)
-  var token = localStorage.getItem("key");
+  var token = sessionStorage.getItem("key");
 
   const generalReducers = useSelector(state => state)
   const {isUser} = generalReducers
@@ -51,6 +50,12 @@ function App(){
     _getUserInfo()
 
   },[])
+  
+  useEffect(() => {
+    const TRACKING_ID = "UA-184573742-1"; 
+    ReactGA.initialize(TRACKING_ID);
+    ReactGA.pageview(window.location.pathname)
+  }, [])
  
   const _getUserInfo = async () => {
       try {
@@ -92,6 +97,8 @@ function App(){
               <Route exact path="/privacy-policy" component={PrivacyPolicy} /> 
               <Route exact path="/terms-conditions" component={TermsConditions} /> 
               <Route exact path="/coming-soon" component={ComingSoon} /> 
+              <Route exact path="/my-trades" component={MyORDER} /> 
+              <Route exact path="/exchange" component={CEX} /> 
               <Route component={PageNotFound} />
             </Switch>
             :  

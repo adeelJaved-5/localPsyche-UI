@@ -9,6 +9,7 @@ import {useDispatch, useSelector} from "react-redux"
 import Messenger from './Messenger'
 import StarRating from '../components/StarRating'
 import price from 'crypto-price'
+import socketIOClient from "socket.io-client";
 
 function BuyerSideOrder({match}) {
 
@@ -18,14 +19,18 @@ function BuyerSideOrder({match}) {
     const [loading, setLoading] = useState(true)
     const [orderDetails, setOrderDetails] = useState()
     const [status, setStatus] = useState(null)
-
+    const [refresh, setrefresh] = useState(false)
+    const [reveiwshow, setreveiwshow] = useState(true)
     const [reviewNote, setReviewNote] = useState(null)
     const [submitReviewLoading, setSubmitReviewLoading] = useState(false)
     const [reviews, setReviews] = useState([])
     const [reviewsLoading, setReviewsLoading] = useState(false)
     const [showTradeComplete, setShowTradeComplete] = useState(false)
+    const [info_orderID, setinfo_orderID] = useState('...')
+    const [info_userID, setinfo_userID] = useState('...')
+    const [info_user_name, setinfo_user_name] = useState('...')
 
-    var token = localStorage.getItem("key");
+    var token = sessionStorage.getItem("key");
 
     const generalReducers = useSelector(state => state);
     const {userInfo, isUser, rateCommunication, rateTrust, rateSpeed} = generalReducers;
@@ -35,6 +40,56 @@ function BuyerSideOrder({match}) {
     useEffect(()=>{  
         _getBuyOrderDetails()
     },[])
+
+    useEffect(() => {
+
+        const socket = socketIOClient('wss://localpsyche.com:4001');
+
+        socket.emit("buyOrder", info_orderID.toString() );
+        socket.on("buyData", (data) => {
+            let sellstatus = sessionStorage.getItem("sellstatus")
+            if(!sellstatus || sellstatus != data){
+                sessionStorage.setItem("sellstatus", data);
+                setrefresh(true)
+                _getBuyOrderDetails()
+
+                if(exchangeMode == 'price-to-coin'){
+                    if(prc != '' || prc != null){
+                        setAmt('')
+                        _getPriceToCoin()
+                    }
+                    if(prc == '' || prc == null){setAmt(0)}
+                } 
+                else {
+                    if(amt != '' || amt != null){
+                        setPrc('')
+                        _getCoinToPrice()
+                    }
+                    if(amt == '' || amt == null){setPrc('')}
+                }
+                if(orderDetails){
+                    orderDetails.status == 'complete' && setShowTradeComplete(true)
+                }
+                if(orderDetails){
+                    setinfo_orderID(orderDetails._id)
+                    setinfo_userID(user.userID)
+                    setinfo_user_name(orderDetails.user_name)
+                }
+               _getUserRating()
+               _getStatus()
+               setTimeout(() => {
+                setrefresh(false)
+               }, 3000);
+               
+            }
+        }) 
+        
+
+    // socket.emit("buyOrder", match.params.id );
+    // socket.on("buyData", (data) => {
+    //   console.log('buyers_order_status:', data)  
+    // }); 
+})
 
     useEffect(()=>{
         if(exchangeMode == 'price-to-coin'){
@@ -69,6 +124,11 @@ function BuyerSideOrder({match}) {
         if(orderDetails){
             orderDetails.status == 'complete' && setShowTradeComplete(true)
         }
+        if(orderDetails){
+            setinfo_orderID(orderDetails._id)
+            setinfo_userID(user.userID)
+            setinfo_user_name(orderDetails.user_name)
+        }
        _getUserRating()
        _getStatus()
     },[orderDetails])
@@ -101,13 +161,13 @@ function BuyerSideOrder({match}) {
             const { data } = await axios({
                 method: 'post', 
                 url: `${global.baseurl}:3000/orderStatus`,
-                data: {status: 'sell', sellId: match.params.id, email: user.email},
+                data: {status: 'buy', sellId: match.params.id, email: user.email},
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization":  token
                 } 
             }); 
-            //console.log(data)
+            console.log(data)
             if(data.success){
                 setStatus(data.data)
             }
@@ -316,7 +376,7 @@ function BuyerSideOrder({match}) {
     /* Rating Order */
     const _review = () => {
         setSubmitReviewLoading(true)
-        if(user.email == orderDetails.email){
+        if(user.email == orderDetails.sellerId){
             axios.post(`${global.baseurl}:3000/review`, 
             {
                 communication : rateCommunication,
@@ -342,14 +402,18 @@ function BuyerSideOrder({match}) {
                 Toast.show({ html: data,  type: success ? 'ok' : 'error',  time: 5 });
                 setSubmitReviewLoading(false)
                 _getBuyOrderDetails()
+                _getUserRating()
             }) 
             .catch ((error) => { 
                 console.log(error)
                 setSubmitReviewLoading(false)
                 _getBuyOrderDetails()
+                _getUserRating()
             }) 
         } 
     }  
+
+     
 
     /* Get user Rating/Reviews */
     const _getUserRating = async () => {
@@ -384,13 +448,13 @@ function BuyerSideOrder({match}) {
             <Header/>
             <div className="order-p sell-sid">
                 <div className="wrapper flex flex-col">
-                    <div className="title flex aic"> <div className="font s32 black">Order: {orderDetails._id}</div></div>
+                    <div className="title flex aic"> <div className="font s32 black">Order: {info_orderID}</div></div>
                     {loading == false ? orderDetails &&
                         <React.Fragment>
                             <div className="section rel">
                                 <div className="hdr flex aic">
                                     <div className="lef flex flex-col">
-                                        <div className="lbl font s32 cfff">{orderDetails.user_name}</div>
+                                        <div className="lbl font s32 cfff">{info_user_name}</div>
                                         {/* <div className="nam font s32 cfff">William</div> */}
                                         <div className="flex aic">
                                             <div className="font s12 cfff">{`125 orders`}</div>&nbsp;&nbsp;
@@ -399,7 +463,7 @@ function BuyerSideOrder({match}) {
                                         </div>
                                     </div>
                                     <div className="rig flex flex-col">
-                                        <div className="lbl font s32 cfff">{user.userID}</div>
+                                        <div className="lbl font s32 cfff">{info_userID}</div>
                                         {/* <div className="nam font s32 cfff">X trader</div> */}
                                         <div className="flex aic">
                                             <div className="font s12 cfff">{`125 orders`}</div>&nbsp;&nbsp;
@@ -490,7 +554,7 @@ function BuyerSideOrder({match}) {
                                             <>
                                                 {user.email == orderDetails.email && (orderDetails.status == 'escrow' || orderDetails.status == 'paid') &&
                                                     <React.Fragment>
-                                                        {orderDetails.status == "escrow" && <div className="tt font s15 cfff">{`You have ${orderDetails.time_limit} mints to pay.`}</div>}
+                                                        {orderDetails.status == "escrow" && <div className="tt font s15 cfff">{`You have ${orderDetails.time_limit} minutes to pay.`}</div>}
                                                         <button 
                                                             disabled={orderDetails.status != 'escrow'}
                                                             button className={`button pay font s15 cfff anim ${orderDetails.status != 'escrow' && 'disabled'}`}
@@ -533,7 +597,7 @@ function BuyerSideOrder({match}) {
                             </div>
         
                             {/* Trade Completed Block */}
-                            {(user.email == orderDetails.email) && showTradeComplete &&
+                            {(user.email == orderDetails.sellerId) && reveiwshow && showTradeComplete &&
                                 <div className="trd-cplt flex flex-col rel">
                                     {submitReviewLoading &&
                                         <div className="loading cover abs fill flex aic">
@@ -567,7 +631,7 @@ function BuyerSideOrder({match}) {
                                         </div>
                                     </div>
                                 </div>
-                            }
+                            }   
                         
                             {/* Reviews Block */}
                             <div className="reviews-bl flex flex-col">
@@ -604,6 +668,11 @@ function BuyerSideOrder({match}) {
                                 }
                             </div>
                         </div>
+                            {refresh &&
+                                <div className="loading cover abs fill flex aic">
+                                    <LineLoader />
+                                </div>
+                            }
                         </React.Fragment>
                         :
                         <div className="loading cover abs fill flex aic">

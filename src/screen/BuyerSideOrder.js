@@ -1,4 +1,4 @@
-import React,{useState, useEffect} from 'react';
+import React,{useState, useEffect } from 'react';
 import {Link} from 'react-router-dom';
 import Header from "../components/Header"
 import Footer from "./Footer"
@@ -9,6 +9,8 @@ import {useDispatch, useSelector} from "react-redux"
 import Messenger from './Messenger'
 import StarRating from '../components/StarRating'
 import price from 'crypto-price'
+import socketIOClient from "socket.io-client";
+import io from 'socket.io-client';
 
 const  BuyerSideOrder = ({match, history}) => {
   
@@ -23,6 +25,13 @@ const  BuyerSideOrder = ({match, history}) => {
     const [reviews, setReviews] = useState([])
     const [reviewsLoading, setReviewsLoading] = useState(false)
     const [showTradeComplete, setShowTradeComplete] = useState(false)
+    const [refresh, setrefresh] = useState(false)
+    const [info_orderID, setinfo_orderID] = useState('...')
+    const [info_userID, setinfo_userID] = useState('...')
+    const [info_user_name, setinfo_user_name] = useState('...')
+    const [orderStatus, setorderStatus] = useState('')
+    // const [prevOS, setprevOS] = useState('')
+    const [enter, setenter] = useState(true)
 
     const generalReducers = useSelector(state => state);
     const {userInfo, buyStatus, isUser, rateCommunication, rateTrust, rateSpeed} = generalReducers;
@@ -30,12 +39,104 @@ const  BuyerSideOrder = ({match, history}) => {
 
     const dispatch = useDispatch() 
 
-    var token = localStorage.getItem("key");
+    var token = sessionStorage.getItem("key");
 
     useEffect(()=>{ 
         _getOrderDetails()
-    },[]) 
+    },[])
 
+    
+    useEffect(() => {
+
+            const socket = socketIOClient('wss://localpsyche.com:4001');
+
+            setInterval(() => {
+                try {
+                    socket.emit("sellOrder", info_orderID.toString() );
+                    socket.on("sellData", (data) => {
+                        console.log(data)
+                        
+                        let status = sessionStorage.getItem("status")
+                        if(!status || status != data){
+                            
+                            sessionStorage.setItem("status", data);
+                            setrefresh(true)
+                            _getOrderDetails()
+
+                            if(orderDetails){orderDetails.status == 'complete' && setShowTradeComplete(true)}
+                            _getUserRating()
+                            if(orderDetails){
+                            setinfo_orderID(orderDetails._id)
+                            setinfo_userID(user.userID)
+                            setinfo_user_name(orderDetails.user_name)
+                            }
+                            if(isUser){
+                            _getStatus()
+                            }
+
+                            if(exchangeMode == 'price-to-coin'){
+                                if(prc != '' || prc != null){
+                                    setAmt('')
+                                    _getPriceToCoin()
+                                }
+                                if(prc == '' || prc == null){setAmt(0)}
+                            } 
+                            else {
+                                if(amt != '' || amt != null){
+                                    setPrc('')
+                                    _getCoinToPrice()
+                                }
+                                if(amt == '' || amt == null){setPrc('')}
+                            }
+                            setrefresh(false)
+                        }
+                    }) 
+                } catch (error) {
+                    socket.emit("sellOrder", info_orderID.toString() );
+                    socket.on("sellData", (data) => {
+                        console.log(data)
+                        let status = sessionStorage.getItem("status")
+                        if(!status || status != data){
+                            sessionStorage.setItem("status", data);
+                            setrefresh(true)
+                            _getOrderDetails()
+
+                            if(orderDetails){orderDetails.status == 'complete' && setShowTradeComplete(true)}
+                            _getUserRating()
+                            if(orderDetails){
+                            setinfo_orderID(orderDetails._id)
+                            setinfo_userID(user.userID)
+                            setinfo_user_name(orderDetails.user_name)
+                            }
+                            if(isUser){
+                            _getStatus()
+                            }
+
+                            if(exchangeMode == 'price-to-coin'){
+                                if(prc != '' || prc != null){
+                                    setAmt('')
+                                    _getPriceToCoin()
+                                }
+                                if(prc == '' || prc == null){setAmt(0)}
+                            } 
+                            else {
+                                if(amt != '' || amt != null){
+                                    setPrc('')
+                                    _getCoinToPrice()
+                                }
+                                if(amt == '' || amt == null){setPrc('')}
+                            }
+                            setrefresh(false)
+                        }
+                    }) 
+                }
+            }, 15000);
+
+        // socket.emit("buyOrder", info_orderID );
+        // socket.on("buyData", (data) => {
+        //   console.log('buyers_order_status:', data)  
+        // }); 
+    })
 
     useEffect(()=>{
         if(exchangeMode == 'price-to-coin'){
@@ -57,13 +158,18 @@ const  BuyerSideOrder = ({match, history}) => {
     useEffect(()=>{
         if(orderDetails){orderDetails.status == 'complete' && setShowTradeComplete(true)}
        _getUserRating()
+       if(orderDetails){
+        setinfo_orderID(orderDetails._id)
+        setinfo_userID(user.userID)
+        setinfo_user_name(orderDetails.user_name)
+       }
        if(isUser){
         _getStatus()
        }
     },[orderDetails]) 
 
-    //console.log(user) 
-    //console.log(orderDetails) 
+    // console.log(user) 
+    // console.log(orderDetails) 
 
     const _getCoinToPrice = () => {
         if(orderDetails){
@@ -88,7 +194,6 @@ const  BuyerSideOrder = ({match, history}) => {
             //console.log(data)
             if(data.success){
                 setOrderDetails(data.data)
-                console.log(orderDetails._id)
                 dispatch({type: 'BUY_ORDER', payload: data.data.status})
                 setLoading(false) 
             }
@@ -111,6 +216,7 @@ const  BuyerSideOrder = ({match, history}) => {
             }); 
             //console.log(data)
             if(data.success){
+                // console.log(data.data)
                 setStatus(data.data)
             }
         } catch (error) {
@@ -368,7 +474,6 @@ const  BuyerSideOrder = ({match, history}) => {
                 }  
             });
             if(data.success){
-                //console.log(data)
                 setReviews(data.data)
                 setReviewsLoading(false)
             }
@@ -376,6 +481,7 @@ const  BuyerSideOrder = ({match, history}) => {
             //console.log(error);
             setReviewsLoading(false)
         } 
+        
     }
 
     return ( 
@@ -383,14 +489,15 @@ const  BuyerSideOrder = ({match, history}) => {
             <Header/>
             <div className="order-p">
                 <div className="wrapper flex flex-col">
-                    <div className="title flex aic"> <div className="font s32 black">Order: {orderDetails._id}</div></div>
+                    {/* <div className="title flex aic"> <div className="font s32 black">Order: { orderDetails._id}</div></div> */}
+                    <div className="title flex aic"> <div className="font s32 black">Order: {info_orderID}</div></div>
                     {loading == false ? orderDetails && 
                         <React.Fragment>
                         <div className="section rel">
                             <div className="hdr flex aic">
                                 <div className="lef flex flex-col">
-                                    <div className="lbl font s32 cfff">{user.userID}</div>
-                                    {/* <div className="nam font s32 cfff">William</div> */}
+                                    {/* <div className="lbl font s32 cfff">{user.userID}</div> */}
+                                    <div className="lbl font s32 cfff">{info_userID}</div>
                                     <div className="flex aic">
                                         <div className="font s12 cfff">{`125 orders`}</div>&nbsp;&nbsp;
                                         <div className="font s12 cfff">{`100%`}</div>&nbsp;&nbsp;
@@ -398,8 +505,8 @@ const  BuyerSideOrder = ({match, history}) => {
                                     </div>
                                 </div>
                                 <div className="rig flex flex-col">
-                                    <div className="lbl font s32 cfff">{orderDetails.user_name}</div>
-                                    {/* <div className="nam font s32 cfff">X trader</div> */}
+                                    {/* <div className="lbl font s32 cfff">{orderDetails.user_name}</div> */}
+                                    <div className="lbl font s32 cfff">{info_user_name}</div>
                                     <div className="flex aic">
                                         <div className="font s12 cfff">{`125 orders`}</div>&nbsp;&nbsp;
                                         <div className="font s12 cfff">{`100%`}</div>&nbsp;&nbsp;
@@ -425,13 +532,26 @@ const  BuyerSideOrder = ({match, history}) => {
                                                 }} 
                                             />
                                         </div>
+                                        <div className={`er font s15 cfff anim ${(amt < orderDetails.minAmount && amt > 0) ? 'show' : 'd-none'}`}>{`The minimum coins you can buy from this ad is ${orderDetails.minAmount} .`}</div>
+                                        <div className={`er font s15 cfff anim ${(amt > orderDetails.maxAmount && amt > 0) ? 'show' : 'd-none'}`}>{`The maximum coins you can buy from this ad is ${orderDetails.maxAmount} .`}</div>
                                         <div className="item">
                                             <div className="lbl font s15 cfff">Price</div>
                                             <div className="input _prc flex aic">
-                                                <input 
+                                                {/* <input 
                                                     type="text" 
                                                     className="amt font s15 c000"
                                                     disabled={orderDetails.status == 'escrow' || orderDetails.status == 'paid' || orderDetails.status == 'complete'}
+                                                    value={orderDetails.status == 'new' ? prc : orderDetails.price}
+                                                    onChange={(e) => {
+                                                        setPrc(e.target.value.replace(/[^0-9\.]/g, ''))
+                                                        setExchangeMode('price-to-coin')
+                                                        _getPriceToCoin()
+                                                    }}
+                                                /> */}
+                                                <input 
+                                                    type="text" 
+                                                    className="amt font s15 c000"
+                                                    disabled={true}
                                                     value={orderDetails.status == 'new' ? prc : orderDetails.price}
                                                     onChange={(e) => {
                                                         setPrc(e.target.value.replace(/[^0-9\.]/g, ''))
@@ -462,7 +582,7 @@ const  BuyerSideOrder = ({match, history}) => {
                                                         onClick={() => {_buy()}}
                                                     >Buy</button>
                                                 }
-                                                {(status == 'pending' && orderDetails.status == 'new') && <div className="font s15 cfff">Please wait unit seller have not accept your offer.</div>}
+                                                {(status == 'pending' && orderDetails.status == 'new') && <div className="font s15 cfff">Please wait for the seller to accept your offer.</div>}
                                             </>
                                             :
                                             <>
@@ -470,8 +590,7 @@ const  BuyerSideOrder = ({match, history}) => {
                                                 <div className="font s15 cfff">Sign up first and continue the trade.</div>
                                             </>
                                         }
-                                        <div className={`er font s15 cfff anim ${(amt < orderDetails.minAmount && amt > 0) ? 'show' : 'hide'}`}>{`The minimum coin you can buy from this ad is ${orderDetails.minAmount} ${orderDetails.currency}.`}</div>
-                                        <div className={`er font s15 cfff anim ${(amt > orderDetails.maxAmount && amt > 0) ? 'show' : 'hide'}`}>{`The biggest coin you can buy from this ad is ${orderDetails.maxAmount} ${orderDetails.currency}.`}</div>
+                                        
                                     </div>  
                                     <div className="rig flex flex-col">
                                         <div className="item textarea flex flex-col">
@@ -487,7 +606,7 @@ const  BuyerSideOrder = ({match, history}) => {
                                     <>
                                         {user.email == orderDetails.buyerId && (orderDetails.status == 'escrow' || orderDetails.status == 'paid') &&
                                             <div className="terms"> 
-                                                {orderDetails.status == "escrow" && <div className="msg font s15 cfff">{`You hav ${orderDetails.time_limit} min to pay ${orderDetails.amount} coin to the seller's given  account details.`}<br/>Press paid once you have transferred the payment to the seller given account.</div>}  
+                                                {orderDetails.status == "escrow" && <div className="msg font s15 cfff">{`You have ${orderDetails.time_limit} min to pay ${(orderDetails.escrowAmount * orderDetails.price).toFixed(2)} ${orderDetails.currency} to the seller's given  account details.`}<br/>Press paid once you have transferred the payment to the seller given account.</div>}  
                                                 <button  
                                                     disabled={(orderDetails.status == "paid") || (orderDetails.status == "complete")} 
                                                     className={`button font s15 cfff anim ${(orderDetails.status == 'paid') || (orderDetails.status == 'complete') ? 'disabled' : ''}`}
@@ -576,7 +695,7 @@ const  BuyerSideOrder = ({match, history}) => {
                                         var date = new Date(item.time);
                                         var stamp = moment(date);
                                         return(
-                                            <div className="blk flex aic">
+                                            <div className="blk flex aic" key={index}>
                                                 <div className="item flex aic">
                                                     <div className="font s14 cfff">{item.reviewer}</div>
                                                 </div>
@@ -597,6 +716,11 @@ const  BuyerSideOrder = ({match, history}) => {
                                     })
                                     :
                                     <div className='empty-sec font s15 cfff flex aic'>Reviews Section is empty</div>
+                                }
+                                {refresh &&
+                                    <div className="loading cover abs fill flex aic">
+                                        <LineLoader />
+                                    </div>
                                 }
                             </div>
                         </div>

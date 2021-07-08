@@ -15,7 +15,6 @@ function Messenger(props) {
     const [input, setInput]  = useState('');
     const [fileUrl, setFileUrl] = useState(null)
     const [messages, setMessages] = useState([]);
-
     const generalReducers = useSelector(state => state);
     const {userInfo, buyStatus} = generalReducers;
     const {user} = userInfo;
@@ -40,6 +39,8 @@ function Messenger(props) {
     }
 
     const sendMessages = () =>{
+        
+        
         if(buyStatus == 'escrow' || buyStatus == 'paid'){
             if(input == '' && fileUrl == null){
                 focus("._input")
@@ -65,6 +66,7 @@ function Messenger(props) {
                         sellerId: orderDetails.sellerId,
                         buyerId: orderDetails.email,
                         buyOrder: orderDetails.sellOffer,
+                        fileUrl: fileUrl,
                         currentTime: firebase.firestore.FieldValue.serverTimestamp(),
                     })  
                 }
@@ -78,8 +80,13 @@ function Messenger(props) {
                     }
                 );
             }
+
         } else {<></>}
+        document.getElementById("file_upload").value = null;
+        setFileUrl(null)
+        document.querySelector('#image_name').innerHTML = ''
     }  
+
   
    //console.log(messages)
 
@@ -88,20 +95,28 @@ function Messenger(props) {
  
         const isUser = user.email === message.user; 
 
-        const downloadFile = async () => {
-            const file = await fetch(message.fileUrl)
-            const blob = file.blob();
-            const url = window.URL.createObjectURL(blob);
+        const downloadimg = async (e) => {
+            // const file = await fetch(message.fileUrl)
+            // const blob = file.blob();
+            // const url = window.URL.createObjectURL(blob);
+            if((e.match(/^http[^\?]*.(jpg|jpeg|gif|png|tiff|bmp)(\?(.*))?$/gmi) != null)){
+                var ext = 'jpg'
+            }
+            else{
+                var ext = 'doc'
+            }
             const link = document.createElement('a');
-            link.href = url;
-            link.setAttribute('download', 'file.jpg'); //or any other extension
+            link.href = e;
+            link.setAttribute('download', `file.${ext}`); //or any other extension
+            link.setAttribute('href', `file.${ext}`); //or any other extension
             document.body.appendChild(link);
             link.click();
 
             // Clean up and remove the link 
             link.parentNode.removeChild(link);
         }
-
+        
+        
         return (    
             <div className={`message-blk flex aic amim ${isUser ? "user" : "frd"}`}>
                 {
@@ -110,15 +125,20 @@ function Messenger(props) {
                         <div className={`txt font s14 c333 ${isUser && "user-txt"}`}>{message.msg}</div> 
                     </div>
                     :
-                    (message.msg == '' || message.msg == null) ?
-                    <div ref={ref} className="item">
-                        <button className="cleanbtn" type='submit' onClick={() => downloadFile()}>
-                            <img src={message.fileUrl} className="file" />
-                            <div className="file" style={{backgroundImage: `url(${message.fileUrl})`}}/>
-                        </button> 
-                    </div>
-                    :
-                    <></>
+                    [
+                        (((message.fileUrl.match(/^http[^\?]*.(jpg|jpeg|gif|png|tiff|bmp)(\?(.*))?$/gmi) != null))
+                            ? <div ref={ref} className="item">
+                                <button className="cleanbtn" type='submit' onClick={() => downloadimg(message.fileUrl)}>
+                                    <img src={message.fileUrl} className="file" />
+                                </button> 
+                            </div>
+                            : <div ref={ref} className="item">
+                                <button className="cleanbtn" type='submit' onClick={() => downloadimg(message.fileUrl)}>
+                                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTNckVhMiWCawrigw2z5mQwNZeUYMv8lMLpVDpOxNms4SN1f9WbX1Z6Fd9QPvJHYxohWJQ&usqp=CAU" className="file" />
+                                </button> 
+                            </div>
+                        ),
+                    ]
                 }
             </div>
         ); 
@@ -138,11 +158,12 @@ function Messenger(props) {
         let file = e.target.files[0];
         var ext = file.name.substr(file.name.lastIndexOf('.') + 1).toLowerCase();
         const fileNname = generateID() + "." + ext;
-
+        
         const storageRef = storage.ref()
         const fileRef = storageRef.child(fileNname)
         await fileRef.put(file).then(() => {
             console.log("Uploaded File", fileNname) 
+            document.querySelector('#image_name').innerHTML = fileNname
         })
         setFileUrl(await fileRef.getDownloadURL())
     }
@@ -155,6 +176,7 @@ function Messenger(props) {
                     {
                         (buyStatus == 'escrow' || buyStatus == 'paid') ? user &&
                         <div className='wrap flex flex-col'>
+                            <p className={`text-center py-2 rounded text-success ${(buyStatus != 'escrow' && buyStatus != 'paid') && 'd-none'}`}><b>You can now start the chat.</b></p>
                             <FlipMove> 
                             {
                                 messages.map((data, index) =>( 
@@ -178,9 +200,11 @@ function Messenger(props) {
                                 onKeyUp={(e)=>{keyupListener(e, keyCodes.ENTER, ()=>{sendMessages()})}} 
                                 onChange={(e)=>setInput(e.target.value)} 
                             />
-                            <input id="file_upload" multiple = {true} className='iputhidden  reset' type="file"  onChange={e => {_uploadFile(e)} } />
-                            <button onClick={e => {document.getElementById("file_upload").click()}} className='cleanbtn file-btn s20 c777 icon-paperclip' />
+                            <input id="file_upload" multiple = {true} className='iputhidden  reset' type="file"  onChange={e => {_uploadFile(e)} }  style={{visibility: 'hidden', width:'164px'}} />
+                            
                         </div>
+                    <span id='image_name'></span>
+                    <button disabled={(buyStatus != 'escrow' && buyStatus != 'paid')} onClick={e => {document.getElementById("file_upload").click()}} style={{background: 'transparent', width:'50px', border: 'none' }} className='ml-3'><img src={"/images/upload.png"} className="w-100" /></button>
                     <button   
                         onClick={sendMessages} 
                         className={`cleanbtn btn icon-send s22 cfff flex aic ${(buyStatus != 'escrow' && buyStatus != 'paid') && 'disble'}`} 

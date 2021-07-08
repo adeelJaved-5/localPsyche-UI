@@ -15,7 +15,12 @@
     top: 0;
     left: -100000px;
 }
-
+.notification{
+    height: 8px;
+    width: 8px;
+    border-radius: 50%;
+    background:red;
+}
 .input{
     border: none;
     outline: none;
@@ -24,6 +29,9 @@
     border-radius: 3px;
     text-align: end;
     width: 100%;
+}
+.navbar_order:hover{
+    text-decoration: none;
 }
 .online{
     height: 8px;

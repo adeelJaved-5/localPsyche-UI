@@ -72,7 +72,7 @@ function EditOrder(props)  {
         {limit: "180"},
     ]
 
-    var token = localStorage.getItem("key");
+    var token = sessionStorage.getItem("key");
 
     const generalReducers = useSelector(state => state);
     const {dialogID} =  generalReducers

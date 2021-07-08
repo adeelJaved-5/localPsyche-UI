@@ -6,10 +6,6 @@ import Footer from "./Footer"
 import countries from "../countries.json" 
 import { Helmet } from "react-helmet";
 
-import socketIOClient from "socket.io-client";
-import io from 'socket.io-client';
-const socket_io = io('ws://localpsyche.com:4001', {transports: ['websocket']})
-
 function Buy() { 
  
     const [dropCur, setDropCur] = useState(false);
@@ -54,21 +50,6 @@ function Buy() {
             limit: {from: "50,000", to: "988,000"},
         },
     ])
-    
-
-    useEffect(() => {
-        // console.log(socket_io)
-        const socket = socketIOClient('ws://localpsyche.com:4001');
-        // console.log(socket)
-        socket.emit("buyerData");
-        socket.on("topBuyers", (data) => {
-        //   console.log('socket:', data)  
-        }); 
-        /*socket.emit("sellerData");
-        socket.on("topSellers", (data) => {
-            console.log(data)
-        });*/
-    })
      
 
     useEffect(()=>{
@@ -91,6 +72,7 @@ function Buy() {
             //console.log(response)
             setLoading(false)
             setAllOrders(response.data.data);
+            console.log(response.data.data);
         })
         .catch ((error) => {  
             setLoading(false) 
@@ -133,8 +115,9 @@ function Buy() {
     return (
         <React.Fragment> 
             <Helmet>
-                <title>Buy and sell digital currency, Psyche coins and best stablecoin</title>
-                <meta name="description" content="Buy and sell digital currency Psyche, USDT and other currencies in any currency globally, Psyche coins and best stablecoin. Start trading now!" />
+                <title>Buy and Sell Digital Currency | LocalPsyche</title>
+                <meta name="description" content=" Buy and sell digital currency Psyche, USDT and other currencies in any currency globally, Psyche coins and best stablecoin. Start trading now."/>
+                <meta name="keywords" content=" p2p marketplace for coin trade, buy and sell digital currency, best Stablecoin, buy stablecoins, sand dollar digital currency, digital coin trading platform "/>
             </Helmet>
             <Header/>
             <div className="buy-p">
@@ -242,7 +225,7 @@ function Buy() {
                                                         <div className={`circle Top trader`} />
                                                         <div className="flex flex-col">
                                                             <div className="lbl font s15 cfff flex aic">
-                                                                <span>Top trader</span>&nbsp;&nbsp;
+                                                                <span>{item.user_name}</span>&nbsp;&nbsp;
                                                                 <div className="online" />
                                                             </div>
                                                             <div className="flex aic">
@@ -260,62 +243,64 @@ function Buy() {
                                             </tr>
                                         </tbody>
                                     ))
-                                    :   
-                                    <div className="d-block text-center">
-                                        <div className="font s16 cfff">Opps! Result not Found.</div>
-                                    </div>
+                                    : 
+                                    <tbody>
+                                        <tr>
+                                            <td colSpan="6" className="text-center">
+                                                <div className="font s16 cfff">Opps! Result not Found.</div>
+                                            </td>
+                                        </tr>
+                                    </tbody>  
                                     :
-                                    <React.Fragment>
-                                        <tbody>
-                                            <tr>
-                                                <td className="my-3">
-                                                    <div className="row flex">
-                                                        <div className="col holder" />
-                                                        <div className="col holder" />
-                                                        <div className="col holder" />
-                                                        <div className="col holder" />
-                                                        <div className="col holder" />
-                                                    </div> 
-                                                </td>
-                                                <td className="my-3">
-                                                    <div className="row flex">
-                                                        <div className="col holder" />
-                                                        <div className="col holder" />
-                                                        <div className="col holder" />
-                                                        <div className="col holder" />
-                                                        <div className="col holder" />
-                                                    </div> 
-                                                </td>
-                                                <td className="my-3">
-                                                    <div className="row flex">
-                                                        <div className="col holder" />
-                                                        <div className="col holder" />
-                                                        <div className="col holder" />
-                                                        <div className="col holder" />
-                                                        <div className="col holder" />
-                                                    </div> 
-                                                </td>
-                                                <td className="my-3">
-                                                    <div className="row flex">
-                                                        <div className="col holder" />
-                                                        <div className="col holder" />
-                                                        <div className="col holder" />
-                                                        <div className="col holder" />
-                                                        <div className="col holder" />
-                                                    </div> 
-                                                </td>
-                                                <td className="my-3">
-                                                    <div className="row flex">
-                                                        <div className="col holder" />
-                                                        <div className="col holder" />
-                                                        <div className="col holder" />
-                                                        <div className="col holder" />
-                                                        <div className="col holder" />
-                                                    </div> 
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </React.Fragment>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <div className="row flex">
+                                                    <div className="col holder my-2" />
+                                                    <div className="col holder my-2" />
+                                                    <div className="col holder my-2" />
+                                                    <div className="col holder my-2" />
+                                                    <div className="col holder my-2" />
+                                                </div> 
+                                            </td>
+                                            <td>
+                                                <div className="row flex">
+                                                    <div className="col holder my-2" />
+                                                    <div className="col holder my-2" />
+                                                    <div className="col holder my-2" />
+                                                    <div className="col holder my-2" />
+                                                    <div className="col holder my-2" />
+                                                </div> 
+                                            </td>
+                                            <td>
+                                                <div className="row flex">
+                                                    <div className="col holder my-2" />
+                                                    <div className="col holder my-2" />
+                                                    <div className="col holder my-2" />
+                                                    <div className="col holder my-2" />
+                                                    <div className="col holder my-2" />
+                                                </div> 
+                                            </td>
+                                            <td>
+                                                <div className="row flex">
+                                                    <div className="col holder my-2" />
+                                                    <div className="col holder my-2" />
+                                                    <div className="col holder my-2" />
+                                                    <div className="col holder my-2" />
+                                                    <div className="col holder my-2" />
+                                                </div> 
+                                            </td>
+                                            <td>
+                                                <div className="row flex">
+                                                    <div className="col holder my-2" />
+                                                    <div className="col holder my-2" />
+                                                    <div className="col holder my-2" />
+                                                    <div className="col holder my-2" />
+                                                    <div className="col holder my-2" />
+                                                </div> 
+                                            </td>
+                                        </tr>
+                                    </tbody>
                                 }
                             </table>
                         </div>

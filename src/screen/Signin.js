@@ -18,10 +18,13 @@ function Signin(props) {
     const [check, setCheckbox] = useState(false)
     const [email, setEmail] = useState('')
     const [verification, setverification] = useState('')
+    const [verificationtwofa, setverificationtwofa] = useState('')
     const [password, setPassword] = useState('')
     const [loading, setLoading] = useState(false)
     const [fa, setfa] = useState(true)
     const [apitoken, setapitoken] = useState('')
+    const [scan, setscan] = useState(true)
+    const [userInfo, setuserInfo] = useState()
 
     
 
@@ -33,15 +36,15 @@ function Signin(props) {
             name: email
         });
 
-        localStorage.setItem("secret", JSON.stringify(secret));
+        sessionStorage.setItem("secret", JSON.stringify(secret));
 
         QRCode.toDataURL(secret.otpauth_url, function(err,data){
-            localStorage.setItem("imgURL", data.toString());
+            sessionStorage.setItem("imgURL", data.toString());
         })
 
-        if(localStorage.getItem('loginInfo'))
+        if(sessionStorage.getItem('loginInfo'))
         {
-            const logininfo = (localStorage.getItem('loginInfo'))
+            const logininfo = (sessionStorage.getItem('loginInfo'))
             setEmail(JSON.parse(logininfo).email)
             setPassword(JSON.parse(logininfo).password)
             setCheckbox(true)
@@ -61,21 +64,24 @@ function Signin(props) {
         });  
         if(data){
             dispatch({type: 'USER_INFO', payload: data})
-            setLoading(false)
+            console.log(scan)
+            if(data.user.twoFA){
+                setscan(false)
+            }
+            setuserInfo(data)
         }
-      } catch (error) {
-        setLoading(false) 
+      } catch (error) { 
         console.log(error)
       }
     }
 
     const _check = () => {
-        if(localStorage.getItem('loginInfo'))
+        if(sessionStorage.getItem('loginInfo'))
         {
-            localStorage.removeItem('loginInfo')
+            sessionStorage.removeItem('loginInfo')
             setCheckbox(false)
         }
-        else if(check && !localStorage.getItem('loginInfo'))
+        else if(check && !sessionStorage.getItem('loginInfo'))
         {
             setCheckbox(false)
         }
@@ -101,15 +107,17 @@ function Signin(props) {
                 `${global.baseurl}:8000/api/auth/sign-in`, {email: email, key: password})
                 .then((response) =>{ 
                     //console.log(response) 
-                    setLoading(false)
+                    setLoading(true)
                     const {success, message, token} = response.data;
                     setapitoken(token)
+                    _getUserInfo(token)
                     if(success){
                         setTimeout(() => {
                             setLoading(false)
                             setfa(false)
-                        }, 1000);
-                    }    
+                        }, 2000);
+                    }  
+                    // Toast.show({ html: message, type: success ? "warn" : 'error', time: 6 });  
                 })  
                 .catch ((error) => {  
                     setLoading(false) 
@@ -121,8 +129,31 @@ function Signin(props) {
         } 
     } 
 
+    const save2fa = async () => {
+        const { data } = await axios({
+            method: 'post', 
+            url: `${global.baseurl}:3000/saveTwoFA`,
+            data: {
+                id: verification.toString(),
+                image: sessionStorage.getItem('imgURL')
+            },
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization":  apitoken
+            } 
+        }); 
+        if(data.success){
+            _getUserInfo(apitoken)
+            sessionStorage.setItem("key", apitoken);
+            dispatch({type: 'IS_USER', payload: true})
+            props.history.push("/")
+            if(check){sessionStorage.setItem('loginInfo', JSON.stringify({email, password}))}
+            Toast.show({ html: "Login Successfully", type:'success', time: 6 });
+        } 
+    }
+
     const _after2fa = () => {
-        const secretobj = localStorage.getItem('secret')
+        const secretobj = sessionStorage.getItem('secret')
         const secret = JSON.parse(secretobj)
         var verified = SpeakEasy.totp.verify({
             secret: secret.ascii,
@@ -130,16 +161,25 @@ function Signin(props) {
             token: verification,
         })
         if(verified){
-            _getUserInfo(apitoken)
-            localStorage.setItem("key", apitoken);
-            dispatch({type: 'IS_USER', payload: true})
-            props.history.push("/")
-            if(check){localStorage.setItem('loginInfo', JSON.stringify({email, password}))}
-            Toast.show({ html: "Login Successfully", type:'success', time: 6 });
+            save2fa()
         }  
         else{
             Toast.show({ html: "Verification Code is invalid !!", type:'error', time: 6 });
         }  
+    }
+
+    const _verify2fa = () =>{
+        if(verificationtwofa == userInfo.user.twoFA){
+            _getUserInfo(apitoken)
+            sessionStorage.setItem("key", apitoken);
+            dispatch({type: 'IS_USER', payload: true})
+            props.history.push("/")
+            if(check){sessionStorage.setItem('loginInfo', JSON.stringify({email, password}))}
+            Toast.show({ html: "Login Successfully", type:'success', time: 6 });
+        }
+        else{
+            Toast.show({ html: "Verification Code is invalid !!", type:'error', time: 6 });
+        } 
     }
   
     return (
@@ -206,27 +246,48 @@ function Signin(props) {
                             {/*<button className="cleanbtn link flex aic"><img src="/images/apple-logo.svg"  className="img"/></button>*/}
                         </div>
                     </div>
-                    :<div className="text-center pt-5">
-                        <img className="w-75" src={localStorage.getItem('imgURL')} />
-                        <div className="form">
-                            <div className="item rel">
-                                <input 
-                                    type="text" 
-                                    placeholder="Enter 6 digit Verification code"
-                                    className="cleanbtn _email iput font s15 cfff anim"
-                                    value={verification}
-                                    onChange={e => setverification(e.target.value)}
-                                    onKeyUp={(e)=>{keyupListener(e, keyCodes.ENTER, ()=>{_after2fa()})}} 
-                                /> 
-                            </div>
-                            <div className="ftr flex aic">
-                                <button 
-                                    className="button font s15 cfff anim" 
-                                    onClick={()=>_after2fa()}
-                                >Verify</button>  
+                    :scan
+                        ?<div className="text-center pt-5">
+                            <img className="w-75" src={sessionStorage.getItem('imgURL')} />
+                            <div className="form">
+                                <div className="item rel">
+                                    <input 
+                                        type="text" 
+                                        placeholder="Enter 6 digit Verification code"
+                                        className="cleanbtn _email iput font s15 cfff anim"
+                                        value={verification}
+                                        onChange={e => setverification(e.target.value)}
+                                        onKeyUp={(e)=>{keyupListener(e, keyCodes.ENTER, ()=>{_after2fa()})}} 
+                                    /> 
+                                </div>
+                                <div className="ftr flex aic">
+                                    <button 
+                                        className="button font s15 cfff anim" 
+                                        onClick={()=>_after2fa()}
+                                    >Verify</button>  
+                                </div>
                             </div>
                         </div>
-                    </div>
+                        :<div className="text-center pt-5">
+                            <div className="form">
+                                <div className="item rel">
+                                    <input 
+                                        type="text" 
+                                        placeholder="Enter 6 digit Verification code"
+                                        className="cleanbtn _email iput font s15 cfff anim"
+                                        value={verificationtwofa}
+                                        onChange={e => setverificationtwofa(e.target.value)}
+                                        onKeyUp={(e)=>{keyupListener(e, keyCodes.ENTER, ()=>{_verify2fa()})}} 
+                                    /> 
+                                </div>
+                                <div className="ftr flex aic">
+                                    <button 
+                                        className="button font s15 cfff anim" 
+                                        onClick={()=>_verify2fa()}
+                                    >Verify</button>  
+                                </div>
+                            </div>
+                        </div>
                 }
                 
             </div>
