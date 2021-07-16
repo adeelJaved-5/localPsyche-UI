@@ -1,7 +1,52 @@
-import React from 'react';
+import React, {useState,useEffect} from 'react';
 import { Tabs, Tab } from 'react-bootstrap';
+import axios from "axios"
 
 export default function MarketHistory() {
+
+  const [Trades, setTrades] = useState([])
+  const [loading, setLoading] = useState(false);
+  const [show, setshow] = useState(false);
+
+  var token = sessionStorage.getItem("key");
+
+  useEffect(()=>{
+    trades()
+  },[Trades])
+
+  const trades = async() => {
+    if(Trades.length == 0){
+      setLoading(true)
+      axios.post(
+      `${global.baseurl}:3000/exchange/trades`, 
+        {   
+          "pair": "eth/usd1",
+          "cursor": 1
+        },
+        {
+          headers: {
+              "Content-Type": "application/json",
+              "Authorization":  token
+          } 
+        }
+      )
+      .then((response) =>{
+        setLoading(false)
+          if(response.data.success){
+            console.log('trades',response.data)
+            setTrades(response.data.data.trades)
+            setTimeout(() => {
+              setshow(true)
+            }, 1000);
+          }
+      })
+      .catch ((error) => { 
+        setLoading(false)
+          console.log(error.message) 
+      })
+    }
+  }
+
   return (
     <>
       <div className="market-history">
@@ -16,11 +61,15 @@ export default function MarketHistory() {
                 </tr>
               </thead>
               <tbody>
-                {/* <tr>
-                  <td>13:03:53</td>
-                  <td className="red">0.020191</td>
-                  <td>0.2155045</td>
-                </tr> */}
+                {show &&
+                  Trades.map((data, index) =>
+                    <tr key = {index} >
+                      <td>{new Date(data.timestamp).toLocaleTimeString("en-US")}</td>
+                      <td className="red">{data.price}</td>
+                      <td>{data.amount}</td>
+                    </tr>
+                  )
+                }
               </tbody>
             </table>
           </Tab>

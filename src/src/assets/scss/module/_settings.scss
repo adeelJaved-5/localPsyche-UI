@@ -151,7 +151,10 @@
   padding-bottom: 15px;
   margin-bottom: 15px;
 }
-
+.wallet .form-control.form_feild{
+  width: 200px;
+  height: 50px;
+}
 .settings .wallet .tab-content button.green {
   background: #26de81;
   color: #ffffff;
@@ -165,7 +168,7 @@
 .settings .wallet .tab-content button {
   padding: 12px 60px;
   margin-right: 10px;
-  margin-bottom: 20px;
+  // margin-bottom: 20px;
 }
 .settings .wallet .tab-content button:focus {
   box-shadow: none;

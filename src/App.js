@@ -28,6 +28,7 @@ import Kyc from "./screen/Kyc"
 import ComingSoon from "./screen/ComingSoon"
 import MyORDER from "./screen/MyOrder"
 import CEX from "./src/App"
+import EProfile from "./src/profile"
 import ReactGA from 'react-ga';
 
 
@@ -99,6 +100,7 @@ function App(){
               <Route exact path="/coming-soon" component={ComingSoon} /> 
               <Route exact path="/my-trades" component={MyORDER} /> 
               <Route exact path="/exchange" component={CEX} /> 
+              <Route exact path="/wallet" component={EProfile} /> 
               <Route component={PageNotFound} />
             </Switch>
             :  
@@ -111,6 +113,7 @@ function App(){
               <Route exact path="/reset-password/:id" component={Reset} />
               <Route exact path="/privacy-policy" component={PrivacyPolicy} />
               <Route exact path="/terms-conditions" component={TermsConditions} />
+              <Route exact path="/exchange" component={CEX} /> 
               <Route component={PageNotFound} />
             </Switch>
           }

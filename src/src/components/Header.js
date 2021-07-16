@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Navbar, Nav, NavDropdown, Dropdown, Button } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import { ThemeConsumer } from '../context/ThemeContext';
 export default class Header extends Component {
   componentDidMount() {
@@ -20,15 +20,24 @@ export default class Header extends Component {
               <ThemeConsumer>
                 {({ data }) => {
                   return data.theme === 'light' ? (
-                    <img src={'img/psyche-logo.svg'} alt="logo" />
+                    <img src={'images/Local Psyche-blue-01.png'} alt="logo" />
                   ) : (
-                    <img src={'img/psyche-logo-dark.svg'} alt="logo" />
+                    <img src={'images/Local Psyche-blue-01.png'} alt="logo" />
                   );
                 }}
               </ThemeConsumer>
             </Link>
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav">
+            <Nav className="navbar-nav mr-auto">
+                <Link to="/exchange" className="nav-link">
+                  Exchange
+                </Link>
+                <Link to="/wallet" className="nav-link">
+                  Wallet
+                </Link>
+                
+              </Nav>
               <Nav className="navbar-nav ml-auto">
                 <Dropdown className="header-custom-icon">
                   <ThemeConsumer>

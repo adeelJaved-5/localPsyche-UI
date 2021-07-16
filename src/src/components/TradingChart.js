@@ -20,7 +20,7 @@ export default function TradingChart() {
           timezone="Etc/UTC"
           toolbar_bg= "#f1f3f6"
           hide_top_toolbar= {true}
-          withdateranges= {true}
+          withdateranges= {false}
           save_image= {false}
         />
       </div>

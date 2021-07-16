@@ -8,6 +8,7 @@ const initState = {
     rateTrust: 0,
     rateSpeed: 0,
     notifi: true,
+    pair: 'bfredx/eth',
 } 
  
 const generalReducers = (state = initState, action) => {
@@ -31,6 +32,8 @@ const generalReducers = (state = initState, action) => {
             return {...state, rateTrust: action.payload}
         case 'RATE_SPEED':
             return {...state, rateSpeed: action.payload}
+        case 'pair':
+            return {...state, pair: action.payload}
         default: 
             return state
     }
