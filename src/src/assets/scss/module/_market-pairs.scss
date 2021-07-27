@@ -56,6 +56,7 @@
 .market-pairs thead tr th,
 .market-pairs tbody tr td {
   font-weight: 400;
+  // word-break: break-word;
 }
 
 .market-pairs tbody {
@@ -72,12 +73,25 @@
   table-layout: fixed;
 }
 .market-pairs tr {
-  float: left;
+  // float: left;
   clear: both;
   overflow: hidden;
 }
 
 .market-pairs thead th,
 .market-pairs tbody td {
-  width: 65%;
+  width: 33.33%;
+}
+
+@media only screen and (min-width : 920px) and (max-width : 1400px) {
+  .no-fluid .market-pairs tbody{
+    min-width: 320px;
+    max-width: 500px!important;
+  }
+}
+@media only screen and (min-width : 1400px) and (max-width : 1950px) {
+  .no-fluid .market-pairs tbody{
+    min-width: 363px;
+    max-width: 500px!important;
+  }
 }

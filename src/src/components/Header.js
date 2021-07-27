@@ -16,7 +16,7 @@ export default class Header extends Component {
       <>
         <header className="light-bb">
           <Navbar expand="lg">
-            <Link className="navbar-brand" to="/">
+            <Link className="navbar-brand" to="/exchange">
               <ThemeConsumer>
                 {({ data }) => {
                   return data.theme === 'light' ? (
@@ -35,6 +35,9 @@ export default class Header extends Component {
                 </Link>
                 <Link to="/wallet" className="nav-link">
                   Wallet
+                </Link>
+                <Link to="/" className="nav-link">
+                  P2P
                 </Link>
                 
               </Nav>

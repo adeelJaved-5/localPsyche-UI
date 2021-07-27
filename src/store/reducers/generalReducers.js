@@ -9,6 +9,8 @@ const initState = {
     rateSpeed: 0,
     notifi: true,
     pair: 'bfredx/eth',
+    balance1: '0',
+    balance2: '0',
 } 
  
 const generalReducers = (state = initState, action) => {
@@ -34,6 +36,10 @@ const generalReducers = (state = initState, action) => {
             return {...state, rateSpeed: action.payload}
         case 'pair':
             return {...state, pair: action.payload}
+        case 'balance1':
+            return {...state, balance1: action.payload}
+        case 'balance2':
+            return {...state, balance2: action.payload}
         default: 
             return state
     }

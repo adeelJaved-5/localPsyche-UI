@@ -29,11 +29,24 @@
   table-layout: fixed;
 }
 .market-history tr {
-  float: left;
+  // float: left;
   clear: both;
   overflow: hidden;
 }
 .market-history {
   border: 1px solid #e0e3eb;
   border-radius: 2px;
+}
+
+@media only screen and (min-width : 920px) and (max-width : 1400px) {
+  .market-history tbody{
+    min-width: 320px;
+    max-width: 500px!important;
+  }
+}
+@media only screen and (min-width : 1400px) and (max-width : 1950px) {
+  .market-history tbody{
+    min-width: 363px;
+    max-width: 500px!important;
+  }
 }

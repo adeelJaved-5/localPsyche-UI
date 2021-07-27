@@ -6,30 +6,36 @@ import {useDispatch, useSelector} from "react-redux"
 
 export default function MarketTrade() {
 
-  const [buyUsd, setbuyUsd] = useState(0)
-  const [buyEth, setbuyEth] = useState(0)
-  const [sellUsd, setsellUsd] = useState(0)
-  const [sellEth, setsellEth] = useState(0)
+  const [buyUsd, setbuyUsd] = useState(null)
+  const [buyEth, setbuyEth] = useState(null)
+  const [sellUsd, setsellUsd] = useState(null)
+  const [sellEth, setsellEth] = useState(null)
+  const [balance, setbalance] = useState([]);
   const [LoadWallet, setLoadWallet] = useState(false)
+  const [loading, setLoading] = useState(false);
 
   const generalReducers = useSelector(state => state);
-  const {userInfo ,pair} = generalReducers;
+  const {userInfo ,pair, balance1, balance2} = generalReducers;
   const {user} = userInfo;
+  const dispatch = useDispatch() 
 
   console.log(userInfo);
   
   var token = sessionStorage.getItem("key");
 
   useEffect(() => { 
+    _balance()
   });
 
   const sell = () => {
     let price = parseFloat(sellUsd)
     let amount = parseFloat(sellEth)
     if(sellUsd == null){
-        Toast.show({ html: "Wallet ID is required.", type: "ok", time: 5 });
+        Toast.show({ html: "Please enter some Amount.", type: "warn", time: 5 });
     } else if(sellEth == null){
-        Toast.show({ html: "Please enter some Amount.", type: "ok", time: 5});
+        Toast.show({ html: "Please enter some Amount.", type: "warn", time: 5});
+    } else if(sellUsd > balance1){
+        Toast.show({ html: "You don't have sufficient balance.", type: "warn", time: 5});
     } else {
       setLoadWallet(true)
       axios.post(
@@ -66,13 +72,16 @@ export default function MarketTrade() {
         })
     }
   } 
-  const buy = () => {
+  const buy = (e) => {
+    e.preventDefault()
     let price = parseFloat(buyUsd)
     let amount = parseFloat(buyEth)
     if(buyUsd == null){
-        Toast.show({ html: "Wallet ID is required.", type: "ok", time: 5 });
+        Toast.show({ html: "Please enter some Amount.", type: "warn", time: 5 });
     } else if(buyEth == null){
-        Toast.show({ html: "Please enter some Amount.", type: "ok", time: 5});
+        Toast.show({ html: "Please enter some Amount.", type: "warn", time: 5});
+    } else if(buyEth > balance2){
+        Toast.show({ html: "You don't have sufficient balance.", type: "warn", time: 5});
     } else {
       setLoadWallet(true)
       axios.post(
@@ -110,20 +119,72 @@ export default function MarketTrade() {
     }
   } 
 
+  const _balance = async() => {
+    if(balance.length == 0){
+      // if(functin){
+      setLoading(true)
+      axios.post(
+      `${global.baseurl}:3000/exchange/wallet`, 
+        {   
+          "user_id": user._id
+        },
+        {
+          headers: {
+              "Content-Type": "application/json",
+              "Authorization":  token
+          } 
+        }
+      )
+      .then((response) =>{
+        setLoading(false)
+        console.log('balance',response.data)
+          if(response.data.success){
+            setbalance(response.data.data.wallet)
+            for(let i=0; i < response.data.data.wallet.length; i++){
+              if(response.data.data.wallet[i].coin == pair.split('/')[0]){
+                dispatch({type: 'balance1', payload: response.data.data.wallet[i].balance})
+                break
+              }
+              else{
+                dispatch({type: 'balance1', payload: 0})
+              }
+            }
+            for(let i=0; i < response.data.data.wallet.length; i++){
+              if(response.data.data.wallet[i].coin == pair.split('/')[1]){
+                dispatch({type: 'balance2', payload: response.data.data.wallet[i].balance})
+                break
+              }
+              else{
+                dispatch({type: 'balance2', payload: 0})
+              }
+            }
+          }
+      })
+      .catch ((error) => { 
+        setLoading(false)
+          console.log(error.message) 
+      })
+    }
+  }
 
   return (
     <>
       <div className="market-trade">
         <Tabs>
-          <Tab eventKey="limit" title="Exchange" >
+          <Tab eventKey="limit" title={pair.toUpperCase()} >
             <div className="d-flex justify-content-between">
                 {LoadWallet &&
                     <div className="loading cover abs fill flex aic">
                         <LineLoader />
                     </div>
                 } 
+                
               <div className="market-trade-buy">
-                <form action="#">
+                <div className="mb-3 p-2 border border-info rounded text-info d-flex justify-content-between align-items-center"> 
+                  <h3>Available Balance</h3>
+                  <div>{balance2} {pair.split('/')[1].toUpperCase()}</div>
+                </div>
+                
                   <div className="input-group">
                     <input
                       type="number"
@@ -134,7 +195,7 @@ export default function MarketTrade() {
                       required
                     />
                     <div className="input-group-append">
-                      <span className="input-group-text">{pair.split('/')[0]}</span>
+                      <span className="input-group-text">{pair.split('/')[0].toUpperCase()}</span>
                     </div>
                   </div>
                   <div className="input-group">
@@ -147,7 +208,7 @@ export default function MarketTrade() {
                       required
                     />
                     <div className="input-group-append">
-                      <span className="input-group-text">{pair.split('/')[1]}</span>
+                      <span className="input-group-text">{pair.split('/')[1].toUpperCase()}</span>
                     </div>
                   </div>
                   
@@ -156,9 +217,14 @@ export default function MarketTrade() {
                       Buy
                     </button>
                   </div>
-                </form>
+                
               </div>
               <div className="market-trade-sell">
+                
+                <div className="mb-3 p-2 border border-info rounded text-info d-flex justify-content-between align-items-center"> 
+                  <h3>Available Balance</h3>
+                  <div>{balance1} {pair.split('/')[0].toUpperCase()}</div>
+                </div>
                 <form action="#">
                   <div className="input-group">
                     <input
@@ -170,7 +236,7 @@ export default function MarketTrade() {
                       required
                     />
                     <div className="input-group-append">
-                      <span className="input-group-text">{pair.split('/')[0]}</span>
+                      <span className="input-group-text">{pair.split('/')[1].toUpperCase()}</span>
                     </div>
                   </div>
                   <div className="input-group">
@@ -183,7 +249,7 @@ export default function MarketTrade() {
                       required
                     />
                     <div className="input-group-append">
-                      <span className="input-group-text">{pair.split('/')[1]}</span>
+                      <span className="input-group-text">{pair.split('/')[0].toUpperCase()}</span>
                     </div>
                   </div>
                   

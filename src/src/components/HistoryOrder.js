@@ -11,6 +11,7 @@ export default function HistoryOrder() {
   const [balance, setbalance] = useState([]);
   const [loading, setLoading] = useState(false);
   const [show, setshow] = useState(false);
+  // const [functin, setfunctin] = useState(true);
   const [show2, setshow2] = useState(false);
   const [show3, setshow3] = useState(false);
   const [show4, setshow4] = useState(false);
@@ -35,6 +36,8 @@ export default function HistoryOrder() {
   const {userInfo, pair } = generalReducers;
   const {user} = userInfo;
 
+  const dispatch = useDispatch() 
+
   var token = sessionStorage.getItem("key");
 
   useEffect(()=>{
@@ -42,15 +45,15 @@ export default function HistoryOrder() {
     _openOrder()
     _balance()
   },[])
-  setInterval(() => {
-    _orderHistory()
-    _openOrder()
-    _balance()
-  }, 20000)
+
+  // setInterval(() => {
+  //   _balance()
+  // }, 35000)
 
 
   const _orderHistory = async() => {
     if(orderHistory.length == 0){
+    // if(functin){
       setLoading(true)
       axios.post(
       `${global.baseurl}:3000/exchange/mytrades`, 
@@ -84,6 +87,7 @@ export default function HistoryOrder() {
 
   const _openOrder = async() => {
     if(openOrderbuy.length == 0){
+      // if(functin){
       setLoading(true)
       axios.post(
       `${global.baseurl}:3000/exchange/order_open`, 
@@ -118,6 +122,7 @@ export default function HistoryOrder() {
 
   const _balance = async() => {
     if(balance.length == 0){
+      // if(functin){
       setLoading(true)
       axios.post(
       `${global.baseurl}:3000/exchange/wallet`, 
@@ -180,7 +185,6 @@ export default function HistoryOrder() {
                 console('else')
               }
             }
-
             setTimeout(() => {
               setshow4(true)
             }, 1000);
@@ -237,7 +241,7 @@ export default function HistoryOrder() {
               openOrderbuy.map((data, index) =>
               <ul key= {index} className="d-flex justify-content-between market-order-item orderHistory">
                 <li>{new Date(data.timestamp).toLocaleTimeString("en-US")}</li>
-                <li>{data.pair}</li>
+                <li>{data.pair.toUpperCase()}</li>
                 <li>{data.buy ? 'Buy' : 'Sell'}</li>
                 <li>{data.price}</li>
                 <li>{data.amount}</li>
@@ -250,7 +254,7 @@ export default function HistoryOrder() {
               openOrdersell.map((data, index) =>
               <ul key= {index} className="d-flex justify-content-between market-order-item orderHistory">
                 <li>{new Date(data.timestamp).toLocaleTimeString("en-US")}</li>
-                <li>{data.pair}</li>
+                <li>{data.pair.toUpperCase()}</li>
                 <li>{data.buy ? 'Buy' : 'Sell'}</li>
                 <li>{data.price}</li>
                 <li>{data.amount}</li>
@@ -277,7 +281,7 @@ export default function HistoryOrder() {
               orderHistory.map((data, index) =>
               <ul key={index} className="d-flex justify-content-between market-order-item orderHistory">
                 <li>{new Date(data.timestamp).toLocaleTimeString("en-US")}</li>
-                <li>{data.maker.user_id == user._id  ? data.maker.pair :data.taker.pair}</li>
+                <li>{data.maker.user_id == user._id  ? data.maker.pair.toUpperCase() :data.taker.pair.toUpperCase()}</li>
                 <li>{data.maker.user_id == user._id   ? (data.maker.buy ? 'Buy' : 'Sell') :(data.taker.buy ? 'Buy' : 'Sell')}</li>
                 <li>{data.price}</li>
                 <li>{data.amount}</li>

@@ -4,14 +4,18 @@ import {Toast, LineLoader} from "../../ui";
 import Layout from '../components/Layout';
 import axios from "axios";
 import {useDispatch, useSelector} from "react-redux";
+import $ from 'jquery';
 
 export default function Profile() {
 
   const [Widthdraw, setWidthdraw] = useState(0)
+  const [Widthdrawaddress, setWidthdrawaddress] = useState('')
   const [loading, setLoading] = useState(false);
   const [deposit, setdeposit] = useState(0)
   const [balance, setbalance] = useState([]);
   const [amount, setamount] = useState([]);
+  const [coin, setcoin] = useState('eth');
+  const [blockchain, setblockchain] = useState('eth');
   const [load, setload] = useState(false)
   const [page, setpage] = useState(false)
 
@@ -34,8 +38,9 @@ export default function Profile() {
       `${global.baseurl}:3000/exchange/withdraw`, 
             {   
               "order": {
-                "blockchain": "eth",
-                "coin": "eth",
+                "address": Widthdrawaddress,
+                "blockchain": blockchain,
+                "coin": coin,
                 "user_id": user._id,
                 "amount": amount
               }
@@ -49,13 +54,14 @@ export default function Profile() {
         )
         .then((response) =>{
             console.log(response)
-            Toast.show({ html: response.data.data, type: 'ok', time: 5 });
+            Toast.show({ html: response.data.data, type: (response.data.success ?'ok' :'error' ), time: 5 });
             setWidthdraw('')
         })
         .catch ((error) => { 
             console.log(error.message) 
             // Toast.show({ html: error.message, time: 5 });
         })
+        $('#widthdraw').modal('hide')
     }
   } 
 
@@ -69,8 +75,8 @@ export default function Profile() {
       `${global.baseurl}:3000/exchange/deposit`, 
             {   
               "order": {
-                "blockchain": "eth",
-                "coin": "eth",
+                "blockchain": blockchain,
+                "coin": coin,
                 "user_id": user._id,
                 "amount": amount
               }
@@ -84,9 +90,9 @@ export default function Profile() {
         )
         .then((response) =>{
             console.log(response)
-            if(response.data.success){
-              Toast.show({ html: 'Your request will be processed shortly', type: 'ok', time: 5 });
-            }
+            // if(response.data.success){
+              Toast.show({ html: response.data.data, type: (response.data.success ?'ok' :'error' ), time: 5 });
+            // }
             setdeposit('')
             setload(false)
         })
@@ -94,6 +100,7 @@ export default function Profile() {
             console.log(error.message) 
             // Toast.show({ html: error.message, time: 5 });
         })
+        $('#deposit').modal('hide')
     }
   } 
 
@@ -145,6 +152,19 @@ export default function Profile() {
 
   const _change = (e) =>{
     _setamount(e)
+    setcoin(e)
+    if(e == 'eth' || e == 'usd1' || e == 'ooks' || e == 'brtr'){
+      setblockchain('eth')
+    }
+    else if(e == 'krill'){
+      setblockchain('polygon')
+    }
+    else if (e == 'bfredx'){
+      setblockchain('bsc')
+    }
+    else{
+      setblockchain('eth')
+    }
   }
 
   return (
@@ -204,7 +224,7 @@ export default function Profile() {
                                     className="d-flex justify-content-between align-items-center"
                                   >
                                     <div className="d-flex">
-                                      <img src={'img/icon/1.png'} alt="btc" />
+                                      <img src={'img/usd1.png'} alt="btc" />
                                       <div>
                                         <h2>USD1</h2>
                                         <p>ETHEREUM</p>
@@ -220,7 +240,7 @@ export default function Profile() {
                                     className="d-flex justify-content-between align-items-center"
                                   >
                                     <div className="d-flex">
-                                      <img src={'img/polygon-matic-logo.png'} alt="btc" />
+                                      <img src={'img/krill.png'} alt="btc" />
                                       <div>
                                         <h2>KRILL</h2>
                                         <p>POLYGON</p>
@@ -236,7 +256,7 @@ export default function Profile() {
                                     className="d-flex justify-content-between align-items-center"
                                   >
                                     <div className="d-flex">
-                                      <img src={'img/icon/1.png'} alt="btc" />
+                                      <img src={'img/ooks.png'} alt="btc" />
                                       <div>
                                         <h2>OOKS</h2>
                                         <p>ETHEREUM</p>
@@ -252,7 +272,7 @@ export default function Profile() {
                                     className="d-flex justify-content-between align-items-center"
                                   >
                                     <div className="d-flex">
-                                      <img src={'img/icon/1.png'} alt="btc" />
+                                      <img src={'img/BRTR.png'} alt="btc" />
                                       <div>
                                         <h2>BRTR</h2>
                                         <p>ETHEREUM</p>
@@ -268,7 +288,7 @@ export default function Profile() {
                                     className="d-flex justify-content-between align-items-center"
                                   >
                                     <div className="d-flex">
-                                      <img src={'img/logo.png'} alt="btc" />
+                                      <img src={'img/bfredx.png'} alt="btc" />
                                       <div>
                                         <h2>BFREDX</h2>
                                         <p>BSC</p>
@@ -308,26 +328,12 @@ export default function Profile() {
                                       </li>
                                     </ul>
                                     <div className="d-flex justify-content-around align-items-center">
-                                      <div className="d-flex justify-content-center">
-                                        <input
-                                          type="number"
-                                          className="form-control form_feild ml-3"
-                                          placeholder="Amount"
-                                          value={deposit}
-                                          onChange={e => setdeposit(e.target.value)}
-                                        />
-                                        <button className="btn green" onClick={_deposit} >Deposit</button>
-                                      </div>
-                                      <div className="d-flex justify-content-center">
-                                        <input
-                                          type="number"
-                                          className="form-control form_feild ml-3"
-                                          placeholder="Amount"
-                                          value={Widthdraw}
-                                          onChange={e => setWidthdraw(e.target.value)}
-                                        />
-                                        <button className="btn red" onClick={_withdraw}>Withdraw</button>
-                                      </div>
+                                      <button type="button" class="btn green" data-toggle="modal" data-target="#deposit">
+                                        Deposit
+                                      </button>
+                                      <button type="button" class="btn red" data-toggle="modal" data-target="#widthdraw">
+                                        Withdraw
+                                      </button>
                                     </div>
                                   </div>
                                 </div>
@@ -1211,6 +1217,64 @@ export default function Profile() {
             <LineLoader />
         </div>
       }
+
+      {/* Deposit */}
+      <div class="modal fade" id="deposit" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLongTitle">Deposit</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <input
+                type="number"
+                className="form-control form_feild mb-3"
+                placeholder="Amount"
+                value={deposit}
+                onChange={e => setdeposit(e.target.value)}
+              />
+              <button className="btn green_btn btn-block" onClick={_deposit} >Deposit</button>
+            
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* widthdraw */}
+      <div class="modal fade" id="widthdraw" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLongTitle">Widthdraw</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+            
+              <input
+                type="number"
+                className="form-control form_feild mb-3"
+                placeholder="Amount"
+                value={Widthdraw}
+                onChange={e => setWidthdraw(e.target.value)}
+              />
+              <input
+                type="text"
+                className="form-control form_feild mb-3"
+                placeholder="Address"
+                value={Widthdrawaddress}
+                onChange={e => setWidthdrawaddress(e.target.value)}
+              />
+              <button className="btn red_btn btn-block" onClick={_withdraw}>Withdraw</button>
+          
+            </div>
+          </div>
+        </div>
+      </div>
     </>
   );
 }

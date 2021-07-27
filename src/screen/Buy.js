@@ -5,6 +5,7 @@ import Header from "../components/Header"
 import Footer from "./Footer"
 import countries from "../countries.json" 
 import { Helmet } from "react-helmet";
+import $ from 'jquery';
 
 function Buy() { 
  
@@ -54,6 +55,7 @@ function Buy() {
 
     useEffect(()=>{
         _getAllOrder()
+        $('#exampleModalCenter').modal('show')
     },[country])
  
     useEffect(()=>{
@@ -204,8 +206,8 @@ function Buy() {
                                     
                     {/* Trader List Block */}
                     <div className="trds-bl flex flex-col">
-                        <div class="table-responsive">
-                            <table class="table text-white">
+                        <div className="table-responsive">
+                            <table className="table text-white">
                                 <thead>
                                     <tr>
                                         <th scope="col" className="text-left pl-5">Trader</th>
@@ -308,6 +310,37 @@ function Buy() {
                 </div>  
             </div>
             <Footer/>
+
+            <div className="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                <div className="modal-dialog modal-lg modal-dialog-centered"  role="document">
+                    <div className="modal-content modal_custom" style={{backgroundImage: 'url("/images/bg-stars.png")'}}>
+                    <div className="modal-header border-0">
+                        <h5 className="modal-title" id="exampleModalLongTitle"><img src="/images/logo.svg" /></h5>
+                        <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                            <i class="fa fa-times-circle text-white"></i>
+                        </button>
+                    </div>
+                    <div className="modal-body">
+                        <div className="container-fluid py-4">
+                            <div className="row">
+                                <div className="col-6">
+                                    <p className="claimtxt1 text-white text-center">WIN</p>
+                                    <p className="claimtxt2 text-white text-center">50</p>
+                                    <p className="claimtxt3 text-white text-center">USD</p>
+                                    <p className="claimtxt4 text-white text-center">in PayPal</p>
+                                </div>
+                                <div className="col-6">
+                                    <img src="/images/dollar.png" />
+                                    <div className="text-center mt-4">
+                                        <a href="https://link.medium.com/F5yk7e03cib" className="clain_btn">localpsyche.com</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            </div>
         </React.Fragment>
     );
 }

@@ -156,13 +156,33 @@
   height: 50px;
 }
 .settings .wallet .tab-content button.green {
-  background: #26de81;
+  background: #23b14d;
   color: #ffffff;
-  box-shadow: 0px 0px 15px 0px #26de81ad;
+  // box-shadow: 0px 0px 15px 0px #26de81ad;
 }
 .settings .wallet .tab-content button.red {
-  background: #ff231f;
-  box-shadow: 0px 0px 15px 0px #ff231fad;
+  background: #ed1b24;
+  // box-shadow: 0px 0px 15px 0px #ff231fad;
+  color: #ffffff;
+}
+button.red_btn {
+  background: #ed1b24;
+  // box-shadow: 0px 0px 15px 0px #ff231fad;
+  color: #ffffff;
+}
+button.green_btn {
+  background: #23b14d;
+  // box-shadow: 0px 0px 15px 0px #ff231fad;
+  color: #ffffff;
+}
+button.red_btn:hover {
+  background: #ed1b24;
+  // box-shadow: 0px 0px 15px 0px #ff231fad;
+  color: #ffffff;
+}
+button.green_btn:hover {
+  background: #23b14d;
+  // box-shadow: 0px 0px 15px 0px #ff231fad;
   color: #ffffff;
 }
 .settings .wallet .tab-content button {

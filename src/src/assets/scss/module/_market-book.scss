@@ -8,7 +8,7 @@
 
 
 .order-book tr {
-  float: left;
+  // float: left;
   clear: both;
   overflow: hidden;
 }
@@ -140,7 +140,7 @@
   background: #fff;
 }
 .ob-heading td:first-child {
-  width: 65%;
+  width: 121px;
 }
 
 .order-book tbody {
@@ -151,4 +151,28 @@
 
 tbody.ob-heading {
   height: inherit;
+  min-width: 363px;
+  max-width: 500px !important;
 }
+.order-book thead th,
+.order-book tbody td {
+  width: 33.33%;
+}
+.order-book tbody tr td{
+  word-break: break-word;
+}
+
+
+@media only screen and (min-width : 920px) and (max-width : 1400px) {
+  .order-book tbody, tbody.ob-heading{
+    min-width: 320px;
+    max-width: 500px!important;
+  }
+}
+@media only screen and (min-width : 1400px) and (max-width : 1950px) {
+  .order-book tbody, tbody.ob-heading{
+    min-width: 363px;
+    max-width: 500px!important;
+  }
+}
+

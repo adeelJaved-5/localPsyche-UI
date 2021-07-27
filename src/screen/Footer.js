@@ -6,7 +6,7 @@ function Footer() {
     const secondRow = [
         {label: 'Sell Psyche', slug: '/sell'},
         {label: 'Buy Psyche', slug: '/'}, 
-        {label: 'Blog', slug: '/'},
+        {label: 'Blog', slug: '/blog'},
     ]
     
     const thirdRow = [

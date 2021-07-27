@@ -63,6 +63,7 @@ img {
 }
 #theme tbody tr {
   color: #4a4a4a;
+  text-align: right;
 }
 #theme tbody tr:hover {
   background: #f6f8f9;
@@ -91,7 +92,7 @@ img {
 #theme .table td,
 #theme .table th {
   border-top: 1px solid #f0f3fa;
-  width: 46%;
+  // width: 46%;
 }
 #header-toolbar-symbol-search.button-2Vpz_LXc.button-1n0tF4SR{
   display: none !important;

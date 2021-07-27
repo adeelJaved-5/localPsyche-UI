@@ -14,9 +14,10 @@ export default function OrderBook() {
   useEffect(()=>{
     _orderBook()
   },[pair])
-  setInterval(() => {
-    _orderBook()
-  }, 20000);
+  
+  // setInterval(() => {
+  //   _orderBook()
+  // }, 20000);
 
   const _orderBook = async() => {
     if(orderBookbuy.length == 0){
@@ -33,6 +34,7 @@ export default function OrderBook() {
           console.log('orderbook',response.data.data)
           if(response.data){
             setorderBookbuy(response.data.data.buy)
+            // console.log('after sort ',response.data.data.buy.sort((a, b) => b.timestamp.localeCompare(a.timestamp)))
             setorderBooksell(response.data.data.sell)
             setTimeout(() => {
               setveiw(true)
@@ -64,7 +66,7 @@ export default function OrderBook() {
                 <tr key = {index} >
                   <td className="red">{data.price}</td>
                   <td>{data.amount}</td>
-                  <td>{data.amount * data.price}</td>
+                  <td>{(data.amount * data.price).toFixed(2)}</td>
                 </tr>
               )
             }
@@ -88,7 +90,7 @@ export default function OrderBook() {
                 <tr key = {index} >
                   <td className="green">{data.price}</td>
                   <td>{data.amount}</td>
-                  <td>{data.amount * data.price}</td>
+                  <td>{(data.amount * data.price).toFixed(2)}</td>
                 </tr>
               )
             }

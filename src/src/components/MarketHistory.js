@@ -1,8 +1,12 @@
 import React, {useState,useEffect} from 'react';
 import { Tabs, Tab } from 'react-bootstrap';
 import axios from "axios"
+import {useDispatch, useSelector} from "react-redux"
 
 export default function MarketHistory() {
+  const generalReducers = useSelector(state => state);
+  const {userInfo ,pair} = generalReducers;
+  const {user} = userInfo;
 
   const [Trades, setTrades] = useState([])
   const [loading, setLoading] = useState(false);
@@ -12,7 +16,11 @@ export default function MarketHistory() {
 
   useEffect(()=>{
     trades()
-  },[Trades])
+  },[])
+
+  // setInterval(() => {
+  //   setTrades([])
+  // }, 15000);
 
   const trades = async() => {
     if(Trades.length == 0){
@@ -20,7 +28,7 @@ export default function MarketHistory() {
       axios.post(
       `${global.baseurl}:3000/exchange/trades`, 
         {   
-          "pair": "eth/usd1",
+          "pair": pair,
           "cursor": 1
         },
         {

@@ -32,15 +32,6 @@ function Signin(props) {
     
 
     useEffect(() => {
-        const secret = SpeakEasy.generateSecret({
-            name: email
-        });
-
-        sessionStorage.setItem("secret", JSON.stringify(secret));
-
-        QRCode.toDataURL(secret.otpauth_url, function(err,data){
-            sessionStorage.setItem("imgURL", data.toString());
-        })
 
         if(sessionStorage.getItem('loginInfo'))
         {
@@ -67,6 +58,18 @@ function Signin(props) {
             console.log(scan)
             if(data.user.twoFA){
                 setscan(false)
+            }
+            else{
+                const secret = SpeakEasy.generateSecret({
+                    name: email
+                });
+                console.log(secret)
+        
+                sessionStorage.setItem("secret", JSON.stringify(secret));
+        
+                QRCode.toDataURL(secret.otpauth_url, function(err,data){
+                    sessionStorage.setItem("imgURL", data.toString());
+                })
             }
             setuserInfo(data)
         }
@@ -130,11 +133,13 @@ function Signin(props) {
     } 
 
     const save2fa = async () => {
+        const secretobj = sessionStorage.getItem('secret')
+        const secret = JSON.parse(secretobj)
         const { data } = await axios({
             method: 'post', 
             url: `${global.baseurl}:3000/saveTwoFA`,
             data: {
-                id: verification.toString(),
+                id: secret.ascii.toString(),
                 image: sessionStorage.getItem('imgURL')
             },
             headers: {
@@ -169,7 +174,14 @@ function Signin(props) {
     }
 
     const _verify2fa = () =>{
-        if(verificationtwofa == userInfo.user.twoFA){
+        console.log(typeof userInfo.user.twoFA)
+        var verified = SpeakEasy.totp.verify({
+            secret: userInfo.user.twoFA,
+            encoding: 'ascii',
+            token: verification,
+        })
+        console.log(verified)
+        if(verified){
             _getUserInfo(apitoken)
             sessionStorage.setItem("key", apitoken);
             dispatch({type: 'IS_USER', payload: true})

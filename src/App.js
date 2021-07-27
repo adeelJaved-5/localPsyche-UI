@@ -26,6 +26,21 @@ import TermsConditions from "./screen/TermsConditions"
 import Setting from "./screen/Setting"
 import Kyc from "./screen/Kyc"
 import ComingSoon from "./screen/ComingSoon"
+import Blog from "./screen/Blog"
+import BlogBRTR from "./screen/Blog_pages/BlogBRTR"
+import BlogBFREDX from "./screen/Blog_pages/BlogBFREDX"
+import BlogOOKS from "./screen/Blog_pages/BlogOOKS"
+import BlogKRILL from "./screen/Blog_pages/BlogKRILL"
+import BlogSHUSKY from "./screen/Blog_pages/BlogSHUSKY"
+import BlogYFICS from "./screen/Blog_pages/BlogYFICS"
+import BlogSCF from "./screen/Blog_pages/BlogSCF"
+import Blog8PAY from "./screen/Blog_pages/Blog8PAY"
+import BlogRELI from "./screen/Blog_pages/BlogRELI"
+import BlogINNBC from "./screen/Blog_pages/BlogINNBC"
+import BlogBITBOX from "./screen/Blog_pages/BlogBITBOX"
+import BlogNFTBOX from "./screen/Blog_pages/BlogNFTBOX"
+import BlogLAND from "./screen/Blog_pages/BlogLAND"
+import BlogGENX from "./screen/Blog_pages/BlogGENX"
 import MyORDER from "./screen/MyOrder"
 import CEX from "./src/App"
 import EProfile from "./src/profile"
@@ -98,6 +113,21 @@ function App(){
               <Route exact path="/privacy-policy" component={PrivacyPolicy} /> 
               <Route exact path="/terms-conditions" component={TermsConditions} /> 
               <Route exact path="/coming-soon" component={ComingSoon} /> 
+              <Route exact path="/blog" component={Blog} /> 
+              <Route exact path="/blog/brtr-coin-listed-on-localpsyche" component={BlogBRTR} /> 
+              <Route exact path="/blog/bfredx-coin-listed-on-localpsyche" component={BlogBFREDX} /> 
+              <Route exact path="/blog/ooks-coin-listed-on-localpsyche" component={BlogOOKS} /> 
+              <Route exact path="/blog/krill-coin-listed-on-localpsyche" component={BlogKRILL} /> 
+              <Route exact path="/blog/SHUSKY-coin-listed-on-localpsyche" component={BlogSHUSKY} /> 
+              <Route exact path="/blog/YFICS-coin-listed-on-localpsyche" component={BlogYFICS} /> 
+              <Route exact path="/blog/SCF-coin-listed-on-localpsyche" component={BlogSCF} /> 
+              <Route exact path="/blog/8PAY-coin-listed-on-localpsyche" component={Blog8PAY} /> 
+              <Route exact path="/blog/RELI-coin-listed-on-localpsyche" component={BlogRELI} /> 
+              <Route exact path="/blog/INNBC-coin-listed-on-localpsyche" component={BlogINNBC} /> 
+              <Route exact path="/blog/BITBOX-coin-listed-on-localpsyche" component={BlogBITBOX} /> 
+              <Route exact path="/blog/NFTBOX-coin-listed-on-localpsyche" component={BlogNFTBOX} /> 
+              <Route exact path="/blog/LAND-coin-listed-on-localpsyche" component={BlogLAND} /> 
+              <Route exact path="/blog/GENX-coin-listed-on-localpsyche" component={BlogGENX} /> 
               <Route exact path="/my-trades" component={MyORDER} /> 
               <Route exact path="/exchange" component={CEX} /> 
               <Route exact path="/wallet" component={EProfile} /> 
@@ -110,6 +140,21 @@ function App(){
               <Route exact path="/login" component={Signin} />  
               <Route exact path="/register" component={Signup} />
               <Route exact path="/forgot-password" component={Forgot} />
+              <Route exact path="/blog" component={Blog} /> 
+              <Route exact path="/blog/brtr-coin-listed-on-localpsyche" component={BlogBRTR} /> 
+              <Route exact path="/blog/bfredx-coin-listed-on-localpsyche" component={BlogBFREDX} /> 
+              <Route exact path="/blog/ooks-coin-listed-on-localpsyche" component={BlogOOKS} /> 
+              <Route exact path="/blog/krill-coin-listed-on-localpsyche" component={BlogKRILL} /> 
+              <Route exact path="/blog/SHUSKY-coin-listed-on-localpsyche" component={BlogSHUSKY} /> 
+              <Route exact path="/blog/YFICS-coin-listed-on-localpsyche" component={BlogYFICS} /> 
+              <Route exact path="/blog/SCF-coin-listed-on-localpsyche" component={BlogSCF} /> 
+              <Route exact path="/blog/8PAY-coin-listed-on-localpsyche" component={Blog8PAY} /> 
+              <Route exact path="/blog/RELI-coin-listed-on-localpsyche" component={BlogRELI} /> 
+              <Route exact path="/blog/INNBC-coin-listed-on-localpsyche" component={BlogINNBC} /> 
+              <Route exact path="/blog/BITBOX-coin-listed-on-localpsyche" component={BlogBITBOX} /> 
+              <Route exact path="/blog/NFTBOX-coin-listed-on-localpsyche" component={BlogNFTBOX} /> 
+              <Route exact path="/blog/LAND-coin-listed-on-localpsyche" component={BlogLAND} /> 
+              <Route exact path="/blog/GENX-coin-listed-on-localpsyche" component={BlogGENX} /> 
               <Route exact path="/reset-password/:id" component={Reset} />
               <Route exact path="/privacy-policy" component={PrivacyPolicy} />
               <Route exact path="/terms-conditions" component={TermsConditions} />
@@ -124,7 +169,7 @@ function App(){
   const _Splash = () => {
     return(
       <div className='splash flex aic'>
-          <img src="/images/logo.svg" className="logo" />
+          <img src="/images/Local Psyche-blue-01.png" className="logo" />
       </div>
     )
   } 
