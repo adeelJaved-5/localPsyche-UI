@@ -32,8 +32,6 @@ import BlogBFREDX from "./screen/Blog_pages/BlogBFREDX"
 import BlogOOKS from "./screen/Blog_pages/BlogOOKS"
 import BlogKRILL from "./screen/Blog_pages/BlogKRILL"
 import BlogSHUSKY from "./screen/Blog_pages/BlogSHUSKY"
-import BlogYFICS from "./screen/Blog_pages/BlogYFICS"
-import BlogSCF from "./screen/Blog_pages/BlogSCF"
 import Blog8PAY from "./screen/Blog_pages/Blog8PAY"
 import BlogRELI from "./screen/Blog_pages/BlogRELI"
 import BlogINNBC from "./screen/Blog_pages/BlogINNBC"
@@ -119,8 +117,6 @@ function App(){
               <Route exact path="/blog/ooks-coin-listed-on-localpsyche" component={BlogOOKS} /> 
               <Route exact path="/blog/krill-coin-listed-on-localpsyche" component={BlogKRILL} /> 
               <Route exact path="/blog/SHUSKY-coin-listed-on-localpsyche" component={BlogSHUSKY} /> 
-              <Route exact path="/blog/YFICS-coin-listed-on-localpsyche" component={BlogYFICS} /> 
-              <Route exact path="/blog/SCF-coin-listed-on-localpsyche" component={BlogSCF} /> 
               <Route exact path="/blog/8PAY-coin-listed-on-localpsyche" component={Blog8PAY} /> 
               <Route exact path="/blog/RELI-coin-listed-on-localpsyche" component={BlogRELI} /> 
               <Route exact path="/blog/INNBC-coin-listed-on-localpsyche" component={BlogINNBC} /> 
@@ -146,8 +142,6 @@ function App(){
               <Route exact path="/blog/ooks-coin-listed-on-localpsyche" component={BlogOOKS} /> 
               <Route exact path="/blog/krill-coin-listed-on-localpsyche" component={BlogKRILL} /> 
               <Route exact path="/blog/SHUSKY-coin-listed-on-localpsyche" component={BlogSHUSKY} /> 
-              <Route exact path="/blog/YFICS-coin-listed-on-localpsyche" component={BlogYFICS} /> 
-              <Route exact path="/blog/SCF-coin-listed-on-localpsyche" component={BlogSCF} /> 
               <Route exact path="/blog/8PAY-coin-listed-on-localpsyche" component={Blog8PAY} /> 
               <Route exact path="/blog/RELI-coin-listed-on-localpsyche" component={BlogRELI} /> 
               <Route exact path="/blog/INNBC-coin-listed-on-localpsyche" component={BlogINNBC} /> 

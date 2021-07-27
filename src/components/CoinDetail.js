@@ -17,7 +17,7 @@ function CoinDetail(props) {
                             </ul>
                         </div>
                         <div className="blog_card p-5 mb-5">
-                            <h1 className="text-white h1 pb-4">How to trade {props.symbol} coin in LocalPsyche</h1>
+                            <h1 className="text-white h1 pb-4">How to buy {props.symbol} coin in LocalPsyche</h1>
                             <p className="text-white">Make an account on LocalPsyche.com.</p>
                             <ul className="text-white mb-5 pt-3">
                                 <li>Go to exchange and click on wallet.</li>

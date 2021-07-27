@@ -23,7 +23,8 @@ function Signin(props) {
     const [loading, setLoading] = useState(false)
     const [fa, setfa] = useState(true)
     const [apitoken, setapitoken] = useState('')
-    const [scan, setscan] = useState(true)
+    const [tofa, setcode] = useState('')
+    const [scan, setscan] = useState(false)
     const [userInfo, setuserInfo] = useState()
 
     
@@ -55,22 +56,22 @@ function Signin(props) {
         });  
         if(data){
             dispatch({type: 'USER_INFO', payload: data})
-            console.log(scan)
-            if(data.user.twoFA){
-                setscan(false)
-            }
-            else{
-                const secret = SpeakEasy.generateSecret({
-                    name: email
-                });
-                console.log(secret)
+            // console.log(scan)
+            // if(data.user.twoFA){
+            //     setscan(false)
+            // }
+            // else{
+            //     const secret = SpeakEasy.generateSecret({
+            //         name: email
+            //     });
+            //     console.log(secret)
         
-                sessionStorage.setItem("secret", JSON.stringify(secret));
+            //     sessionStorage.setItem("secret", JSON.stringify(secret));
         
-                QRCode.toDataURL(secret.otpauth_url, function(err,data){
-                    sessionStorage.setItem("imgURL", data.toString());
-                })
-            }
+            //     QRCode.toDataURL(secret.otpauth_url, function(err,data){
+            //         sessionStorage.setItem("imgURL", data.toString());
+            //     })
+            // }
             setuserInfo(data)
         }
       } catch (error) { 
@@ -115,12 +116,24 @@ function Signin(props) {
                     setapitoken(token)
                     _getUserInfo(token)
                     if(success){
+                        axios.post(
+                            `${global.baseurl}:8000/api/auth/generateCode`, {email: email})
+                            .then((response) =>{ 
+                                const {success, code, message} = response.data;
+                                if(success){
+                                    setcode(code)
+                                    Toast.show({ html: message, type: success ? "warn" : 'error', time: 6 });  
+                                }  
+                            })  
+                            .catch ((error) => {  
+                                const {success, message} = error.response;
+                                Toast.show({ html: message, type: success ? "warn" : 'error', time: 6 });
+                            })
                         setTimeout(() => {
                             setLoading(false)
                             setfa(false)
                         }, 2000);
-                    }  
-                    // Toast.show({ html: message, type: success ? "warn" : 'error', time: 6 });  
+                    }   
                 })  
                 .catch ((error) => {  
                     setLoading(false) 
@@ -174,14 +187,12 @@ function Signin(props) {
     }
 
     const _verify2fa = () =>{
-        console.log(typeof userInfo.user.twoFA)
-        var verified = SpeakEasy.totp.verify({
-            secret: userInfo.user.twoFA,
-            encoding: 'ascii',
-            token: verification,
-        })
-        console.log(verified)
-        if(verified){
+        // var verified = SpeakEasy.totp.verify({
+        //     secret: userInfo.user.twoFA,
+        //     encoding: 'ascii',
+        //     token: verification,
+        // })
+        if(verificationtwofa == tofa){
             _getUserInfo(apitoken)
             sessionStorage.setItem("key", apitoken);
             dispatch({type: 'IS_USER', payload: true})

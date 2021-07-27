@@ -67,10 +67,6 @@ export default function Profile() {
 
   const _deposit = () => {
     setload(true)
-    let amount = parseFloat(deposit)
-    if(deposit == 0 || deposit == null){
-        Toast.show({ html: "Amount should be greater than 0.", type: "ok", time: 5 });
-    } else {
       axios.post(
       `${global.baseurl}:3000/exchange/deposit`, 
             {   
@@ -78,7 +74,7 @@ export default function Profile() {
                 "blockchain": blockchain,
                 "coin": coin,
                 "user_id": user._id,
-                "amount": amount
+                "address": user.EthPubKey
               }
             },
             {
@@ -101,7 +97,6 @@ export default function Profile() {
             // Toast.show({ html: error.message, time: 5 });
         })
         $('#deposit').modal('hide')
-    }
   } 
 
   const _balance = async() => {
@@ -1230,11 +1225,10 @@ export default function Profile() {
             </div>
             <div class="modal-body">
               <input
-                type="number"
+                type="text"
                 className="form-control form_feild mb-3"
-                placeholder="Amount"
-                value={deposit}
-                onChange={e => setdeposit(e.target.value)}
+                value={user.EthPubKey}
+                disabled = 'disable'
               />
               <button className="btn green_btn btn-block" onClick={_deposit} >Deposit</button>
             

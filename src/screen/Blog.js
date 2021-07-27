@@ -14,20 +14,21 @@ function Blog() {
                         <div className="blog_card p-5">
                             <h1 className="text-white h1 pb-3">Coins listed on LocalPsyche</h1>
                             <div className="pl-3" >
-                                <Link className="text-white" to="/blog/SHUSKY-coin-listed-on-localpsyche">SHUSKY</Link><br />
+                                
                                 <Link className="text-white" to="/blog/brtr-coin-listed-on-localpsyche">BRTR</Link><br />
                                 <Link className="text-white" to="/blog/ooks-coin-listed-on-localpsyche">OOKS</Link><br />
                                 <Link className="text-white" to="/blog/krill-coin-listed-on-localpsyche">KRILL</Link><br />
                                 <Link className="text-white" to="/blog/bfredx-coin-listed-on-localpsyche">FREDX</Link><br />
-                                <Link className="text-white" to="/blog/YFICS-coin-listed-on-localpsyche">YFICS</Link><br />
-                                <Link className="text-white" to="/blog/SCF-coin-listed-on-localpsyche">SCF</Link><br />
+                                
+                                {/* 
                                 <Link className="text-white" to="/blog/8PAY-coin-listed-on-localpsyche">8PAY</Link><br />
+                                <Link className="text-white" to="/blog/SHUSKY-coin-listed-on-localpsyche">SHUSKY</Link><br />
                                 <Link className="text-white" to="/blog/RELI-coin-listed-on-localpsyche">RELI</Link><br />
                                 <Link className="text-white" to="/blog/INNBC-coin-listed-on-localpsyche">INNBC</Link><br />
                                 <Link className="text-white" to="/blog/BITBOX-coin-listed-on-localpsyche">BITBOX</Link><br />
                                 <Link className="text-white" to="/blog/NFTBOX-coin-listed-on-localpsyche">NFTBOX</Link><br />
                                 <Link className="text-white" to="/blog/LAND-coin-listed-on-localpsyche">LAND</Link><br />
-                                <Link className="text-white" to="/blog/GENX-coin-listed-on-localpsyche">GENX</Link><br />
+                                <Link className="text-white" to="/blog/GENX-coin-listed-on-localpsyche">GENX</Link><br /> */}
                             </div>
                         </div>
                     </div>

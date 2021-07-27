@@ -214,8 +214,8 @@ export default function MarketPairs() {
 
   return (
     <>
-      <div className="market-pairs">
-        <Tabs defaultActiveKey="eth">
+      <div className="market-pairs pt-0">
+        <Tabs defaultActiveKey="eth" className="mt-0">
           <Tab eventKey="eth" title="ETH">
             <table className="table">
               <thead>
