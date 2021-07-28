@@ -321,7 +321,7 @@ function Profile() {
     }
   
     /* Edit Order */
-    const _editOrder = (item, type) => {   
+    const _editOrder = (item, type) => {
         var ID = Dialog(   
             "Edit Advertisment",
             <EditOrder 

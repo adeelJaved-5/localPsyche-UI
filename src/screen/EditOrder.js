@@ -29,7 +29,7 @@ function EditOrder(props)  {
     const [country, setCountry] = useState(data.country)
     const [notes, setNotes] = useState(data.notes) 
     const [currency, setCurrency] = useState(data.currency)
-    const [dropcurcountry,setdropcurcountry] = useState("Pakistan") 
+    const [dropcurcountry,setdropcurcountry] = useState(data.country) 
     const [dropPayMethod, setDropPayMethod] = useState(false)
     const [paymentMethods, setPaymentMehthods] = useState(data.payment.split(","))
     const _paymentMethods = [
@@ -207,12 +207,16 @@ function EditOrder(props)  {
                             setDropTime(false)
                         }}> 
                             { 
-                                countries.map((item, index) =>(
-                                    dropcurcountry == item.country  && <div key={"con" + index} className="iput flex aic">
-                                        <div className="txt font s15 black wordwrap">{item.currency_code}</div>
-                                        <img src="./images/arrow-down.svg" className="arrow"/>          
-                                    </div>
-                                ))
+                                // countries.map((item, index) =>(
+                                //     dropcurcountry == item.country  && <div key={"con" + index} className="iput flex aic">
+                                //         <div className="txt font s15 black wordwrap">{item.currency_code}</div>
+                                //         <img src="./images/arrow-down.svg" className="arrow"/>          
+                                //     </div>
+                                // ))
+                                <div className="iput flex aic">
+                                    <div className="txt font s15 black wordwrap">{currency}</div>
+                                    <img src="./images/arrow-down.svg" className="arrow"/>          
+                                </div>
                             }  
                             {dropCur && <div className="options flex flex-col abs">
                                 {
@@ -220,7 +224,7 @@ function EditOrder(props)  {
                                         <button className="cleanbtn item flex aic anim" onClick={()=>{
                                             setDropCur(!dropCur); 
                                             setCurrency(item.currency_code);
-                                            setdropcurcountry(item.country)
+                                            // setdropcurcountry(item.country)
                                         }}>        
                                             <div className="txt font s15 black wordwrap">{item.currency_code}</div> 
                                         </button> 

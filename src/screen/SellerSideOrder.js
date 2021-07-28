@@ -490,6 +490,8 @@ function BuyerSideOrder({match}) {
                                                         }}
                                                 /> 
                                             </div>
+                                            <div className={`er font s15 cfff anim ${(amt < orderDetails.minAmount && amt > 0) ? 'show' : 'hide'}`}>{`The minimum coin you can sell from this ad is ${orderDetails.minAmount} coins.`}</div>
+                                            <div className={`er font s15 cfff anim ${(amt > orderDetails.maxAmount && amt > 0) ? 'show' : 'hide'}`}>{`The biggest coin you can sell from this ad is ${orderDetails.maxAmount} coins.`}</div>
                                             <div className="item">
                                                 <div className="lbl font s15 cfff">Price</div>
                                                 <div className="input flex aic">
@@ -537,8 +539,7 @@ function BuyerSideOrder({match}) {
                                                     <div className="font s15 cfff">Sign up first and continue the trade.</div>
                                                 </>
                                             }
-                                            <div className={`er font s15 cfff anim ${(amt < orderDetails.minAmount && amt > 0) ? 'show' : 'hide'}`}>{`The minimum coin you can sell from this ad is ${orderDetails.minAmount} ${orderDetails.currency}.`}</div>
-                                            <div className={`er font s15 cfff anim ${(amt > orderDetails.maxAmount && amt > 0) ? 'show' : 'hide'}`}>{`The biggest coin you can sell from this ad is ${orderDetails.maxAmount} ${orderDetails.currency}.`}</div>
+                                            
                                         </div>  
                                         <div className="rig flex flex-col"> 
                                             <div className="item textarea flex flex-col">

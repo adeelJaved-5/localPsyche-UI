@@ -532,8 +532,8 @@ const  BuyerSideOrder = ({match, history}) => {
                                                 }} 
                                             />
                                         </div>
-                                        <div className={`er font s15 cfff anim ${(amt < orderDetails.minAmount && amt > 0) ? 'show' : 'd-none'}`}>{`The minimum coins you can buy from this ad is ${orderDetails.minAmount} .`}</div>
-                                        <div className={`er font s15 cfff anim ${(amt > orderDetails.maxAmount && amt > 0) ? 'show' : 'd-none'}`}>{`The maximum coins you can buy from this ad is ${orderDetails.maxAmount} .`}</div>
+                                        <div className={`er font s15 cfff anim ${(amt < orderDetails.minAmount && amt > 0) ? 'show' : 'd-none'}`}>{`The minimum coins you can buy from this ad is ${orderDetails.minAmount} coins.`}</div>
+                                        <div className={`er font s15 cfff anim ${(amt > orderDetails.maxAmount && amt > 0) ? 'show' : 'd-none'}`}>{`The maximum coins you can buy from this ad is ${orderDetails.maxAmount} coins.`}</div>
                                         <div className="item">
                                             <div className="lbl font s15 cfff">Price</div>
                                             <div className="input _prc flex aic">
