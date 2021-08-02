@@ -54,8 +54,8 @@ export default function MarketPairs() {
 
 
   // setInterval(() => {
-  //   _coin_price()
-  // }, 80000);
+  //   _marketPair()
+  // }, 30000);
 
   const _coin_price = async() => {
     const rp = require('request-promise');
@@ -232,7 +232,7 @@ export default function MarketPairs() {
                       ? (
                         <tr key = {index}  onClick={() => {_pairChange(data.name)}}>
                           <td className="d-flex w-100"><i className="icon ion-md-star"></i> {data.name.toUpperCase()}</td>
-                          <td>{data.price}</td>
+                          <td>{data.price.toFixed(6)}</td>
                           <td className="red">{data.change}</td>
                         </tr>
                       )
@@ -258,7 +258,7 @@ export default function MarketPairs() {
                       ? (
                         <tr key = {index}  onClick={() => {_pairChange(data.name)}}>
                           <td className="d-flex w-100"><i className="icon ion-md-star"></i> {data.name.toUpperCase()}</td>
-                          <td>{data.price}</td>
+                          <td>{data.price.toFixed(6)}</td>
                           <td className="red">{data.change}</td>
                         </tr>
                       )

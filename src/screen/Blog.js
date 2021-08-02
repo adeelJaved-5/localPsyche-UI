@@ -19,9 +19,9 @@ function Blog() {
                                 <Link className="text-white" to="/blog/ooks-coin-listed-on-localpsyche">OOKS</Link><br />
                                 <Link className="text-white" to="/blog/krill-coin-listed-on-localpsyche">KRILL</Link><br />
                                 <Link className="text-white" to="/blog/bfredx-coin-listed-on-localpsyche">FREDX</Link><br />
+                                <Link className="text-white" to="/blog/TXC-coin-listed-on-localpsyche">TXC</Link><br />
                                 
-                                {/* 
-                                <Link className="text-white" to="/blog/8PAY-coin-listed-on-localpsyche">8PAY</Link><br />
+                                {/* Link className="text-white" to="/blog/8PAY-coin-listed-on-localpsyche">8PAY</Link><br />
                                 <Link className="text-white" to="/blog/SHUSKY-coin-listed-on-localpsyche">SHUSKY</Link><br />
                                 <Link className="text-white" to="/blog/RELI-coin-listed-on-localpsyche">RELI</Link><br />
                                 <Link className="text-white" to="/blog/INNBC-coin-listed-on-localpsyche">INNBC</Link><br />

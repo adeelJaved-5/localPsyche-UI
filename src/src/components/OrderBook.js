@@ -15,9 +15,9 @@ export default function OrderBook() {
     _orderBook()
   },[pair])
   
-  // setInterval(() => {
-  //   _orderBook()
-  // }, 20000);
+  setInterval(() => {
+    _orderBook()
+  }, 20000);
 
   const _orderBook = async() => {
     if(orderBookbuy.length == 0){
@@ -64,9 +64,9 @@ export default function OrderBook() {
             {veiw &&
               orderBooksell.map((data, index) =>
                 <tr key = {index} >
-                  <td className="red">{data.price}</td>
-                  <td>{data.amount}</td>
-                  <td>{(data.amount * data.price).toFixed(2)}</td>
+                  <td className="red">{data.price.toFixed(6)}</td>
+                  <td>{data.amount.toFixed(6)}</td>
+                  <td>{(data.amount * data.price).toFixed(9)}</td>
                 </tr>
               )
             }
@@ -88,9 +88,9 @@ export default function OrderBook() {
             {veiw &&
               orderBookbuy.map((data, index) =>
                 <tr  className="d-flex" key = {index} >
-                  <td className="green">{data.price}</td>
-                  <td>{data.amount}</td>
-                  <td>{(data.amount * data.price).toFixed(2)}</td>
+                  <td className="green">{data.price.toFixed(6)}</td>
+                  <td>{data.amount.toFixed(6)}</td>
+                  <td>{(data.amount * data.price).toFixed(9)}</td>
                 </tr>
               )
             }

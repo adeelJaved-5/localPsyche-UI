@@ -13,9 +13,20 @@ code {
 }
 .bg_pair_heading{
   background-color: #f5f9fc52;
-  position: absolute;
+  font-size: 15px;
+  text-align: center;
   z-index: 200;
-  color: #fff;
+  color: gray;
+  margin-bottom: 0px;
+}
+.w-custom{
+  width: 38% !important;
+}
+#chart_57723_1_ChartBorder{
+  fill: #131722f2 !important;
+}
+#chart_57723_1AxisGroup0Inside path , #chart_57723_1AxisGroup1Inside path{
+  stroke: #131722f2 !important ;
 }
 .reset_jds{
   display: flex ;

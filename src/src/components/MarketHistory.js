@@ -18,9 +18,9 @@ export default function MarketHistory() {
     trades()
   },[])
 
-  // setInterval(() => {
-  //   setTrades([])
-  // }, 15000);
+  setInterval(() => {
+    trades()
+  }, 20000);
 
   const trades = async() => {
     if(Trades.length == 0){
@@ -72,9 +72,9 @@ export default function MarketHistory() {
                 {show &&
                   Trades.map((data, index) =>
                     <tr key = {index} >
-                      <td>{new Date(data.timestamp).toLocaleTimeString("en-US")}</td>
-                      <td className="red">{data.price}</td>
-                      <td>{data.amount}</td>
+                      <td className="w-custom">{new Date(data.timestamp).toLocaleTimeString("en-US")}</td>
+                      <td className="red w-custom text-left">{data.price.toFixed(6)}</td>
+                      <td className="text-left">{data.amount.toFixed(6)}</td>
                     </tr>
                   )
                 }

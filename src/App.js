@@ -39,6 +39,7 @@ import BlogBITBOX from "./screen/Blog_pages/BlogBITBOX"
 import BlogNFTBOX from "./screen/Blog_pages/BlogNFTBOX"
 import BlogLAND from "./screen/Blog_pages/BlogLAND"
 import BlogGENX from "./screen/Blog_pages/BlogGENX"
+import BlogTXC from "./screen/Blog_pages/BlogTXC"
 import MyORDER from "./screen/MyOrder"
 import CEX from "./src/App"
 import EProfile from "./src/profile"
@@ -124,6 +125,7 @@ function App(){
               <Route exact path="/blog/NFTBOX-coin-listed-on-localpsyche" component={BlogNFTBOX} /> 
               <Route exact path="/blog/LAND-coin-listed-on-localpsyche" component={BlogLAND} /> 
               <Route exact path="/blog/GENX-coin-listed-on-localpsyche" component={BlogGENX} /> 
+              <Route exact path="/blog/TXC-coin-listed-on-localpsyche" component={BlogTXC} /> 
               <Route exact path="/my-trades" component={MyORDER} /> 
               <Route exact path="/exchange" component={CEX} /> 
               <Route exact path="/wallet" component={EProfile} /> 
@@ -149,6 +151,7 @@ function App(){
               <Route exact path="/blog/NFTBOX-coin-listed-on-localpsyche" component={BlogNFTBOX} /> 
               <Route exact path="/blog/LAND-coin-listed-on-localpsyche" component={BlogLAND} /> 
               <Route exact path="/blog/GENX-coin-listed-on-localpsyche" component={BlogGENX} /> 
+              <Route exact path="/blog/TXC-coin-listed-on-localpsyche" component={BlogTXC} /> 
               <Route exact path="/reset-password/:id" component={Reset} />
               <Route exact path="/privacy-policy" component={PrivacyPolicy} />
               <Route exact path="/terms-conditions" component={TermsConditions} />
