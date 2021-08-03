@@ -12,12 +12,20 @@ code {
     monospace;
 }
 .bg_pair_heading{
-  background-color: #f5f9fc52;
+  background-color: #f5f9fc;
   font-size: 15px;
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 6px;
   z-index: 200;
-  color: gray;
+  color: #18214D;
   margin-bottom: 0px;
+}
+span.stats_head {
+  font-size: 12px;
+  color: gray;
+  display: block;
 }
 .w-custom{
   width: 38% !important;

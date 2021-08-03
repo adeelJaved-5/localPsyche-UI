@@ -29,6 +29,8 @@ export default function HistoryOrder() {
       brtrEscrow: "0",
       bfredxBalance: "0",
       bfredxEscrow: "0",
+      txcBalance: "0",
+      txcEscrow: "0",
     }
   );
 
@@ -180,6 +182,13 @@ export default function HistoryOrder() {
                   ...prevState,
                   bfredxBalance: response.data.data.wallet[i].balance,
                   bfredxEscrow: response.data.data.wallet[i].locked
+                }));  
+              } else if (response.data.data.wallet[i].coin == 'txc') {
+  
+                setvalues(prevState => ({
+                  ...prevState,
+                  txcBalance: response.data.data.wallet[i].balance,
+                  txcEscrow: response.data.data.wallet[i].locked
                 }));  
               } else {
                 console('else')
@@ -338,6 +347,11 @@ export default function HistoryOrder() {
                   <li>BFREDX</li>
                   <li>{values.bfredxBalance}</li>
                   <li>{values.bfredxEscrow}</li>
+                </ul>
+                <ul className="d-flex justify-content-between market-order-item orderHistory">
+                  <li>TXC</li>
+                  <li>{values.txcBalance}</li>
+                  <li>{values.txcEscrow}</li>
                 </ul>
               </div>
             }

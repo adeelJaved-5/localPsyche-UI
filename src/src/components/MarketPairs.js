@@ -233,7 +233,7 @@ export default function MarketPairs() {
                         <tr key = {index}  onClick={() => {_pairChange(data.name)}}>
                           <td className="d-flex w-100"><i className="icon ion-md-star"></i> {data.name.toUpperCase()}</td>
                           <td>{data.price.toFixed(6)}</td>
-                          <td className="red">{data.change}</td>
+                          <td className="red">{data.change.toFixed(3)}</td>
                         </tr>
                       )
                       : null

@@ -71,7 +71,8 @@ export default function Profile() {
       `${global.baseurl}:3000/exchange/deposit`, 
             {   
               "order": {
-                "blockchain": blockchain,
+                // "blockchain": blockchain,
+                "blockchain": coin,
                 "coin": coin,
                 "user_id": user._id,
                 "address": user.EthPubKey
@@ -148,18 +149,18 @@ export default function Profile() {
   const _change = (e) =>{
     _setamount(e)
     setcoin(e)
-    if(e == 'eth' || e == 'usd1' || e == 'ooks' || e == 'brtr'){
-      setblockchain('eth')
-    }
-    else if(e == 'krill'){
-      setblockchain('polygon')
-    }
-    else if (e == 'bfredx'){
-      setblockchain('bsc')
-    }
-    else{
-      setblockchain('eth')
-    }
+    // if(e == 'eth' || e == 'usd1' || e == 'ooks' || e == 'brtr'){
+    //   setblockchain('eth')
+    // }
+    // else if(e == 'krill'){
+    //   setblockchain('polygon')
+    // }
+    // else if (e == 'bfredx'){
+    //   setblockchain('bsc')
+    // }
+    // else{
+    //   setblockchain('eth')
+    // }
   }
 
   return (
@@ -287,6 +288,22 @@ export default function Profile() {
                                       <div>
                                         <h2>BFREDX</h2>
                                         <p>BSC</p>
+                                      </div>
+                                    </div>
+                                    <div>
+                                    </div>
+                                  </Nav.Link>
+                                </Nav.Item>
+                                <Nav.Item onClick = {() =>{_change('txc')}}>
+                                  <Nav.Link
+                                    eventKey={6}
+                                    className="d-flex justify-content-between align-items-center"
+                                  >
+                                    <div className="d-flex">
+                                      <img src={'img/TCX.png'} alt="btc" />
+                                      <div>
+                                        <h2>TXC</h2>
+                                        <p>ETHEREUM</p>
                                       </div>
                                     </div>
                                     <div>
