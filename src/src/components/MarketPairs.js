@@ -57,57 +57,7 @@ export default function MarketPairs() {
   //   _marketPair()
   // }, 30000);
 
-  const _coin_price = async() => {
-    const rp = require('request-promise');
-    const requestOptions = {
-      method: 'GET',
-      uri: 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest',
-      qs: {
-        'start': '1',
-        'limit': '5000',
-        'convert': 'USD'
-      },
-      headers: {
-        'X-CMC_PRO_API_KEY': '379e225c-f637-40a3-8b66-0ceacdc0000e'
-      },
-      json: true,
-      gzip: true
-    };
-
-    rp(requestOptions).then(response => {
-      console.log('API call response:', response);
-      var price_set = marketPair
-      // var Eth_value = 1
-      for (let index = 0; index < response.data.length; index++) {
-        // if(response.data[index].symbol == 'ETH'){
-        //   console.log(response.data[index].quote.USD.price)
-        //   Eth_value = response.data[index].quote.USD.price
-        //   console.log(Eth_value)
-        // }
-        if(response.data[index].symbol == 'BRTR'){
-          console.log(response.data[index].quote.USD.price)
-          price_set[2].price = (response.data[index].quote.USD.price).toFixed(4)
-          price_set[2].change = (response.data[index].quote.USD.percent_change_24h).toFixed(4)
-          console.log('price_set' ,price_set)
-        }
-        if(response.data[index].symbol == 'OOKS'){
-          console.log(response.data[index].quote.USD.price)
-          price_set[1].price = (response.data[index].quote.USD.price).toFixed(4)
-          price_set[1].change = (response.data[index].quote.USD.percent_change_24h).toFixed(4)
-          console.log('price_set' ,price_set)
-        }
-        if(response.data[index].symbol == 'KRILL'){
-          console.log(response.data[index].quote.USD.price)
-          price_set[3].price = (response.data[index].quote.USD.price).toFixed(4)
-          price_set[3].change = (response.data[index].quote.USD.percent_change_24h).toFixed(4)
-          console.log('price_set' ,price_set)
-        }
-      }
-      setmarketPair(price_set)
-    }).catch((err) => {
-      console.log('API call error:', err.message);
-    });
-  }
+  
   const _marketPair = async() => {
     if(marketPair.length == 0){
       setLoading(true)
@@ -127,51 +77,54 @@ export default function MarketPairs() {
         setLoading(false)
           console.log('_marketPair',data.data)
           if(data.data.success){
-            setmarketPair(data.data.data.traded_pairs)
-            // var price_set = data.data.data.traded_pairs
-            // const rp = require('request-promise');
-            // const requestOptions = {
-            //   method: 'GET',
-            //   uri: 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest',
-            //   qs: {
-            //     'start': '1',
-            //     'limit': '5000',
-            //     'convert': 'USD'
-            //   },
-            //   headers: {
-            //     'X-CMC_PRO_API_KEY': '379e225c-f637-40a3-8b66-0ceacdc0000e'
-            //   },
-            //   json: true,
-            //   gzip: true
-            // };
+            // setmarketPair(data.data.data.traded_pairs)
+            var price_set = data.data.data.traded_pairs
+            
+            for (let index = 0; index < data.data.data.traded_pairs.length; index++) {
+              console.log("_marketPair")
+              if(data.data.data.traded_pairs[index].name == "bfredx/usd1"){
+                price_set[index].price = 0.00015
+                console.log('price_set' ,price_set)
+              }
+              if(data.data.data.traded_pairs[index].name == "ooks/usd1"){
+                price_set[index].price = 0.2837
+                console.log('price_set' ,price_set)
+              }
+              if(data.data.data.traded_pairs[index].name == "brtr/usd1"){
+                price_set[index].price = 0.0085
+                console.log('price_set' ,price_set)
+              }
+              if(data.data.data.traded_pairs[index].name == "krill/usd1"){
+                price_set[index].price = 0.0886
+                console.log('price_set' ,price_set)
+              }
+              if(data.data.data.traded_pairs[index].name == "txc/usd1"){
+                price_set[index].price = 0.0171
+                console.log('price_set' ,price_set)
+              }
+              if(data.data.data.traded_pairs[index].name == "bfredx/eth"){
+                price_set[index].price = 0.00000064
+                console.log('price_set' ,price_set)
+              }
+              if(data.data.data.traded_pairs[index].name == "ooks/eth"){
+                price_set[index].price = 0.000111
+                console.log('price_set' ,price_set)
+              }
+              if(data.data.data.traded_pairs[index].name == "brtr/eth"){
+                price_set[index].price = 0.00000348
+                console.log('price_set' ,price_set)
+              }
+              if(data.data.data.traded_pairs[index].name == "krill/eth"){
+                price_set[index].price = 0.00003523
+                console.log('price_set' ,price_set)
+              }
+              if(data.data.data.traded_pairs[index].name == "txc/eth"){
+                price_set[index].price = 0.00000696
+                console.log('price_set' ,price_set)
+              }
+            }
 
-            // rp(requestOptions).then(response => {
-            //   console.log('API call response:', response);
-              
-            //   for (let index = 0; index < response.data.length; index++) {
-            //     if(response.data[index].symbol == 'BRTR'){
-            //       console.log(response.data[index].quote.USD.price)
-            //       price_set[2].price = (response.data[index].quote.USD.price).toFixed(4)
-            //       price_set[2].change = (response.data[index].quote.USD.percent_change_24h).toFixed(2)
-            //       console.log('price_set' ,price_set)
-            //     }
-            //     if(response.data[index].symbol == 'OOKS'){
-            //       console.log(response.data[index].quote.USD.price)
-            //       price_set[1].price = (response.data[index].quote.USD.price).toFixed(4)
-            //       price_set[1].change = (response.data[index].quote.USD.percent_change_24h).toFixed(2)
-            //       console.log('price_set' ,price_set)
-            //     }
-            //     if(response.data[index].symbol == 'KRILL'){
-            //       console.log(response.data[index].quote.USD.price)
-            //       price_set[3].price = (response.data[index].quote.USD.price).toFixed(4)
-            //       price_set[3].change = (response.data[index].quote.USD.percent_change_24h).toFixed(2)
-            //       console.log('price_set' ,price_set)
-            //     }
-            //   }
-            //   setmarketPair(price_set)
-            // }).catch((err) => {
-            //   console.log('API call error:', err.message);
-            // });
+            setmarketPair(price_set)
             setTimeout(() => {
               setdisp(true)
             }, 1000);
@@ -232,7 +185,7 @@ export default function MarketPairs() {
                       ? (
                         <tr key = {index}  onClick={() => {_pairChange(data.name)}}>
                           <td className="d-flex w-100"><i className="icon ion-md-star"></i> {data.name.toUpperCase()}</td>
-                          <td>{data.price.toFixed(6)}</td>
+                          <td>{data.price.toFixed(8)}</td>
                           <td className="red">{data.change.toFixed(3)}</td>
                         </tr>
                       )
