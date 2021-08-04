@@ -71,8 +71,8 @@ export default function Profile() {
       `${global.baseurl}:3000/exchange/deposit`, 
             {   
               "order": {
-                // "blockchain": blockchain,
-                "blockchain": coin,
+                "blockchain": blockchain,
+                // "blockchain": coin,
                 "coin": coin,
                 "user_id": user._id,
                 "address": user.EthPubKey
@@ -149,18 +149,18 @@ export default function Profile() {
   const _change = (e) =>{
     _setamount(e)
     setcoin(e)
-    // if(e == 'eth' || e == 'usd1' || e == 'ooks' || e == 'brtr'){
-    //   setblockchain('eth')
-    // }
-    // else if(e == 'krill'){
-    //   setblockchain('polygon')
-    // }
-    // else if (e == 'bfredx'){
-    //   setblockchain('bsc')
-    // }
-    // else{
-    //   setblockchain('eth')
-    // }
+    if(e == 'eth' || e == 'usd1' || e == 'ooks' || e == 'brtr' || e == 'txc'){
+      setblockchain('eth')
+    }
+    else if(e == 'krill'){
+      setblockchain('polygon')
+    }
+    else if (e == 'bfredx'){
+      setblockchain('bsc')
+    }
+    else{
+      setblockchain('eth')
+    }
   }
 
   return (

@@ -55,7 +55,7 @@ function Buy() {
 
     useEffect(()=>{
         _getAllOrder()
-        $('#exampleModalCenter').modal('show')
+        // $('#exampleModalCenter').modal('show')
     },[country])
  
     useEffect(()=>{
