@@ -55,7 +55,7 @@ function Buy() {
 
     useEffect(()=>{
         _getAllOrder()
-        // $('#exampleModalCenter').modal('show')
+        $('#exampleModalCenter').modal('show')
     },[country])
  
     useEffect(()=>{
@@ -313,26 +313,26 @@ function Buy() {
 
             <div className="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                 <div className="modal-dialog modal-lg modal-dialog-centered"  role="document">
-                    <div className="modal-content modal_custom" style={{backgroundImage: 'url("/images/bg-stars.png")'}}>
+                    <div className="modal-content modal_custom">
                     <div className="modal-header border-0">
                         <h5 className="modal-title" id="exampleModalLongTitle"><img src="/images/logo.svg" /></h5>
                         <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                             <i class="fa fa-times-circle text-white"></i>
                         </button>
                     </div>
-                    <div className="modal-body">
+                    <div className="modal-body"  style={{backgroundImage: 'url("/images/bg-stars.png")'}}>
                         <div className="container-fluid py-4">
                             <div className="row">
                                 <div className="col-6">
                                     <p className="claimtxt1 text-white text-center">WIN</p>
-                                    <p className="claimtxt2 text-white text-center">50</p>
+                                    <p className="claimtxt2 text-white d-flex justify-content-center align-items-center">100</p>
                                     <p className="claimtxt3 text-white text-center">USD</p>
                                     <p className="claimtxt4 text-white text-center">in PayPal</p>
                                 </div>
                                 <div className="col-6">
                                     <img src="/images/dollar.png" />
                                     <div className="text-center mt-4">
-                                        <a href="https://link.medium.com/F5yk7e03cib" className="clain_btn">localpsyche.com</a>
+                                        <a href="https://link.medium.com/6Ye3HBTwtib" className="clain_btn">localpsyche.com</a>
                                     </div>
                                 </div>
                             </div>
