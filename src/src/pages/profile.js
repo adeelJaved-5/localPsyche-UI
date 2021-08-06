@@ -18,6 +18,7 @@ export default function Profile() {
   const [blockchain, setblockchain] = useState('eth');
   const [load, setload] = useState(false)
   const [page, setpage] = useState(false)
+  const [usd1b, setusd1b] = useState(0)
 
   const generalReducers = useSelector(state => state);
   const {userInfo} = generalReducers;
@@ -121,10 +122,18 @@ export default function Profile() {
           if(response.data.success){
             setbalance(response.data.data.wallet)
             setamount(`${response.data.data.wallet[0].balance} ${response.data.data.wallet[0].coin.toUpperCase()}`)
+            for(let i=0; i < response.data.data.wallet.length; i++){
+              if(response.data.data.wallet[i].coin == 'usd1'){
+                setusd1b(response.data.data.wallet[i].balance)
+                break
+              }
+              console.log('hello')
+            }
+            setTimeout(() => {
+              setpage(true) 
+            }, 1000);
           }
-          // setTimeout(() => {
-          //   setpage(true) 
-          // }, 1000);
+          
       })
       .catch ((error) => { 
         setLoading(false)
@@ -340,10 +349,10 @@ export default function Profile() {
                                       </li>
                                     </ul>
                                     <div className="d-flex justify-content-around align-items-center">
-                                      <button type="button" class="btn green" data-toggle="modal" data-target="#deposit">
+                                      <button type="button" className="btn green" data-toggle="modal" data-target="#deposit">
                                         Deposit
                                       </button>
-                                      <button type="button" class="btn red" data-toggle="modal" data-target="#widthdraw">
+                                      <button type="button" className="btn red" data-toggle="modal" data-target="#widthdraw">
                                         Withdraw
                                       </button>
                                     </div>
@@ -1231,16 +1240,16 @@ export default function Profile() {
       }
 
       {/* Deposit */}
-      <div class="modal fade" id="deposit" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLongTitle">Deposit</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+      <div className="modal fade" id="deposit" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div className="modal-dialog modal-dialog-centered" role="document">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title" id="exampleModalLongTitle">Deposit</h5>
+              <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
-            <div class="modal-body">
+            <div className="modal-body">
               <input
                 type="text"
                 className="form-control form_feild mb-3"
@@ -1255,17 +1264,19 @@ export default function Profile() {
       </div>
 
       {/* widthdraw */}
-      <div class="modal fade" id="widthdraw" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLongTitle">Widthdraw</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+      <div className="modal fade" id="widthdraw" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div className="modal-dialog modal-dialog-centered" role="document">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title" id="exampleModalLongTitle">Widthdraw</h5>
+              <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
-            <div class="modal-body">
-            
+            <div className="modal-body">
+              <div className="border border-info rounded p-2 mb-3"> 
+                <p className="text-info"> Withdraw fees is 20 USD1</p>
+              </div>
               <input
                 type="number"
                 className="form-control form_feild mb-3"
@@ -1280,6 +1291,22 @@ export default function Profile() {
                 value={Widthdrawaddress}
                 onChange={e => setWidthdrawaddress(e.target.value)}
               />
+              <div className="border border-info rounded p-2 mb-3"> 
+                <div className="container-fluid">
+                  <div className="row">
+                    <div className="col-6 text-left text-info">
+                      Balance {coin} coin: <br />
+                      Withdraw fee: <br />
+                      USD1 balance:  
+                    </div>
+                    <div className="col-6 text-right">
+                      {amount} <br />
+                      20 USD1 <br />
+                      {page ? usd1b :'0'} USD1
+                    </div>
+                  </div>
+                </div>
+              </div>
               <button className="btn red_btn btn-block" onClick={_withdraw}>Withdraw</button>
           
             </div>

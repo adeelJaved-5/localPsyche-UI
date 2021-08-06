@@ -19,8 +19,8 @@ export default function TradingChart() {
       let pairWS = pair
       let from = Math.floor(new Date().getTime() / 1000) - 86400
       let to = Math.floor(new Date().getTime() / 1000)
-      console.log(from,to)
-      if(chartData.length == 0){
+      // console.log(from,to)
+      // if(chartData.length == 0){
         axios.post(
         `${global.baseurl}:3000/exchange/history`, 
           {   
@@ -65,7 +65,7 @@ export default function TradingChart() {
         .catch ((error) => { 
             console.log(error.message) 
         })
-      }
+      // }
     }
 
     const _graphUpperData = async() => {
@@ -73,7 +73,7 @@ export default function TradingChart() {
       let from = Math.floor(new Date().getTime() / 1000) - 86400
       let to = Math.floor(new Date().getTime() / 1000)
       console.log(from,to)
-      if(chartData.length == 0){
+      // if(graphUpperData.length == 0){
         axios.post(
         `${global.baseurl}:3000/exchange/history`, 
           {   
@@ -98,13 +98,17 @@ export default function TradingChart() {
         .catch ((error) => { 
             console.log(error.message) 
         })
-      }
+      // }
     }
 
     useEffect(()=>{
       _graphData()
       _graphUpperData()
     },[])
+    setInterval(() => {
+      _graphData()
+      _graphUpperData()
+    }, 20000);
   return (
     <>
       <div className="main-chart mb15 border">

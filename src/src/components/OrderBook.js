@@ -17,10 +17,10 @@ export default function OrderBook() {
   
   setInterval(() => {
     _orderBook()
-  }, 20000);
+  }, 30000);
 
   const _orderBook = async() => {
-    if(orderBookbuy.length == 0){
+    // if(orderBookbuy.length == 0){
       setLoading(true)
       axios.post(
       `${global.baseurl}:3000/exchange/order_book`, 
@@ -45,7 +45,7 @@ export default function OrderBook() {
         setLoading(false)
           console.log(error.message) 
       })
-    }
+    // }
   }
 
   return (
