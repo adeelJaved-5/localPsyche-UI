@@ -121,10 +121,10 @@ export default function Profile() {
         console.log('balance',response.data)
           if(response.data.success){
             setbalance(response.data.data.wallet)
-            setamount(`${response.data.data.wallet[0].balance} ${response.data.data.wallet[0].coin.toUpperCase()}`)
+            setamount(`${response.data.data.wallet[0].balance.toFixed(2)} ${response.data.data.wallet[0].coin.toUpperCase()}`)
             for(let i=0; i < response.data.data.wallet.length; i++){
               if(response.data.data.wallet[i].coin == 'usd1'){
-                setusd1b(response.data.data.wallet[i].balance)
+                setusd1b(response.data.data.wallet[i].balance.toFixed(2))
                 break
               }
               console.log('hello')
@@ -1295,7 +1295,7 @@ export default function Profile() {
                 <div className="container-fluid">
                   <div className="row">
                     <div className="col-6 text-left text-info">
-                      Balance {coin} coin: <br />
+                      Balance {coin.toUpperCase()} coin: <br />
                       Withdraw fee: <br />
                       USD1 balance:  
                     </div>

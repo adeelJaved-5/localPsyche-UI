@@ -148,47 +148,47 @@ export default function HistoryOrder() {
               if (response.data.data.wallet[i].coin == 'eth') {
                 setvalues(prevState => ({
                   ...prevState,
-                  ethBalance: response.data.data.wallet[i].balance,
-                  ethEscrow: response.data.data.wallet[i].locked
+                  ethBalance: response.data.data.wallet[i].balance.toFixed(4),
+                  ethEscrow: response.data.data.wallet[i].locked.toFixed(4)
                 }));
               } else if (response.data.data.wallet[i].coin == 'usd1') {
                 setvalues(prevState => ({
                   ...prevState,
-                  usd1Balance: response.data.data.wallet[i].balance,
-                  usd1Escrow: response.data.data.wallet[i].locked
+                  usd1Balance: response.data.data.wallet[i].balance.toFixed(4),
+                  usd1Escrow: response.data.data.wallet[i].locked.toFixed(4)
                 }));
               } else if (response.data.data.wallet[i].coin == 'krill') {
 
                 setvalues(prevState => ({
                   ...prevState,
-                  krillBalance: response.data.data.wallet[i].balance,
-                  krillEscrow: response.data.data.wallet[i].locked
+                  krillBalance: response.data.data.wallet[i].balance.toFixed(4),
+                  krillEscrow: response.data.data.wallet[i].locked.toFixed(4)
                 }));
               } else if (response.data.data.wallet[i].coin == 'ooks') {
                 setvalues(prevState => ({
                   ...prevState,
-                  ooksBalance: response.data.data.wallet[i].balance,
-                  ooksEscrow: response.data.data.wallet[i].locked
+                  ooksBalance: response.data.data.wallet[i].balance.toFixed(4),
+                  ooksEscrow: response.data.data.wallet[i].locked.toFixed(4)
                 }));
               } else if (response.data.data.wallet[i].coin == 'brtr') {
                 setvalues(prevState => ({
                   ...prevState,
-                  brtrBalance: response.data.data.wallet[i].balance,
-                  brtrEscrow: response.data.data.wallet[i].locked
+                  brtrBalance: response.data.data.wallet[i].balance.toFixed(4),
+                  brtrEscrow: response.data.data.wallet[i].locked.toFixed(4)
                 }));
               } else if (response.data.data.wallet[i].coin == 'bfredx') {
   
                 setvalues(prevState => ({
                   ...prevState,
-                  bfredxBalance: response.data.data.wallet[i].balance,
-                  bfredxEscrow: response.data.data.wallet[i].locked
+                  bfredxBalance: response.data.data.wallet[i].balance.toFixed(4),
+                  bfredxEscrow: response.data.data.wallet[i].locked.toFixed(4)
                 }));  
               } else if (response.data.data.wallet[i].coin == 'txc') {
   
                 setvalues(prevState => ({
                   ...prevState,
-                  txcBalance: response.data.data.wallet[i].balance,
-                  txcEscrow: response.data.data.wallet[i].locked
+                  txcBalance: response.data.data.wallet[i].balance.toFixed(4),
+                  txcEscrow: response.data.data.wallet[i].locked.toFixed(4)
                 }));  
               } else {
                 console('else')

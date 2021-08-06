@@ -141,7 +141,7 @@ export default function MarketPairs() {
     
     for(let i=0; i < balance.length; i++){
       if(balance[i].coin == pair.split('/')[0]){
-        dispatch({type: 'balance1', payload: balance[i].balance})
+        dispatch({type: 'balance1', payload: balance[i].balance.toFixed(2)})
         break
       }
       else{
@@ -150,7 +150,7 @@ export default function MarketPairs() {
     }
     for(let i=0; i < balance.length; i++){
       if(balance[i].coin == pair.split('/')[1]){
-        dispatch({type: 'balance2', payload: balance[i].balance})
+        dispatch({type: 'balance2', payload: balance[i].balance.toFixed(2)})
         break
       }
       else{

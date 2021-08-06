@@ -28,7 +28,7 @@ export default function MarketHistory() {
       axios.post(
       `${global.baseurl}:3000/exchange/trades`, 
         {   
-          "pair": pair,
+          "pair": sessionStorage.getItem("pair"),
           "cursor": 1
         },
         {

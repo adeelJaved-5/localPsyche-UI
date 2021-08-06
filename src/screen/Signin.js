@@ -198,6 +198,7 @@ function Signin(props) {
             dispatch({type: 'IS_USER', payload: true})
             props.history.push("/")
             if(check){sessionStorage.setItem('loginInfo', JSON.stringify({email, password}))}
+            sessionStorage.setItem("pair", 'bfredx/eth');
             Toast.show({ html: "Login Successfully", type:'success', time: 6 });
         }
         else{

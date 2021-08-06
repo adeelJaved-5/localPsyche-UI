@@ -25,7 +25,7 @@ export default function OrderBook() {
       axios.post(
       `${global.baseurl}:3000/exchange/order_book`, 
         {   
-          "pair": pair,
+          "pair": sessionStorage.getItem("pair"),
           "cursor": 1
         }
       )

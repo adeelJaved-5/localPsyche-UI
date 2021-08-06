@@ -16,7 +16,7 @@ export default function TradingChart() {
   
 
     const _graphData = async() => {
-      let pairWS = pair
+      let pairWS = sessionStorage.getItem("pair")
       let from = Math.floor(new Date().getTime() / 1000) - 86400
       let to = Math.floor(new Date().getTime() / 1000)
       // console.log(from,to)
@@ -69,7 +69,7 @@ export default function TradingChart() {
     }
 
     const _graphUpperData = async() => {
-      let pairWS = pair
+      let pairWS = sessionStorage.getItem("pair")
       let from = Math.floor(new Date().getTime() / 1000) - 86400
       let to = Math.floor(new Date().getTime() / 1000)
       console.log(from,to)

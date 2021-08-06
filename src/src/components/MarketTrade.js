@@ -142,7 +142,7 @@ export default function MarketTrade() {
             setbalance(response.data.data.wallet)
             for(let i=0; i < response.data.data.wallet.length; i++){
               if(response.data.data.wallet[i].coin == pair.split('/')[0]){
-                dispatch({type: 'balance1', payload: response.data.data.wallet[i].balance})
+                dispatch({type: 'balance1', payload: response.data.data.wallet[i].balance.toFixed(2)})
                 break
               }
               else{
@@ -151,7 +151,7 @@ export default function MarketTrade() {
             }
             for(let i=0; i < response.data.data.wallet.length; i++){
               if(response.data.data.wallet[i].coin == pair.split('/')[1]){
-                dispatch({type: 'balance2', payload: response.data.data.wallet[i].balance})
+                dispatch({type: 'balance2', payload: response.data.data.wallet[i].balance.toFixed(2)})
                 break
               }
               else{
