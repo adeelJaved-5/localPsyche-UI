@@ -131,7 +131,7 @@ export default function TradingChart() {
             <h1><span className="stats_head">24h Low: </span>0.000</h1>
           }
           {show2 &&
-            <h1><span className="stats_head">24h Volume: </span>0.000</h1>
+            <h1><span className="stats_head">{pair.split('/')[0].toUpperCase()} 24h Volume: </span>0.000</h1>
           }
         </div>
         <ChartComponent 
