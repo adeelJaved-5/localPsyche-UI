@@ -2,6 +2,9 @@ import React, {useState,useEffect} from 'react';
 import { Tabs, Tab } from 'react-bootstrap';
 import axios from "axios"
 import {useDispatch, useSelector} from "react-redux"
+import oderPage from './OrderBook';
+import graphPage from './TradingChart';
+import tradePage from './MarketHistory';
 
 export default function MarketPairs() {
   const generalReducers = useSelector(state => state);
@@ -53,9 +56,9 @@ export default function MarketPairs() {
   },[])
 
 
-  // setInterval(() => {
-  //   _marketPair()
-  // }, 30000);
+  setInterval(() => {
+    _marketPair()
+  }, 30000);
 
   
   const _marketPair = async() => {
@@ -163,6 +166,11 @@ export default function MarketPairs() {
     dispatch({type: 'pair', payload: e})
     sessionStorage.setItem("pair", e);
     _balance()
+    oderPage.setorderBookbuy([])
+    oderPage.setorderBooksell([])
+    graphPage.setgraphData([])
+    graphPage.setgraphUpperData([])
+    tradePage.setTrades([])
   }
 
   return (

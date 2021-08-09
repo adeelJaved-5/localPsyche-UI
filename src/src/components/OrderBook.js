@@ -22,6 +22,7 @@ export default function OrderBook() {
   const _orderBook = async() => {
     // if(orderBookbuy.length == 0){
       setLoading(true)
+      console.log(sessionStorage.getItem("pair"))
       axios.post(
       `${global.baseurl}:3000/exchange/order_book`, 
         {   
