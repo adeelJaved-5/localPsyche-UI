@@ -22,15 +22,7 @@ export default class exchange extends Component {
                 <MarketPairs />
               </div>
               <div className="col-sm-12 col-md-6">
-                <ThemeConsumer>
-                  {({ data }) => {
-                    return data.theme === 'light' ? (
                       <TradingChart />
-                    ) : (
-                      <TradingChartDark />
-                    );
-                  }}
-                </ThemeConsumer>
                 <MarketTrade />
               </div>
               <div className="col-md-3">

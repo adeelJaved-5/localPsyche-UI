@@ -2,9 +2,6 @@ import React, {useState,useEffect} from 'react';
 import { Tabs, Tab } from 'react-bootstrap';
 import axios from "axios"
 import {useDispatch, useSelector} from "react-redux"
-import oderPage from './OrderBook';
-import graphPage from './TradingChart';
-import tradePage from './MarketHistory';
 
 export default function MarketPairs() {
   const generalReducers = useSelector(state => state);
@@ -105,6 +102,14 @@ export default function MarketPairs() {
                 price_set[index].price = 0.0171
                 console.log('price_set' ,price_set)
               }
+              if(data.data.data.traded_pairs[index].name == "mvh/usd1"){
+                price_set[index].price = 0.00004160
+                console.log('price_set' ,price_set)
+              }
+              if(data.data.data.traded_pairs[index].name == "penky/usd1"){
+                price_set[index].price = 0.00000000
+                console.log('price_set' ,price_set)
+              }
               if(data.data.data.traded_pairs[index].name == "bfredx/eth"){
                 price_set[index].price = 0.00000064
                 console.log('price_set' ,price_set)
@@ -123,6 +128,14 @@ export default function MarketPairs() {
               }
               if(data.data.data.traded_pairs[index].name == "txc/eth"){
                 price_set[index].price = 0.00000696
+                console.log('price_set' ,price_set)
+              }
+              if(data.data.data.traded_pairs[index].name == "mvh/eth"){
+                price_set[index].price = 0.00004149
+                console.log('price_set' ,price_set)
+              }
+              if(data.data.data.traded_pairs[index].name == "penky/eth"){
+                price_set[index].price = 0.00000000
                 console.log('price_set' ,price_set)
               }
             }
@@ -166,11 +179,6 @@ export default function MarketPairs() {
     dispatch({type: 'pair', payload: e})
     sessionStorage.setItem("pair", e);
     _balance()
-    oderPage.setorderBookbuy([])
-    oderPage.setorderBooksell([])
-    graphPage.setgraphData([])
-    graphPage.setgraphUpperData([])
-    tradePage.setTrades([])
   }
 
   return (

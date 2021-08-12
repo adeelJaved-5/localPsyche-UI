@@ -11,18 +11,9 @@ export default function OrderBook() {
   const [loading, setLoading] = useState(false);
   const [veiw, setveiw] = useState(false);
 
-  useEffect(()=>{
-    _orderBook()
-  },[pair])
-  
-  setInterval(() => {
-    _orderBook()
-  }, 30000);
-
   const _orderBook = async() => {
     // if(orderBookbuy.length == 0){
-      setLoading(true)
-      console.log(sessionStorage.getItem("pair"))
+      // console.log(sessionStorage.getItem("pair"))
       axios.post(
       `${global.baseurl}:3000/exchange/order_book`, 
         {   
@@ -31,23 +22,26 @@ export default function OrderBook() {
         }
       )
       .then((response) =>{
-        setLoading(false)
           console.log('orderbook',response.data.data)
           if(response.data){
             setorderBookbuy(response.data.data.buy)
-            // console.log('after sort ',response.data.data.buy.sort((a, b) => b.timestamp.localeCompare(a.timestamp)))
             setorderBooksell(response.data.data.sell)
-            setTimeout(() => {
-              setveiw(true)
-            }, 1000);
+              
           }
       })
       .catch ((error) => { 
-        setLoading(false)
           console.log(error.message) 
       })
     // }
   }
+
+  useEffect(()=>{
+    _orderBook()
+  },[pair])
+  
+  setInterval(() => {
+    _orderBook()
+  }, 20000);
 
   return (
     <>
@@ -62,7 +56,7 @@ export default function OrderBook() {
             </tr>
           </thead>
           <tbody>
-            {veiw &&
+            {!orderBooksell.length == 0 &&
               orderBooksell.map((data, index) =>
                 <tr key = {index} >
                   <td className="red">{data.price.toFixed(6)}</td>
@@ -86,7 +80,7 @@ export default function OrderBook() {
             </tr>
           </tbody>
           <tbody>
-            {veiw &&
+            {!orderBookbuy.length == 0  &&
               orderBookbuy.map((data, index) =>
                 <tr  className="d-flex" key = {index} >
                   <td className="green">{data.price.toFixed(6)}</td>

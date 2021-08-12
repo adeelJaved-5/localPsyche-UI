@@ -319,6 +319,22 @@ export default function Profile() {
                                     </div>
                                   </Nav.Link>
                                 </Nav.Item>
+                                <Nav.Item onClick = {() =>{_change('mvh')}}>
+                                  <Nav.Link
+                                    eventKey={7}
+                                    className="d-flex justify-content-between align-items-center"
+                                  >
+                                    <div className="d-flex">
+                                      <img src={'images/LOGO-CINEMADROM-2.webp'} alt="btc" />
+                                      <div>
+                                        <h2>MVH</h2>
+                                        <p>ETHEREUM</p>
+                                      </div>
+                                    </div>
+                                    <div>
+                                    </div>
+                                  </Nav.Link>
+                                </Nav.Item>
                             </Nav>
                           </Col>
 

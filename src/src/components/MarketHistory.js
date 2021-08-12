@@ -10,20 +10,20 @@ export default function MarketHistory() {
 
   const [Trades, setTrades] = useState([])
   const [loading, setLoading] = useState(false);
-  const [show, setshow] = useState(false);
+  const [visi, setvisi] = useState(false);
 
   var token = sessionStorage.getItem("key");
 
   useEffect(()=>{
     trades()
-  },[])
+  },[pair])
 
   setInterval(() => {
     trades()
   }, 20000);
 
   const trades = async() => {
-    if(Trades.length == 0){
+    // if(Trades.length == 0){
       setLoading(true)
       axios.post(
       `${global.baseurl}:3000/exchange/trades`, 
@@ -43,16 +43,13 @@ export default function MarketHistory() {
           if(response.data.success){
             console.log('trades',response.data)
             setTrades(response.data.data.trades)
-            setTimeout(() => {
-              setshow(true)
-            }, 1000);
           }
       })
       .catch ((error) => { 
         setLoading(false)
           console.log(error.message) 
       })
-    }
+    // }
   }
 
   return (
@@ -69,7 +66,7 @@ export default function MarketHistory() {
                 </tr>
               </thead>
               <tbody>
-                {show &&
+                {!Trades.length == 0 &&
                   Trades.map((data, index) =>
                     <tr key = {index} >
                       <td className="w-custom">{new Date(data.timestamp).toLocaleTimeString("en-US")}</td>

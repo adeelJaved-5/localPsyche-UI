@@ -31,6 +31,10 @@ export default function HistoryOrder() {
       bfredxEscrow: "0",
       txcBalance: "0",
       txcEscrow: "0",
+      mvhBalance: "0",
+      mvhEscrow: "0",
+      penkyBalance: "0",
+      penkyEscrow: "0",
     }
   );
 
@@ -190,6 +194,20 @@ export default function HistoryOrder() {
                   txcBalance: response.data.data.wallet[i].balance.toFixed(4),
                   txcEscrow: response.data.data.wallet[i].locked.toFixed(4)
                 }));  
+              } else if (response.data.data.wallet[i].coin == 'mvh') {
+  
+                setvalues(prevState => ({
+                  ...prevState,
+                  mvhBalance: response.data.data.wallet[i].balance.toFixed(4),
+                  mvhEscrow: response.data.data.wallet[i].locked.toFixed(4)
+                })); 
+              } else if (response.data.data.wallet[i].coin == 'penky') {
+  
+                setvalues(prevState => ({
+                  ...prevState,
+                  penkyBalance: response.data.data.wallet[i].balance.toFixed(4),
+                  penkyEscrow: response.data.data.wallet[i].locked.toFixed(4)
+                })); 
               } else {
                 console('else')
               }
@@ -352,6 +370,16 @@ export default function HistoryOrder() {
                   <li>TXC</li>
                   <li>{values.txcBalance}</li>
                   <li>{values.txcEscrow}</li>
+                </ul>
+                <ul className="d-flex justify-content-between market-order-item orderHistory">
+                  <li>MVH</li>
+                  <li>{values.mvhBalance}</li>
+                  <li>{values.mvhEscrow}</li>
+                </ul>
+                <ul className="d-flex justify-content-between market-order-item orderHistory">
+                  <li>PENKY</li>
+                  <li>{values.mvhBalance}</li>
+                  <li>{values.mvhEscrow}</li>
                 </ul>
               </div>
             }
