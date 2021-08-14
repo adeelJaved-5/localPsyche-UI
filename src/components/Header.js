@@ -14,7 +14,28 @@ function Header(props) {
     
     const dispatch = useDispatch()
 
-    useEffect(() => {
+    const my_order = async () => {
+        try {
+            const { data } = await axios({
+                method: 'post', 
+                url: `${global.baseurl}:3000/myOrdersList`,
+                data: {email: userInfo.user.email},
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization":  token
+                } 
+            }); 
+            if(data.success){
+                sessionStorage.setItem("notification", data.data.length);
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    const socket = socketIOClient('wss://localpsyche.com:4001');
+
+    // useEffect(() => {
         setTimeout(() => {
             if(isUser){
                 if(notifi){
@@ -41,26 +62,9 @@ function Header(props) {
             }    
         }, 3000);
         
-    });
+    // });
 
-    const my_order = async () => {
-        try {
-            const { data } = await axios({
-                method: 'post', 
-                url: `${global.baseurl}:3000/myOrdersList`,
-                data: {email: userInfo.user.email},
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization":  token
-                } 
-            }); 
-            if(data.success){
-                sessionStorage.setItem("notification", data.data.length);
-            }
-        } catch (error) {
-            console.log(error)
-        }
-    }
+    
     
     const _logout = () => {
         axios.get(`${global.baseurl}:8000/api/auth/sign-out/${userInfo.user._id}`)

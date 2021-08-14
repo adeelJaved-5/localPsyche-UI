@@ -12,36 +12,30 @@ export default function OrderBook() {
   const [veiw, setveiw] = useState(false);
 
   const _orderBook = async() => {
-    // if(orderBookbuy.length == 0){
-      // console.log(sessionStorage.getItem("pair"))
-      axios.post(
-      `${global.baseurl}:3000/exchange/order_book`, 
-        {   
-          "pair": sessionStorage.getItem("pair"),
-          "cursor": 1
+    axios.post(
+    `${global.baseurl}:3000/exchange/order_book`, 
+      {   
+        "pair": sessionStorage.getItem("pair"),
+        "cursor": 1
+      }
+    )
+    .then((response) =>{
+        console.log('orderbook',response.data.data)
+        if(response.data){
+          setorderBookbuy(response.data.data.buy)
+          setorderBooksell(response.data.data.sell)
         }
-      )
-      .then((response) =>{
-          console.log('orderbook',response.data.data)
-          if(response.data){
-            setorderBookbuy(response.data.data.buy)
-            setorderBooksell(response.data.data.sell)
-              
-          }
-      })
-      .catch ((error) => { 
-          console.log(error.message) 
-      })
-    // }
+    })
+    .catch ((error) => { 
+        console.log(error.message) 
+    })
   }
 
   useEffect(()=>{
     _orderBook()
-  },[pair])
-  
-  setInterval(() => {
-    _orderBook()
-  }, 20000);
+    clearInterval(interval_orderBook);
+    var interval_orderBook = setInterval(_orderBook, 20000)
+  },[])
 
   return (
     <>

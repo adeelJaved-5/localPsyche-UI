@@ -3,7 +3,7 @@ import { Tabs, Tab } from 'react-bootstrap';
 import axios from "axios"
 import {useDispatch, useSelector} from "react-redux"
 
-export default function MarketHistory() {
+function MarketHistory() {
   const generalReducers = useSelector(state => state);
   const {userInfo ,pair} = generalReducers;
   const {user} = userInfo;
@@ -14,43 +14,40 @@ export default function MarketHistory() {
 
   var token = sessionStorage.getItem("key");
 
+  const trades = async() => {
+    setLoading(true)
+    axios.post(
+    `${global.baseurl}:3000/exchange/trades`, 
+      {   
+        "pair": sessionStorage.getItem("pair"),
+        "cursor": 1
+      },
+      {
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization":  token
+        } 
+      }
+    )
+    .then((response) =>{
+      setLoading(false)
+        if(response.data.success){
+          console.log('trades',response.data)
+          setTrades(response.data.data.trades)
+        }
+    })
+    .catch ((error) => { 
+      setLoading(false)
+        console.log(error.message) 
+    })
+  }
+
   useEffect(()=>{
     trades()
-  },[pair])
+    clearInterval(trades_interval);
+    var trades_interval = setInterval(trades, 20000)
+  },[])
 
-  setInterval(() => {
-    trades()
-  }, 20000);
-
-  const trades = async() => {
-    // if(Trades.length == 0){
-      setLoading(true)
-      axios.post(
-      `${global.baseurl}:3000/exchange/trades`, 
-        {   
-          "pair": sessionStorage.getItem("pair"),
-          "cursor": 1
-        },
-        {
-          headers: {
-              "Content-Type": "application/json",
-              "Authorization":  token
-          } 
-        }
-      )
-      .then((response) =>{
-        setLoading(false)
-          if(response.data.success){
-            console.log('trades',response.data)
-            setTrades(response.data.data.trades)
-          }
-      })
-      .catch ((error) => { 
-        setLoading(false)
-          console.log(error.message) 
-      })
-    // }
-  }
 
   return (
     <>
@@ -83,3 +80,6 @@ export default function MarketHistory() {
     </>
   );
 }
+
+
+export default React.memo(MarketHistory);

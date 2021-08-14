@@ -3,7 +3,7 @@ import { Tabs, Tab } from 'react-bootstrap';
 import axios from "axios"
 import {useDispatch, useSelector} from "react-redux"
 
-export default function HistoryOrder() {
+function HistoryOrder() {
 
   const [openOrderbuy, setopenOrderbuy] = useState([]);
   const [openOrdersell, setopenOrdersell] = useState([]);
@@ -50,178 +50,170 @@ export default function HistoryOrder() {
     _orderHistory()
     _openOrder()
     _balance()
+    clearInterval(history_order);
+    var history_order = setInterval(() => {
+      _orderHistory()
+      _openOrder()
+      _balance()
+    }, 20000);
   },[])
 
-  // setInterval(() => {
-  //   _balance()
-  // }, 35000)
-
-
   const _orderHistory = async() => {
-    if(orderHistory.length == 0){
-    // if(functin){
-      setLoading(true)
-      axios.post(
-      `${global.baseurl}:3000/exchange/mytrades`, 
-        {   
-          "pair": "all",
-          "user_id": user._id
-        },
-        {
-          headers: {
-              "Content-Type": "application/json",
-              "Authorization":  token
-          } 
+    setLoading(true)
+    axios.post(
+    `${global.baseurl}:3000/exchange/mytrades`, 
+      {   
+        "pair": "all",
+        "user_id": user._id
+      },
+      {
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization":  token
+        } 
+      }
+    )
+    .then((response) =>{
+      setLoading(false)
+        console.log('oderHistory',response.data)
+        if(response.data.success){
+          setorderHistory(response.data.data.trades)
+          setTimeout(() => {
+            setshow(true)
+          }, 1000);
         }
-      )
-      .then((response) =>{
-        setLoading(false)
-          console.log('oderHistory',response.data)
-          if(response.data.success){
-            setorderHistory(response.data.data.trades)
-            setTimeout(() => {
-              setshow(true)
-            }, 1000);
-          }
-      })
-      .catch ((error) => { 
-        setLoading(false)
-          console.log(error.message) 
-      })
-    }
+    })
+    .catch ((error) => { 
+      setLoading(false)
+        console.log(error.message) 
+    })
   }
 
   const _openOrder = async() => {
-    if(openOrderbuy.length == 0){
-      // if(functin){
-      setLoading(true)
-      axios.post(
-      `${global.baseurl}:3000/exchange/order_open`, 
-        {   
-          "pair": "all",
-          "user_id": user._id
-        },
-        {
-          headers: {
-              "Content-Type": "application/json",
-              "Authorization":  token
-          } 
+    setLoading(true)
+    axios.post(
+    `${global.baseurl}:3000/exchange/order_open`, 
+      {   
+        "pair": "all",
+        "user_id": user._id
+      },
+      {
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization":  token
+        } 
+      }
+    )
+    .then((response) =>{
+      setLoading(false)
+        console.log('openOrder',response.data)
+        if(response.data.success){
+          setopenOrderbuy(response.data.data.buy)
+          setopenOrdersell(response.data.data.sell)
+          setTimeout(() => {
+            setshow2(true)
+          }, 1000);
         }
-      )
-      .then((response) =>{
-        setLoading(false)
-          console.log('openOrder',response.data)
-          if(response.data.success){
-            setopenOrderbuy(response.data.data.buy)
-            setopenOrdersell(response.data.data.sell)
-            setTimeout(() => {
-              setshow2(true)
-            }, 1000);
-          }
-      })
-      .catch ((error) => { 
-        setLoading(false)
-          console.log(error.message) 
-      })
-    }
+    })
+    .catch ((error) => { 
+      setLoading(false)
+        console.log(error.message) 
+    })
   }
 
   const _balance = async() => {
-    if(balance.length == 0){
-      // if(functin){
-      setLoading(true)
-      axios.post(
-      `${global.baseurl}:3000/exchange/wallet`, 
-        {   
-          "user_id": user._id
-        },
-        {
-          headers: {
-              "Content-Type": "application/json",
-              "Authorization":  token
-          } 
-        }
-      )
-      .then((response) =>{
-        setLoading(false)
-        console.log('balance',response.data)
-          if(response.data.success){
-            setbalance(response.data.data.wallet)
+    setLoading(true)
+    axios.post(
+    `${global.baseurl}:3000/exchange/wallet`, 
+      {   
+        "user_id": user._id
+      },
+      {
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization":  token
+        } 
+      }
+    )
+    .then((response) =>{
+      setLoading(false)
+      console.log('balance_history',response.data)
+        if(response.data.success){
+          setbalance(response.data.data.wallet)
 
-            for(let i=0; i < response.data.data.wallet.length; i++){
-              if (response.data.data.wallet[i].coin == 'eth') {
-                setvalues(prevState => ({
-                  ...prevState,
-                  ethBalance: response.data.data.wallet[i].balance.toFixed(4),
-                  ethEscrow: response.data.data.wallet[i].locked.toFixed(4)
-                }));
-              } else if (response.data.data.wallet[i].coin == 'usd1') {
-                setvalues(prevState => ({
-                  ...prevState,
-                  usd1Balance: response.data.data.wallet[i].balance.toFixed(4),
-                  usd1Escrow: response.data.data.wallet[i].locked.toFixed(4)
-                }));
-              } else if (response.data.data.wallet[i].coin == 'krill') {
+          for(let i=0; i < response.data.data.wallet.length; i++){
+            if (response.data.data.wallet[i].coin == 'eth') {
+              setvalues(prevState => ({
+                ...prevState,
+                ethBalance: response.data.data.wallet[i].balance.toFixed(4),
+                ethEscrow: response.data.data.wallet[i].locked.toFixed(4)
+              }));
+            } else if (response.data.data.wallet[i].coin == 'usd1') {
+              setvalues(prevState => ({
+                ...prevState,
+                usd1Balance: response.data.data.wallet[i].balance.toFixed(4),
+                usd1Escrow: response.data.data.wallet[i].locked.toFixed(4)
+              }));
+            } else if (response.data.data.wallet[i].coin == 'krill') {
 
-                setvalues(prevState => ({
-                  ...prevState,
-                  krillBalance: response.data.data.wallet[i].balance.toFixed(4),
-                  krillEscrow: response.data.data.wallet[i].locked.toFixed(4)
-                }));
-              } else if (response.data.data.wallet[i].coin == 'ooks') {
-                setvalues(prevState => ({
-                  ...prevState,
-                  ooksBalance: response.data.data.wallet[i].balance.toFixed(4),
-                  ooksEscrow: response.data.data.wallet[i].locked.toFixed(4)
-                }));
-              } else if (response.data.data.wallet[i].coin == 'brtr') {
-                setvalues(prevState => ({
-                  ...prevState,
-                  brtrBalance: response.data.data.wallet[i].balance.toFixed(4),
-                  brtrEscrow: response.data.data.wallet[i].locked.toFixed(4)
-                }));
-              } else if (response.data.data.wallet[i].coin == 'bfredx') {
-  
-                setvalues(prevState => ({
-                  ...prevState,
-                  bfredxBalance: response.data.data.wallet[i].balance.toFixed(4),
-                  bfredxEscrow: response.data.data.wallet[i].locked.toFixed(4)
-                }));  
-              } else if (response.data.data.wallet[i].coin == 'txc') {
-  
-                setvalues(prevState => ({
-                  ...prevState,
-                  txcBalance: response.data.data.wallet[i].balance.toFixed(4),
-                  txcEscrow: response.data.data.wallet[i].locked.toFixed(4)
-                }));  
-              } else if (response.data.data.wallet[i].coin == 'mvh') {
-  
-                setvalues(prevState => ({
-                  ...prevState,
-                  mvhBalance: response.data.data.wallet[i].balance.toFixed(4),
-                  mvhEscrow: response.data.data.wallet[i].locked.toFixed(4)
-                })); 
-              } else if (response.data.data.wallet[i].coin == 'penky') {
-  
-                setvalues(prevState => ({
-                  ...prevState,
-                  penkyBalance: response.data.data.wallet[i].balance.toFixed(4),
-                  penkyEscrow: response.data.data.wallet[i].locked.toFixed(4)
-                })); 
-              } else {
-                console('else')
-              }
+              setvalues(prevState => ({
+                ...prevState,
+                krillBalance: response.data.data.wallet[i].balance.toFixed(4),
+                krillEscrow: response.data.data.wallet[i].locked.toFixed(4)
+              }));
+            } else if (response.data.data.wallet[i].coin == 'ooks') {
+              setvalues(prevState => ({
+                ...prevState,
+                ooksBalance: response.data.data.wallet[i].balance.toFixed(4),
+                ooksEscrow: response.data.data.wallet[i].locked.toFixed(4)
+              }));
+            } else if (response.data.data.wallet[i].coin == 'brtr') {
+              setvalues(prevState => ({
+                ...prevState,
+                brtrBalance: response.data.data.wallet[i].balance.toFixed(4),
+                brtrEscrow: response.data.data.wallet[i].locked.toFixed(4)
+              }));
+            } else if (response.data.data.wallet[i].coin == 'bfredx') {
+
+              setvalues(prevState => ({
+                ...prevState,
+                bfredxBalance: response.data.data.wallet[i].balance.toFixed(4),
+                bfredxEscrow: response.data.data.wallet[i].locked.toFixed(4)
+              }));  
+            } else if (response.data.data.wallet[i].coin == 'txc') {
+
+              setvalues(prevState => ({
+                ...prevState,
+                txcBalance: response.data.data.wallet[i].balance.toFixed(4),
+                txcEscrow: response.data.data.wallet[i].locked.toFixed(4)
+              }));  
+            } else if (response.data.data.wallet[i].coin == 'mvh') {
+
+              setvalues(prevState => ({
+                ...prevState,
+                mvhBalance: response.data.data.wallet[i].balance.toFixed(4),
+                mvhEscrow: response.data.data.wallet[i].locked.toFixed(4)
+              })); 
+            } else if (response.data.data.wallet[i].coin == 'penky') {
+
+              setvalues(prevState => ({
+                ...prevState,
+                penkyBalance: response.data.data.wallet[i].balance.toFixed(4),
+                penkyEscrow: response.data.data.wallet[i].locked.toFixed(4)
+              })); 
+            } else {
+              console('else')
             }
-            setTimeout(() => {
-              setshow4(true)
-            }, 1000);
           }
-      })
-      .catch ((error) => { 
-        setLoading(false)
-          console.log(error.message) 
-      })
-    }
+          setTimeout(() => {
+            setshow4(true)
+          }, 1000);
+        }
+    })
+    .catch ((error) => { 
+      setLoading(false)
+        console.log(error.message) 
+    })
   }
 
   const _cancelOrder = (id) => {
@@ -393,3 +385,5 @@ export default function HistoryOrder() {
     </>
   );
 }
+
+export default React.memo(HistoryOrder);

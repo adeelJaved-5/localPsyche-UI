@@ -6,10 +6,34 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+#exchange_loader{
+  height: 100vh;
+  background-color: #fff;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 12;
+  align-items: center;
+  justify-content: center;
+}
+.rotate {
+  animation: rotation 2s infinite linear;
+}
 
+@keyframes rotation {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(359deg);
+  }
+}
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+.apexcharts-title-text{
+  display: none !important;
 }
 .bg_pair_heading{
   background-color: #f5f9fc;

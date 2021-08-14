@@ -4,7 +4,7 @@ import {Toast, LineLoader} from "../../ui"
 import axios from "axios"
 import {useDispatch, useSelector} from "react-redux"
 
-export default function MarketTrade() {
+function MarketTrade() {
 
   const [buyUsd, setbuyUsd] = useState(null)
   const [buyEth, setbuyEth] = useState(null)
@@ -18,14 +18,10 @@ export default function MarketTrade() {
   const {userInfo ,pair, balance1, balance2} = generalReducers;
   const {user} = userInfo;
   const dispatch = useDispatch() 
-
-  console.log(userInfo);
   
   var token = sessionStorage.getItem("key");
-
-  useEffect(() => { 
-    _balance()
-  });
+  var selected_pair = sessionStorage.getItem("pair");
+  
 
   const sell = () => {
     let price = parseFloat(sellUsd)
@@ -72,6 +68,7 @@ export default function MarketTrade() {
         })
     }
   } 
+
   const buy = (e) => {
     e.preventDefault()
     let price = parseFloat(buyUsd)
@@ -120,52 +117,53 @@ export default function MarketTrade() {
   } 
 
   const _balance = async() => {
-    if(balance.length == 0){
-      // if(functin){
-      setLoading(true)
-      axios.post(
-      `${global.baseurl}:3000/exchange/wallet`, 
-        {   
-          "user_id": user._id
-        },
-        {
-          headers: {
-              "Content-Type": "application/json",
-              "Authorization":  token
-          } 
-        }
-      )
-      .then((response) =>{
-        setLoading(false)
-        console.log('balance',response.data)
-          if(response.data.success){
-            setbalance(response.data.data.wallet)
-            for(let i=0; i < response.data.data.wallet.length; i++){
-              if(response.data.data.wallet[i].coin == pair.split('/')[0]){
-                dispatch({type: 'balance1', payload: response.data.data.wallet[i].balance.toFixed(2)})
-                break
-              }
-              else{
-                dispatch({type: 'balance1', payload: 0})
-              }
+    setLoading(true)
+    axios.post(
+    `${global.baseurl}:3000/exchange/wallet`, 
+      {   
+        "user_id": user._id
+      },
+      {
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization":  token
+        } 
+      }
+    )
+    .then((response) =>{
+      setLoading(false)
+      console.log('Selected_balance',response.data)
+        if(response.data.success){
+          setbalance(response.data.data.wallet)
+          for(let i=0; i < response.data.data.wallet.length; i++){
+            if(response.data.data.wallet[i].coin == selected_pair.split('/')[0]){
+              dispatch({type: 'balance1', payload: response.data.data.wallet[i].balance.toFixed(2)})
+              break
             }
-            for(let i=0; i < response.data.data.wallet.length; i++){
-              if(response.data.data.wallet[i].coin == pair.split('/')[1]){
-                dispatch({type: 'balance2', payload: response.data.data.wallet[i].balance.toFixed(2)})
-                break
-              }
-              else{
-                dispatch({type: 'balance2', payload: 0})
-              }
+            else{
+              dispatch({type: 'balance1', payload: 0})
             }
           }
-      })
-      .catch ((error) => { 
-        setLoading(false)
-          console.log(error.message) 
-      })
-    }
+          for(let i=0; i < response.data.data.wallet.length; i++){
+            if(response.data.data.wallet[i].coin == selected_pair.split('/')[1]){
+              dispatch({type: 'balance2', payload: response.data.data.wallet[i].balance.toFixed(2)})
+              break
+            }
+            else{
+              dispatch({type: 'balance2', payload: 0})
+            }
+          }
+        }
+    })
+    .catch ((error) => { 
+      setLoading(false)
+        console.log(error.message) 
+    })
   }
+
+  useEffect(() => { 
+    _balance()
+  },[]);
 
   return (
     <>
@@ -265,3 +263,5 @@ export default function MarketTrade() {
     </>
   );
 }
+
+export default React.memo(MarketTrade);

@@ -11,9 +11,13 @@ import { ThemeConsumer } from '../context/ThemeContext';
 import Layout from '../components/Layout';
 
 export default class exchange extends Component {
+
   render() {
+    
+
     return (
       <>
+       
         <div id="theme">
           <Layout />
           <div className="container-fluid mtb15 no-fluid">
@@ -22,7 +26,7 @@ export default class exchange extends Component {
                 <MarketPairs />
               </div>
               <div className="col-sm-12 col-md-6">
-                      <TradingChart />
+                <TradingChart />
                 <MarketTrade />
               </div>
               <div className="col-md-3">

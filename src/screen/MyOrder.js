@@ -21,7 +21,7 @@ function Buy() {
 
 
 
-    useMemo( async () => {
+    useEffect( async () => {
         // if(allOrders.length == 0){
             try {
                 const { data } = await axios({
@@ -36,7 +36,7 @@ function Buy() {
                 //console.log(data)
                 if(data.success){
                     setAllOrders(data.data)
-                    console.log(data.data)
+                    console.log('orderApi',data.data)
                     sessionStorage.setItem("notification", data.data.length);
                 }
             } catch (error) {
@@ -47,7 +47,7 @@ function Buy() {
             }
         // }
         
-    }, [allOrders])
+    }, [])
 
     return (
         <React.Fragment> 

@@ -42,6 +42,7 @@ import BlogGENX from "./screen/Blog_pages/BlogGENX"
 import BlogTXC from "./screen/Blog_pages/BlogTXC"
 import BlogMVH from "./screen/Blog_pages/BlogMVH"
 import BlogPENKY from "./screen/Blog_pages/BlogPENKY"
+import BlogPRC from "./screen/Blog_pages/BlogPRC"
 import MyORDER from "./screen/MyOrder"
 import CEX from "./src/App"
 import EProfile from "./src/profile"
@@ -130,6 +131,7 @@ function App(){
               <Route exact path="/blog/TXC-coin-listed-on-localpsyche" component={BlogTXC} /> 
               <Route exact path="/blog/MVH-coin-listed-on-localpsyche" component={BlogMVH} /> 
               <Route exact path="/blog/PENKY-coin-listed-on-localpsyche" component={BlogPENKY} /> 
+              <Route exact path="/blog/PRC-coin-listed-on-localpsyche" component={BlogPRC} /> 
               <Route exact path="/my-trades" component={MyORDER} /> 
               <Route exact path="/exchange" component={CEX} /> 
               <Route exact path="/wallet" component={EProfile} /> 
@@ -158,6 +160,7 @@ function App(){
               <Route exact path="/blog/TXC-coin-listed-on-localpsyche" component={BlogTXC} /> 
               <Route exact path="/blog/MVH-coin-listed-on-localpsyche" component={BlogMVH} /> 
               <Route exact path="/blog/PENKY-coin-listed-on-localpsyche" component={BlogPENKY} /> 
+              <Route exact path="/blog/PRC-coin-listed-on-localpsyche" component={BlogPRC} /> 
               <Route exact path="/reset-password/:id" component={Reset} />
               <Route exact path="/privacy-policy" component={PrivacyPolicy} />
               <Route exact path="/terms-conditions" component={TermsConditions} />

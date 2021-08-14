@@ -8,9 +8,10 @@ const initState = {
     rateTrust: 0,
     rateSpeed: 0,
     notifi: true,
-    pair: 'bfredx/eth',
+    pair: 'ooks/eth',
     balance1: '0',
     balance2: '0',
+    tradedPair:[],
 } 
  
 const generalReducers = (state = initState, action) => {
@@ -40,6 +41,8 @@ const generalReducers = (state = initState, action) => {
             return {...state, balance1: action.payload}
         case 'balance2':
             return {...state, balance2: action.payload}
+        case 'tradedPair':
+            return {...state, tradedPair: action.payload}
         default: 
             return state
     }
